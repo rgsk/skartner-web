@@ -6,7 +6,6 @@ import styled from "@emotion/styled";
 const StyledButton = styled.button`
   color: turquoise;
 `;
-
 interface IPracticePageProps {}
 const PracticePage: React.FC<IPracticePageProps> = ({}) => {
   return (
@@ -25,7 +24,7 @@ const PracticePage: React.FC<IPracticePageProps> = ({}) => {
         <StyledButton>This my StyledButton component.</StyledButton>
       </div>
       <Typography>this is text</Typography>
-      <p>this is text</p>
+      <p className="text-green-700">this is text changed now j minor 123</p>
     </div>
   );
 };

@@ -10,5 +10,9 @@ RUN yarn
 
 COPY ./ ./
 
-CMD ["yarn", "dev"]
+ARG LOCAL_IP
+ARG SKARTNER_WEB_APP_ENV
+ENV NEXT_PUBLIC_LOCAL_IP=${LOCAL_IP:?error}
+ENV NEXT_PUBLIC_APP_ENV=${SKARTNER_WEB_APP_ENV:?error}
 
+CMD ["yarn", "dev"]
