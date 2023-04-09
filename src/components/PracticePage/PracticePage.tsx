@@ -1,8 +1,8 @@
-import { Button, Typography } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { Button, Typography } from '@mui/material';
 
-import styled from "@emotion/styled";
-import environmentVars from "lib/environmentVars";
+import styled from '@emotion/styled';
+import environmentVars from 'lib/environmentVars';
 
 const StyledButton = styled.button`
   color: turquoise;
