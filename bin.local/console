@@ -1,0 +1,3 @@
+#!/bin/bash 
+
+docker exec -it skartner-services-skartner-web-1 bash

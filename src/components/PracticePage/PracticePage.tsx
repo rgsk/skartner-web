@@ -1,0 +1,32 @@
+import { Button, Typography } from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+
+import styled from "@emotion/styled";
+
+const StyledButton = styled.button`
+  color: turquoise;
+`;
+
+interface IPracticePageProps {}
+const PracticePage: React.FC<IPracticePageProps> = ({}) => {
+  return (
+    <div>
+      <h1 className="text-red-400">this is the page changed</h1>
+      <div className="flex">
+        <Button variant="contained">hii</Button>
+        <div className="ml-2">
+          <Button variant="contained">hello</Button>
+        </div>
+      </div>
+      <div>
+        <AccessTimeIcon />
+      </div>
+      <div>
+        <StyledButton>This my StyledButton component.</StyledButton>
+      </div>
+      <Typography>this is text</Typography>
+      <p>this is text</p>
+    </div>
+  );
+};
+export default PracticePage;
