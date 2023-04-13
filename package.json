@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "concurrently \"yarn codegen --watch\" \"next dev\"",
+    "prebuild": "yarn codegen",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "codegen": "graphql-codegen --config codegen.ts",
-    "codegen:watch": "yarn codegen --watch"
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.7.12",
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "3.3.0",
-    "@graphql-codegen/client-preset": "3.0.0"
+    "@graphql-codegen/client-preset": "3.0.0",
+    "concurrently": "^8.0.1"
   }
 }
