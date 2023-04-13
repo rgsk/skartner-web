@@ -3,14 +3,14 @@ import { Button, Typography } from '@mui/material';
 
 import { gql, useQuery } from '@apollo/client';
 import styled from '@emotion/styled';
+import { DraftsForPracticeQuery } from 'gql/graphql';
 import environmentVars from 'lib/environmentVars';
 
 const StyledButton = styled.button`
   color: turquoise;
 `;
-
 const DraftsDocument = gql`
-  query {
+  query draftsForPractice {
     drafts {
       id
       body
@@ -26,8 +26,11 @@ const DraftsDocument = gql`
 interface IPracticePageProps {}
 const PracticePage: React.FC<IPracticePageProps> = ({}) => {
   console.log(environmentVars);
-  const { data } = useQuery(DraftsDocument);
+  const { data } = useQuery<DraftsForPracticeQuery>(DraftsDocument);
   console.log(data);
+  const firstDraft = data?.drafts?.[0];
+  console.log(firstDraft);
+  const title = firstDraft?.title;
   return (
     <div>
       <h1 className="text-red-400">this is the page changed 12345</h1>

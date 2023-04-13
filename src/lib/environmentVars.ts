@@ -1,4 +1,4 @@
-type TAppEnvironment = "development" | "staging" | "production";
+type TAppEnvironment = 'development' | 'staging' | 'production';
 
 const environmentVars = {
   LOCAL_IP: process.env.NEXT_PUBLIC_LOCAL_IP,
