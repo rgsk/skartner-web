@@ -1,8 +1,9 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
+require('dotenv').config();
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'http://localhost:8000',
+  schema: process.env.NEXT_PUBLIC_SKARTNER_SERVER,
   documents: 'src/**/*.{tsx,ts}',
   generates: {
     'src/gql/': {
