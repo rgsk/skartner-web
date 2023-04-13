@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"yarn codegen:watch\" \"next dev\"",
-    "prebuild": "yarn codegen",
     "build": "next build",
+    "type-check": "tsc",
+    "prestart": "yarn codegen && yarn type-check",
     "start": "next start",
     "lint": "next lint",
     "codegen": "graphql-codegen --config codegen.ts",
