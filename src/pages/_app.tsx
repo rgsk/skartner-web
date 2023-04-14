@@ -6,8 +6,8 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import theme from 'theme';
 
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import environmentVars from 'lib/environmentVars';
+import { ApolloProvider } from '@apollo/client';
+import apolloClient from 'lib/apolloClient';
 import 'styles/globals.css';
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -16,10 +16,6 @@ const clientSideEmotionCache = createEmotionCache();
 export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
-const apolloClient = new ApolloClient({
-  uri: environmentVars.SKARTNER_SERVER,
-  cache: new InMemoryCache(),
-});
 
 export default function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;

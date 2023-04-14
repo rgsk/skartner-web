@@ -1,39 +1,69 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Button, Typography } from '@mui/material';
 
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import styled from '@emotion/styled';
-import { DraftsForPracticeQuery } from 'gql/graphql';
-import environmentVars from 'lib/environmentVars';
+import {
+  CreateDraftMutation,
+  CreateDraftMutationVariables,
+  DraftsForPracticeQuery,
+} from 'gql/graphql';
+import { useState } from 'react';
 
 const StyledButton = styled.button`
   color: turquoise;
 `;
-const DraftsDocument = gql`
+export const DraftsDocument = gql`
   query draftsForPractice {
     drafts {
       id
-      body
-      isPublished
       title
-      __typename
-      updatedAt
-      createdAt
+      body
+    }
+  }
+`;
+
+const CreateDraftDocument = gql`
+  mutation createDraft($title: String!, $body: String!) {
+    createDraft(title: $title, body: $body) {
+      id
+      title
+      body
     }
   }
 `;
 
 interface IPracticePageProps {}
 const PracticePage: React.FC<IPracticePageProps> = ({}) => {
-  console.log(environmentVars);
-  const { data } = useQuery<DraftsForPracticeQuery>(DraftsDocument);
-  console.log(data);
-  const firstDraft = data?.drafts?.[0];
-  console.log(firstDraft);
-  const title = firstDraft?.title;
+  const { data, refetch, loading } =
+    useQuery<DraftsForPracticeQuery>(DraftsDocument);
+  const [createDraft] = useMutation<
+    CreateDraftMutation,
+    CreateDraftMutationVariables
+  >(CreateDraftDocument);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
   return (
     <div>
-      <h1 className="text-red-400">this is the page changed 12345</h1>
+      <div className="border border-red-500"></div>
+      {loading ? <p>loading</p> : <p>{JSON.stringify(data?.drafts)}</p>}
+      <input value={title} onChange={(e) => setTitle(e.target.value)} />
+      <input value={body} onChange={(e) => setBody(e.target.value)} />
+      <button
+        onClick={async () => {
+          console.log({ title, body });
+          setTitle('');
+          setBody('');
+          const result = await createDraft({ variables: { title, body } });
+          console.log(result);
+          refetch();
+        }}
+      >
+        submit
+      </button>
+      <h1 className="text-red-400">
+        this is the page changed 12345 again again
+      </h1>
       <div className="flex">
         <Button variant="contained">hii</Button>
         <div className="ml-2">
