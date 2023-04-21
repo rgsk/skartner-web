@@ -1,13 +1,11 @@
-import PracticePage, {
-  DraftsDocument,
-} from 'components/PracticePage/PracticePage';
-import { DraftsForPracticeQuery } from 'gql/graphql';
+import PracticePage from 'components/PracticePage/PracticePage';
+import { DraftsForPracticeDocument, DraftsForPracticeQuery } from 'gql/graphql';
 import apolloClient from 'lib/apolloClient';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 
 export async function getStaticProps({}: GetStaticPropsContext) {
   const { data } = await apolloClient.query<DraftsForPracticeQuery>({
-    query: DraftsDocument,
+    query: DraftsForPracticeDocument,
     fetchPolicy: 'no-cache',
   });
   console.log(data);

@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "codegen": "graphql-codegen --config codegen.ts",
-    "codegen:watch": "nodemon -w src -e tsx,ts --exec \"yarn codegen\""
+    "codegen:watch": "nodemon -w src -e graphql,gql --exec \"yarn codegen\""
   },
   "dependencies": {
     "@apollo/client": "^3.7.12",

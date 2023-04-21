@@ -1,11 +1,13 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Button, Typography } from '@mui/material';
 
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import styled from '@emotion/styled';
 import {
+  CreateDraftDocument,
   CreateDraftMutation,
   CreateDraftMutationVariables,
+  DraftsForPracticeDocument,
   DraftsForPracticeQuery,
 } from 'gql/graphql';
 import { useState } from 'react';
@@ -13,30 +15,13 @@ import { useState } from 'react';
 const StyledButton = styled.button`
   color: turquoise;
 `;
-export const DraftsDocument = gql`
-  query draftsForPractice {
-    drafts {
-      id
-      title
-      body
-    }
-  }
-`;
-
-const CreateDraftDocument = gql`
-  mutation createDraft($title: String!, $body: String!) {
-    createDraft(title: $title, body: $body) {
-      id
-      title
-      body
-    }
-  }
-`;
 
 interface IPracticePageProps {}
 const PracticePage: React.FC<IPracticePageProps> = ({}) => {
-  const { data, refetch, loading } =
-    useQuery<DraftsForPracticeQuery>(DraftsDocument);
+  const { data, refetch, loading } = useQuery<DraftsForPracticeQuery>(
+    DraftsForPracticeDocument
+  );
+  const fds = data?.drafts?.[0];
   const [createDraft] = useMutation<
     CreateDraftMutation,
     CreateDraftMutationVariables

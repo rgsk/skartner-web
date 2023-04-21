@@ -13,8 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query draftsForPractice {\n    drafts {\n      id\n      title\n      body\n    }\n  }\n": types.DraftsForPracticeDocument,
-    "\n  mutation createDraft($title: String!, $body: String!) {\n    createDraft(title: $title, body: $body) {\n      id\n      title\n      body\n    }\n  }\n": types.CreateDraftDocument,
+    "query draftsForPractice {\n  drafts {\n    id\n    title\n    body\n    createdAt\n  }\n}\n\nmutation createDraft($title: String!, $body: String!) {\n  createDraft(title: $title, body: $body) {\n    id\n    title\n    body\n  }\n}": types.DraftsForPracticeDocument,
 };
 
 /**
@@ -34,11 +33,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query draftsForPractice {\n    drafts {\n      id\n      title\n      body\n    }\n  }\n"): (typeof documents)["\n  query draftsForPractice {\n    drafts {\n      id\n      title\n      body\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation createDraft($title: String!, $body: String!) {\n    createDraft(title: $title, body: $body) {\n      id\n      title\n      body\n    }\n  }\n"): (typeof documents)["\n  mutation createDraft($title: String!, $body: String!) {\n    createDraft(title: $title, body: $body) {\n      id\n      title\n      body\n    }\n  }\n"];
+export function graphql(source: "query draftsForPractice {\n  drafts {\n    id\n    title\n    body\n    createdAt\n  }\n}\n\nmutation createDraft($title: String!, $body: String!) {\n  createDraft(title: $title, body: $body) {\n    id\n    title\n    body\n  }\n}"): (typeof documents)["query draftsForPractice {\n  drafts {\n    id\n    title\n    body\n    createdAt\n  }\n}\n\nmutation createDraft($title: String!, $body: String!) {\n  createDraft(title: $title, body: $body) {\n    id\n    title\n    body\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
