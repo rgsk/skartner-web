@@ -7,7 +7,7 @@ if [ -z "$COMMIT_AMEND" ]; then
   export COMMIT_AMEND=true
   
   # Format the code
-  yarn format
+  yarn format 
   
   # Add the formatted changes to the staging area
   git add .
