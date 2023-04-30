@@ -1,16 +1,16 @@
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { Button, Typography } from '@mui/material';
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { Button, Typography } from "@mui/material";
 
-import { useMutation, useQuery } from '@apollo/client';
-import styled from '@emotion/styled';
+import { useMutation, useQuery } from "@apollo/client";
+import styled from "@emotion/styled";
 import {
   CreateDraftDocument,
   CreateDraftMutation,
   CreateDraftMutationVariables,
   DraftsForPracticeDocument,
   DraftsForPracticeQuery,
-} from 'gql/graphql';
-import { useState } from 'react';
+} from "gql/graphql";
+import { useState } from "react";
 
 const StyledButton = styled.button`
   color: turquoise;
@@ -26,8 +26,8 @@ const PracticePage: React.FC<IPracticePageProps> = ({}) => {
     CreateDraftMutation,
     CreateDraftMutationVariables
   >(CreateDraftDocument);
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
   return (
     <div>
       <div className="border border-red-500"></div>
@@ -37,8 +37,8 @@ const PracticePage: React.FC<IPracticePageProps> = ({}) => {
       <button
         onClick={async () => {
           console.log({ title, body });
-          setTitle('');
-          setBody('');
+          setTitle("");
+          setBody("");
           const result = await createDraft({ variables: { title, body } });
           console.log(result);
           refetch();
