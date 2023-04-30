@@ -3,6 +3,7 @@ import { Button, Typography } from '@mui/material';
 
 import { useMutation, useQuery } from '@apollo/client';
 import styled from '@emotion/styled';
+import MyButton from 'components/Shared/MyButton/MyButton';
 import {
   CreateDraftDocument,
   CreateDraftMutation,
@@ -30,6 +31,7 @@ const PracticePage: React.FC<IPracticePageProps> = ({}) => {
   const [body, setBody] = useState('');
   return (
     <div>
+      <MyButton>hii 123</MyButton>
       <div className="border border-red-500"></div>
       {loading ? <p>loading</p> : <p>{JSON.stringify(data?.drafts)}</p>}
       <input value={title} onChange={(e) => setTitle(e.target.value)} />

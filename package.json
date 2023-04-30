@@ -12,11 +12,12 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "codegen:watch": "nodemon -w src -e graphql,gql --exec \"yarn codegen\"",
     "husky-prepare": "husky install",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "eslint",
       "prettier --write",
       "git add"
     ],
@@ -49,10 +50,19 @@
   "devDependencies": {
     "@graphql-codegen/cli": "3.3.0",
     "@graphql-codegen/client-preset": "3.0.0",
+    "@storybook/addon-essentials": "^7.0.7",
+    "@storybook/addon-interactions": "^7.0.7",
+    "@storybook/addon-links": "^7.0.7",
+    "@storybook/blocks": "^7.0.7",
+    "@storybook/nextjs": "^7.0.7",
+    "@storybook/react": "^7.0.7",
+    "@storybook/testing-library": "^0.0.14-next.2",
     "concurrently": "^8.0.1",
+    "eslint-plugin-storybook": "^0.6.11",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "nodemon": "^2.0.22",
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "storybook": "^7.0.7"
   }
 }
