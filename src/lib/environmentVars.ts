@@ -1,4 +1,4 @@
-type TAppEnvironment = "development" | "staging" | "production";
+type TAppEnvironment = 'development' | 'staging' | 'production';
 
 const environmentVars = {
   SKARTNER_SERVER: process.env.NEXT_PUBLIC_SKARTNER_SERVER,
