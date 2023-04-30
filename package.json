@@ -14,6 +14,17 @@
     "husky-prepare": "husky install",
     "format": "prettier --write ."
   },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint",
+      "prettier --write",
+      "git add"
+    ],
+    "**/*.{md,mdx,json}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "dependencies": {
     "@apollo/client": "^3.7.12",
     "@emotion/react": "^11.10.6",
@@ -40,6 +51,7 @@
     "@graphql-codegen/client-preset": "3.0.0",
     "concurrently": "^8.0.1",
     "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8"
   }

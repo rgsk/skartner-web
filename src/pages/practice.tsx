@@ -9,6 +9,7 @@ export async function getStaticProps({}: GetStaticPropsContext) {
     fetchPolicy: 'no-cache',
   });
   console.log(data);
+
   return {
     props: {
       drafts: data,
@@ -16,7 +17,6 @@ export async function getStaticProps({}: GetStaticPropsContext) {
     revalidate: 10,
   };
 }
-//
 
 const Page = ({ drafts }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
@@ -27,3 +27,4 @@ const Page = ({ drafts }: InferGetStaticPropsType<typeof getStaticProps>) => {
   );
 };
 export default Page;
+// comment modified
