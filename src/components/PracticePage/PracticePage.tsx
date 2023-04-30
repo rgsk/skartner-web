@@ -59,6 +59,13 @@ const PracticePage: React.FC<IPracticePageProps> = ({}) => {
         <AccessTimeIcon />
       </div>
       <div>
+
+
+
+
+
+
+        
         <StyledButton>This my StyledButton component.</StyledButton>
       </div>
       <Typography>this is text</Typography>
