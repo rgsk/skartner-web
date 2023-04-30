@@ -43,8 +43,15 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query';
+  allPosts?: Maybe<Array<Maybe<Post>>>;
   drafts?: Maybe<Array<Maybe<Post>>>;
   posts?: Maybe<Array<Maybe<Post>>>;
+};
+
+
+export type QueryAllPostsArgs = {
+  isPublished: Scalars['Boolean'];
+  token?: InputMaybe<Scalars['String']>;
 };
 
 export type DraftsForPracticeQueryVariables = Exact<{ [key: string]: never; }>;

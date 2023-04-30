@@ -2,13 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-
-img,svg,video,canvas,audio,iframe,embed,object {  
-  display: block; /* 1 */  
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
   vertical-align: middle; /* 2 */
 }
-img,video {  
-  max-width: 100%;  
+img,
+video {
+  max-width: 100%;
   height: auto;
 }
-
