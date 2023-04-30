@@ -16,6 +16,11 @@ const theme = createTheme({
       main: '#556cd6',
     },
     secondary: {
+
+
+
+
+      
       main: '#19857b',
     },
     error: {
@@ -28,3 +33,4 @@ const theme = createTheme({
 });
 
 export default theme;
+// hii
