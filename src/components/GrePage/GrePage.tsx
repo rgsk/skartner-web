@@ -21,21 +21,24 @@ const replaceWord = (word: string, prompt: string) => {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
-  const sendSinglePromptQuery = useQuery<
+  const sendSinglePromptQueryResult = useQuery<
     SendSinglePromptQuery,
     SendSinglePromptQueryVariables
   >(SendSinglePromptDocument);
-  const [createGreWordMutation, createGreWordMutationResult] = useMutation<
-    CreateGreWordMutation,
-    CreateGreWordMutationVariables
-  >(CreateGreWordDocument, {
-    onCompleted: (data) => {
-      console.log(data);
-    },
-  });
+  const [createGreWordMutationFunction, createGreWordMutationResult] =
+    useMutation<CreateGreWordMutation, CreateGreWordMutationVariables>(
+      CreateGreWordDocument,
+      {
+        onCompleted: (data) => {
+          console.log(data);
+        },
+      }
+    );
   const submitWord = async (prompt: string) => {
     if (wordInput) {
-      sendSinglePromptQuery.refetch({ input: replaceWord(wordInput, prompt) });
+      sendSinglePromptQueryResult.refetch({
+        input: replaceWord(wordInput, prompt),
+      });
     }
   };
   return (
@@ -67,24 +70,25 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
         ))}
       </div>
       <div className="h-[50px] mt-4">
-        {sendSinglePromptQuery.loading && <CircularProgress />}
+        {sendSinglePromptQueryResult.loading && <CircularProgress />}
       </div>
 
       <p className="whitespace-pre-line">
-        {sendSinglePromptQuery.data?.sendSinglePrompt}
+        {sendSinglePromptQueryResult.data?.sendSinglePrompt}
       </p>
       <button
         onClick={() => {
           if (
             wordInput &&
-            sendSinglePromptQuery.variables?.input &&
-            sendSinglePromptQuery.data?.sendSinglePrompt
+            sendSinglePromptQueryResult.variables?.input &&
+            sendSinglePromptQueryResult.data?.sendSinglePrompt
           ) {
-            createGreWordMutation({
+            createGreWordMutationFunction({
               variables: {
                 spelling: wordInput,
-                promptInput: sendSinglePromptQuery.variables?.input,
-                promptResponse: sendSinglePromptQuery.data?.sendSinglePrompt,
+                promptInput: sendSinglePromptQueryResult.variables?.input,
+                promptResponse:
+                  sendSinglePromptQueryResult.data?.sendSinglePrompt,
               },
             });
           }
