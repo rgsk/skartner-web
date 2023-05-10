@@ -14,9 +14,30 @@ export type Scalars = {
   Float: number;
 };
 
+export type GptPrompt = {
+  __typename?: 'GptPrompt';
+  createdAt: Scalars['String'];
+  greWord?: Maybe<GreWord>;
+  greWordId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  input: Scalars['String'];
+  response: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type GreWord = {
+  __typename?: 'GreWord';
+  createdAt: Scalars['String'];
+  gptPrompts: Array<Maybe<GptPrompt>>;
+  id: Scalars['String'];
+  spelling: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createDraft?: Maybe<Post>;
+  createGreWord?: Maybe<GreWord>;
   publish?: Maybe<Post>;
 };
 
@@ -24,6 +45,13 @@ export type Mutation = {
 export type MutationCreateDraftArgs = {
   body: Scalars['String'];
   title: Scalars['String'];
+};
+
+
+export type MutationCreateGreWordArgs = {
+  promptInput: Scalars['String'];
+  promptResponse: Scalars['String'];
+  spelling: Scalars['String'];
 };
 
 
@@ -45,7 +73,10 @@ export type Query = {
   __typename?: 'Query';
   allPosts?: Maybe<Array<Maybe<Post>>>;
   drafts?: Maybe<Array<Maybe<Post>>>;
+  gptPrompts?: Maybe<Array<Maybe<GptPrompt>>>;
+  greWords?: Maybe<Array<Maybe<GreWord>>>;
   posts?: Maybe<Array<Maybe<Post>>>;
+  sendSinglePrompt?: Maybe<Scalars['String']>;
 };
 
 
@@ -53,6 +84,27 @@ export type QueryAllPostsArgs = {
   isPublished: Scalars['Boolean'];
   token?: InputMaybe<Scalars['String']>;
 };
+
+
+export type QuerySendSinglePromptArgs = {
+  input: Scalars['String'];
+};
+
+export type SendSinglePromptQueryVariables = Exact<{
+  input: Scalars['String'];
+}>;
+
+
+export type SendSinglePromptQuery = { __typename?: 'Query', sendSinglePrompt?: string | null };
+
+export type CreateGreWordMutationVariables = Exact<{
+  spelling: Scalars['String'];
+  promptInput: Scalars['String'];
+  promptResponse: Scalars['String'];
+}>;
+
+
+export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord?: { __typename?: 'GreWord', id: string } | null };
 
 export type DraftsForPracticeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -68,5 +120,7 @@ export type CreateDraftMutationVariables = Exact<{
 export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __typename?: 'Post', id: string, title?: string | null, body?: string | null } | null };
 
 
+export const SendSinglePromptDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"sendSinglePrompt"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sendSinglePrompt"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<SendSinglePromptQuery, SendSinglePromptQueryVariables>;
+export const CreateGreWordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createGreWord"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"spelling"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"promptInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"promptResponse"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createGreWord"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"spelling"},"value":{"kind":"Variable","name":{"kind":"Name","value":"spelling"}}},{"kind":"Argument","name":{"kind":"Name","value":"promptInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"promptInput"}}},{"kind":"Argument","name":{"kind":"Name","value":"promptResponse"},"value":{"kind":"Variable","name":{"kind":"Name","value":"promptResponse"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateGreWordMutation, CreateGreWordMutationVariables>;
 export const DraftsForPracticeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"draftsForPractice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"drafts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<DraftsForPracticeQuery, DraftsForPracticeQueryVariables>;
 export const CreateDraftDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createDraft"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"body"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createDraft"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}},{"kind":"Argument","name":{"kind":"Name","value":"body"},"value":{"kind":"Variable","name":{"kind":"Name","value":"body"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"body"}}]}}]}}]} as unknown as DocumentNode<CreateDraftMutation, CreateDraftMutationVariables>;

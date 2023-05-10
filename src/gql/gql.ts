@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "query sendSinglePrompt($input: String!) {\n  sendSinglePrompt(input: $input)\n}\n\nmutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!) {\n  createGreWord(\n    spelling: $spelling\n    promptInput: $promptInput\n    promptResponse: $promptResponse\n  ) {\n    id\n  }\n}": types.SendSinglePromptDocument,
     "query draftsForPractice {\n  drafts {\n    id\n    title\n    body\n    createdAt\n  }\n}\n\nmutation createDraft($title: String!, $body: String!) {\n  createDraft(title: $title, body: $body) {\n    id\n    title\n    body\n  }\n}": types.DraftsForPracticeDocument,
 };
 
@@ -30,6 +31,10 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query sendSinglePrompt($input: String!) {\n  sendSinglePrompt(input: $input)\n}\n\nmutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!) {\n  createGreWord(\n    spelling: $spelling\n    promptInput: $promptInput\n    promptResponse: $promptResponse\n  ) {\n    id\n  }\n}"): (typeof documents)["query sendSinglePrompt($input: String!) {\n  sendSinglePrompt(input: $input)\n}\n\nmutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!) {\n  createGreWord(\n    spelling: $spelling\n    promptInput: $promptInput\n    promptResponse: $promptResponse\n  ) {\n    id\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

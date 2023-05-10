@@ -1,0 +1,17 @@
+query sendSinglePrompt($input: String!) {
+  sendSinglePrompt(input: $input)
+}
+
+mutation createGreWord(
+  $spelling: String!
+  $promptInput: String!
+  $promptResponse: String!
+) {
+  createGreWord(
+    spelling: $spelling
+    promptInput: $promptInput
+    promptResponse: $promptResponse
+  ) {
+    id
+  }
+}
