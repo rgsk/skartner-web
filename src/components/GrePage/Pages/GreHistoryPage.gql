@@ -1,0 +1,11 @@
+query greWords($offset: Int, $limit: Int, $where: greWordsBoolExp) {
+  greWords(offset: $offset, limit: $limit, where: $where) {
+    id
+    spelling
+    gptPrompts {
+      id
+      input
+      response
+    }
+  }
+}
