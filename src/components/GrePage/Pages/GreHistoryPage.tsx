@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Box } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import {
   GreWordsDocument,
   GreWordsQuery,
@@ -7,14 +7,14 @@ import {
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/useQueryTracker';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 enum QueryParams {
   page = 'page',
   query = 'query',
 }
 
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 interface IGreHistoryPageProps {}
 const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
@@ -31,6 +31,16 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       },
     }
   );
+
+  const totalPages = useMemo(
+    () =>
+      Math.ceil((greWordsQueryResult.data?.greWordsCount ?? 0) / itemsPerPage),
+    [greWordsQueryResult.data?.greWordsCount]
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [queryInput]);
 
   const queryTrackerInput = useMemo(() => {
     const result: any = {};
@@ -66,24 +76,45 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
           }}
         />
       </div>
-      {greWordsQueryResult.data?.greWords.map((greWord) => {
-        return (
-          <Box key={greWord.id} sx={{ borderTop: '2px solid red', mt: 2 }}>
-            <p>Spelling: {greWord.spelling}</p>
-            <div>
-              <p>Gre Prompts</p>
-              {greWord.gptPrompts.map((gptPrompt) => {
-                return (
-                  <div key={gptPrompt.id}>
-                    <p>Input: {gptPrompt.input}</p>
-                    <p>Response: {gptPrompt.response}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </Box>
-        );
-      })}
+      <div className="h-[50px] mt-4">
+        {greWordsQueryResult.loading && <CircularProgress />}
+      </div>
+      <div>
+        {greWordsQueryResult.data?.greWords.map((greWord) => {
+          return (
+            <Box key={greWord.id} sx={{ borderTop: '2px solid red', mt: 2 }}>
+              <p>Spelling: {greWord.spelling}</p>
+              <div>
+                <p>Gre Prompts</p>
+                {greWord.gptPrompts.map((gptPrompt) => {
+                  return (
+                    <div key={gptPrompt.id}>
+                      <p>Input: {gptPrompt.input}</p>
+                      <p>Response: {gptPrompt.response}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </Box>
+          );
+        })}
+      </div>
+      <div>
+        {Array.from({ length: totalPages }, (_, index) => {
+          const page = index + 1;
+          return (
+            <Button
+              key={page}
+              variant={page === currentPage ? 'outlined' : 'text'}
+              onClick={() => {
+                setCurrentPage(page);
+              }}
+            >
+              {page}
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 };

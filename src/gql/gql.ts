@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "query sendSinglePrompt($input: String!) {\n  sendSinglePrompt(input: $input)\n}\n\nmutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!) {\n  createGreWord(\n    spelling: $spelling\n    promptInput: $promptInput\n    promptResponse: $promptResponse\n  ) {\n    id\n  }\n}": types.SendSinglePromptDocument,
-    "query greWords($where: greWordsBoolExp, $skip: Int, $take: Int) {\n  greWords(where: $where, skip: $skip, take: $take) {\n    id\n    spelling\n    gptPrompts {\n      id\n      input\n      response\n    }\n  }\n}": types.GreWordsDocument,
+    "query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {\n  greWords(where: $where, skip: $skip, take: $take) {\n    id\n    spelling\n    gptPrompts {\n      id\n      input\n      response\n    }\n  }\n  greWordsCount(where: $where)\n}": types.GreWordsDocument,
     "query draftsForPractice {\n  drafts {\n    id\n    title\n    body\n    createdAt\n  }\n}\n\nmutation createDraft($title: String!, $body: String!) {\n  createDraft(title: $title, body: $body) {\n    id\n    title\n    body\n  }\n}": types.DraftsForPracticeDocument,
 };
 
@@ -39,7 +39,7 @@ export function graphql(source: "query sendSinglePrompt($input: String!) {\n  se
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query greWords($where: greWordsBoolExp, $skip: Int, $take: Int) {\n  greWords(where: $where, skip: $skip, take: $take) {\n    id\n    spelling\n    gptPrompts {\n      id\n      input\n      response\n    }\n  }\n}"): (typeof documents)["query greWords($where: greWordsBoolExp, $skip: Int, $take: Int) {\n  greWords(where: $where, skip: $skip, take: $take) {\n    id\n    spelling\n    gptPrompts {\n      id\n      input\n      response\n    }\n  }\n}"];
+export function graphql(source: "query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {\n  greWords(where: $where, skip: $skip, take: $take) {\n    id\n    spelling\n    gptPrompts {\n      id\n      input\n      response\n    }\n  }\n  greWordsCount(where: $where)\n}"): (typeof documents)["query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {\n  greWords(where: $where, skip: $skip, take: $take) {\n    id\n    spelling\n    gptPrompts {\n      id\n      input\n      response\n    }\n  }\n  greWordsCount(where: $where)\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

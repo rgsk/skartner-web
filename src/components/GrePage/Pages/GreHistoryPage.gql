@@ -1,4 +1,4 @@
-query greWords($where: greWordsBoolExp, $skip: Int, $take: Int) {
+query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
   greWords(where: $where, skip: $skip, take: $take) {
     id
     spelling
@@ -8,4 +8,5 @@ query greWords($where: greWordsBoolExp, $skip: Int, $take: Int) {
       response
     }
   }
+  greWordsCount(where: $where)
 }
