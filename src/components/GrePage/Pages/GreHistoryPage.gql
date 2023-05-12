@@ -1,5 +1,5 @@
-query greWords($offset: Int, $limit: Int, $where: greWordsBoolExp) {
-  greWords(offset: $offset, limit: $limit, where: $where) {
+query greWords($where: greWordsBoolExp, $skip: Int, $take: Int) {
+  greWords(where: $where, skip: $skip, take: $take) {
     id
     spelling
     gptPrompts {

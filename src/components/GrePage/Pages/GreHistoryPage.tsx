@@ -5,28 +5,64 @@ import {
   GreWordsQuery,
   GreWordsQueryVariables,
 } from 'gql/graphql';
-import { useState } from 'react';
+import useQueryTracker from 'hooks/useQueryTracker';
+import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
+import { useMemo, useState } from 'react';
+
+enum QueryParams {
+  page = 'page',
+  query = 'query',
+}
+
+const itemsPerPage = 10;
 
 interface IGreHistoryPageProps {}
 const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
-  const [filterInput, setFilterInput] = useState('');
+  const [queryInput, setQueryInput] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
   const greWordsQueryResult = useQuery<GreWordsQuery, GreWordsQueryVariables>(
     GreWordsDocument,
     {
       variables: {
-        where: { spelling: { startsWith: filterInput } },
+        where: { spelling: { startsWith: queryInput } },
+        skip: (currentPage - 1) * itemsPerPage,
+        take: itemsPerPage,
       },
     }
   );
+
+  const queryTrackerInput = useMemo(() => {
+    const result: any = {};
+    result[QueryParams.page] = currentPage;
+    if (queryInput) {
+      result[QueryParams.query] = queryInput;
+    } else {
+      result[QueryParams.query] = ValueToDeleteQueryKey;
+    }
+    return result;
+  }, [currentPage, queryInput]);
+
+  useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
+    const { [QueryParams.page]: pageParam, [QueryParams.query]: queryParam } =
+      params;
+    if (pageParam) {
+      setCurrentPage(+pageParam);
+    }
+    if (queryParam) {
+      setQueryInput(queryParam as string);
+    }
+    onParamsAssignedToState();
+  });
 
   return (
     <div>
       <div>
         <input
           type="text"
-          value={filterInput}
+          value={queryInput}
           onChange={(e) => {
-            setFilterInput(e.target.value);
+            setQueryInput(e.target.value);
           }}
         />
       </div>
