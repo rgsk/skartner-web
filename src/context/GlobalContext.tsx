@@ -2,7 +2,7 @@
 
 import { LocalStorageKeys } from 'constants/globalConstants';
 import { UsersForLoginPageQuery } from 'gql/graphql';
-import useLocalStorageState from 'hooks/useLocalStorageState';
+import useLocalStorageState from 'hooks/utils/useLocalStorageState';
 import { createContext, useContext } from 'react';
 
 const useGlobalContextValue = () => {

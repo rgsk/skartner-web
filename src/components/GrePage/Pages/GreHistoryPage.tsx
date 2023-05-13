@@ -5,7 +5,7 @@ import {
   GreWordsQuery,
   GreWordsQueryVariables,
 } from 'gql/graphql';
-import useQueryTracker from 'hooks/useQueryTracker';
+import useQueryTracker from 'hooks/utils/useQueryTracker';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useEffect, useMemo, useState } from 'react';
 

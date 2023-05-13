@@ -8,3 +8,4 @@ describe('template spec', () => {
     cy.get('[data-test="counter-value"]').contains('Count: 2');
   });
 });
+export {};
