@@ -47,7 +47,7 @@ export const addParamsToPath = (
   return finalPath;
 };
 
-export const updateParamsToQuery = (
+export const updateParamsForQuery = (
   query: string,
   obj: Record<string, string | string[]>
 ) => {
@@ -66,4 +66,18 @@ export const updateParamsToQuery = (
   }
   return urlSearchParams.toString();
 };
+
+export const updateParamsForPath = (
+  pathWithQuery: string,
+  obj: Record<string, string | string[]>
+) => {
+  const [path, query] = pathWithQuery.split('?');
+  const newQuery = updateParamsForQuery(query, obj);
+  if (newQuery.length === 0) {
+    return path;
+  }
+  const finalPath = path + '?' + newQuery;
+  return finalPath;
+};
+
 export const ValueToDeleteQueryKey = '914e4e5e-80c7-4779-be0b-e1036f2551d3';

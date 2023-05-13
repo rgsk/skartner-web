@@ -1,4 +1,4 @@
-import { updateParamsToQuery } from 'lib/queryParamsUtils';
+import { updateParamsForPath } from 'lib/queryParamsUtils';
 import Router, { useRouter } from 'next/router';
 
 import { useEffect, useRef } from 'react';
@@ -32,11 +32,7 @@ const useQueryTracker = (
       // here Router is used instead of Router,
       // because we didn't wanted to provide router
       // as a useEffect depedency and run on every router.query change
-      const [basePath, query] = Router.asPath.split('?');
-      Router.push({
-        pathname: basePath,
-        query: updateParamsToQuery(query, input),
-      });
+      Router.push(updateParamsForPath(Router.asPath, input));
     }
   }, [input]);
 
