@@ -10,9 +10,12 @@ const config: CodegenConfig = {
   schema: process.env.SKARTNER_SERVER,
   documents: 'src/**/*.{graphql,gql}',
   generates: {
-    'src/gql/': {
-      preset: 'client',
-      plugins: [],
+    'src/gql/graphql.ts': {
+      plugins: [
+        'typescript',
+        'typescript-operations',
+        'typescript-react-apollo',
+      ],
     },
   },
 };

@@ -1,27 +1,21 @@
-import { useQuery } from '@apollo/client';
 import { useGlobalContext } from 'context/GlobalContext';
-import {
-  GreWordSearchPromptInputsDocument,
-  GreWordSearchPromptInputsQuery,
-  GreWordSearchPromptInputsQueryVariables,
-} from 'gql/graphql';
+import { useGreWordSearchPromptInputsQuery } from 'gql/graphql';
 
 interface IWordSearchPromptsProps {}
 const WordSearchPrompts: React.FC<IWordSearchPromptsProps> = ({}) => {
   const { user } = useGlobalContext();
-  const greWordSearchPromptInputsQueryResult = useQuery<
-    GreWordSearchPromptInputsQuery,
-    GreWordSearchPromptInputsQueryVariables
-  >(GreWordSearchPromptInputsDocument, {
-    variables: {
-      where: {
-        userId: {
-          equals: user!.id,
+  useGreWordSearchPromptInputsQuery;
+  const greWordSearchPromptInputsQueryResult =
+    useGreWordSearchPromptInputsQuery({
+      variables: {
+        where: {
+          userId: {
+            equals: user!.id,
+          },
         },
       },
-    },
-    skip: !user,
-  });
+      skip: !user,
+    });
 
   return (
     <div>

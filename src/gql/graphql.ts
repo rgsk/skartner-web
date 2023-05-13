@@ -1,10 +1,11 @@
-/* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -247,11 +248,299 @@ export type CreateDraftMutationVariables = Exact<{
 export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __typename?: 'Post', id: string, title?: string | null, body?: string | null } | null };
 
 
-export const GreWordSearchPromptInputsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"greWordSearchPromptInputs"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"GreWordSearchPromptInputWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"greWordSearchPromptInputs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>;
-export const SendSinglePromptDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"sendSinglePrompt"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sendSinglePrompt"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<SendSinglePromptQuery, SendSinglePromptQueryVariables>;
-export const CreateGreWordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createGreWord"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"spelling"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"promptInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"promptResponse"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createGreWord"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"spelling"},"value":{"kind":"Variable","name":{"kind":"Name","value":"spelling"}}},{"kind":"Argument","name":{"kind":"Name","value":"promptInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"promptInput"}}},{"kind":"Argument","name":{"kind":"Name","value":"promptResponse"},"value":{"kind":"Variable","name":{"kind":"Name","value":"promptResponse"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateGreWordMutation, CreateGreWordMutationVariables>;
-export const GreWordsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"greWords"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"GreWordWhereInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"take"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"greWords"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}},{"kind":"Argument","name":{"kind":"Name","value":"take"},"value":{"kind":"Variable","name":{"kind":"Name","value":"take"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"spelling"}},{"kind":"Field","name":{"kind":"Name","value":"gptPrompts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"input"}},{"kind":"Field","name":{"kind":"Name","value":"response"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"greWordsCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}]}]}}]} as unknown as DocumentNode<GreWordsQuery, GreWordsQueryVariables>;
-export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
-export const UsersForLoginPageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"usersForLoginPage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"UserWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>;
-export const DraftsForPracticeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"draftsForPractice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"drafts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<DraftsForPracticeQuery, DraftsForPracticeQueryVariables>;
-export const CreateDraftDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createDraft"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"body"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createDraft"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}},{"kind":"Argument","name":{"kind":"Name","value":"body"},"value":{"kind":"Variable","name":{"kind":"Name","value":"body"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"body"}}]}}]}}]} as unknown as DocumentNode<CreateDraftMutation, CreateDraftMutationVariables>;
+export const GreWordSearchPromptInputsDocument = gql`
+    query greWordSearchPromptInputs($where: GreWordSearchPromptInputWhereInput) {
+  greWordSearchPromptInputs(where: $where) {
+    id
+    text
+    userId
+  }
+}
+    `;
+
+/**
+ * __useGreWordSearchPromptInputsQuery__
+ *
+ * To run a query within a React component, call `useGreWordSearchPromptInputsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGreWordSearchPromptInputsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGreWordSearchPromptInputsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGreWordSearchPromptInputsQuery(baseOptions?: Apollo.QueryHookOptions<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>(GreWordSearchPromptInputsDocument, options);
+      }
+export function useGreWordSearchPromptInputsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>(GreWordSearchPromptInputsDocument, options);
+        }
+export type GreWordSearchPromptInputsQueryHookResult = ReturnType<typeof useGreWordSearchPromptInputsQuery>;
+export type GreWordSearchPromptInputsLazyQueryHookResult = ReturnType<typeof useGreWordSearchPromptInputsLazyQuery>;
+export type GreWordSearchPromptInputsQueryResult = Apollo.QueryResult<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>;
+export const SendSinglePromptDocument = gql`
+    query sendSinglePrompt($input: String!) {
+  sendSinglePrompt(input: $input)
+}
+    `;
+
+/**
+ * __useSendSinglePromptQuery__
+ *
+ * To run a query within a React component, call `useSendSinglePromptQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSendSinglePromptQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSendSinglePromptQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSendSinglePromptQuery(baseOptions: Apollo.QueryHookOptions<SendSinglePromptQuery, SendSinglePromptQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SendSinglePromptQuery, SendSinglePromptQueryVariables>(SendSinglePromptDocument, options);
+      }
+export function useSendSinglePromptLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SendSinglePromptQuery, SendSinglePromptQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SendSinglePromptQuery, SendSinglePromptQueryVariables>(SendSinglePromptDocument, options);
+        }
+export type SendSinglePromptQueryHookResult = ReturnType<typeof useSendSinglePromptQuery>;
+export type SendSinglePromptLazyQueryHookResult = ReturnType<typeof useSendSinglePromptLazyQuery>;
+export type SendSinglePromptQueryResult = Apollo.QueryResult<SendSinglePromptQuery, SendSinglePromptQueryVariables>;
+export const CreateGreWordDocument = gql`
+    mutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!) {
+  createGreWord(
+    spelling: $spelling
+    promptInput: $promptInput
+    promptResponse: $promptResponse
+  ) {
+    id
+  }
+}
+    `;
+export type CreateGreWordMutationFn = Apollo.MutationFunction<CreateGreWordMutation, CreateGreWordMutationVariables>;
+
+/**
+ * __useCreateGreWordMutation__
+ *
+ * To run a mutation, you first call `useCreateGreWordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGreWordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGreWordMutation, { data, loading, error }] = useCreateGreWordMutation({
+ *   variables: {
+ *      spelling: // value for 'spelling'
+ *      promptInput: // value for 'promptInput'
+ *      promptResponse: // value for 'promptResponse'
+ *   },
+ * });
+ */
+export function useCreateGreWordMutation(baseOptions?: Apollo.MutationHookOptions<CreateGreWordMutation, CreateGreWordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGreWordMutation, CreateGreWordMutationVariables>(CreateGreWordDocument, options);
+      }
+export type CreateGreWordMutationHookResult = ReturnType<typeof useCreateGreWordMutation>;
+export type CreateGreWordMutationResult = Apollo.MutationResult<CreateGreWordMutation>;
+export type CreateGreWordMutationOptions = Apollo.BaseMutationOptions<CreateGreWordMutation, CreateGreWordMutationVariables>;
+export const GreWordsDocument = gql`
+    query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
+  greWords(where: $where, skip: $skip, take: $take) {
+    id
+    spelling
+    gptPrompts {
+      id
+      input
+      response
+    }
+  }
+  greWordsCount(where: $where)
+}
+    `;
+
+/**
+ * __useGreWordsQuery__
+ *
+ * To run a query within a React component, call `useGreWordsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGreWordsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGreWordsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *      skip: // value for 'skip'
+ *      take: // value for 'take'
+ *   },
+ * });
+ */
+export function useGreWordsQuery(baseOptions?: Apollo.QueryHookOptions<GreWordsQuery, GreWordsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GreWordsQuery, GreWordsQueryVariables>(GreWordsDocument, options);
+      }
+export function useGreWordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GreWordsQuery, GreWordsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GreWordsQuery, GreWordsQueryVariables>(GreWordsDocument, options);
+        }
+export type GreWordsQueryHookResult = ReturnType<typeof useGreWordsQuery>;
+export type GreWordsLazyQueryHookResult = ReturnType<typeof useGreWordsLazyQuery>;
+export type GreWordsQueryResult = Apollo.QueryResult<GreWordsQuery, GreWordsQueryVariables>;
+export const CreateUserDocument = gql`
+    mutation createUser($email: String!) {
+  createUser(email: $email) {
+    id
+    email
+  }
+}
+    `;
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
+      }
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const UsersForLoginPageDocument = gql`
+    query usersForLoginPage($where: UserWhereInput) {
+  users(where: $where) {
+    id
+    email
+  }
+}
+    `;
+
+/**
+ * __useUsersForLoginPageQuery__
+ *
+ * To run a query within a React component, call `useUsersForLoginPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersForLoginPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersForLoginPageQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useUsersForLoginPageQuery(baseOptions?: Apollo.QueryHookOptions<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>(UsersForLoginPageDocument, options);
+      }
+export function useUsersForLoginPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>(UsersForLoginPageDocument, options);
+        }
+export type UsersForLoginPageQueryHookResult = ReturnType<typeof useUsersForLoginPageQuery>;
+export type UsersForLoginPageLazyQueryHookResult = ReturnType<typeof useUsersForLoginPageLazyQuery>;
+export type UsersForLoginPageQueryResult = Apollo.QueryResult<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>;
+export const DraftsForPracticeDocument = gql`
+    query draftsForPractice {
+  drafts {
+    id
+    title
+    body
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useDraftsForPracticeQuery__
+ *
+ * To run a query within a React component, call `useDraftsForPracticeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDraftsForPracticeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDraftsForPracticeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDraftsForPracticeQuery(baseOptions?: Apollo.QueryHookOptions<DraftsForPracticeQuery, DraftsForPracticeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DraftsForPracticeQuery, DraftsForPracticeQueryVariables>(DraftsForPracticeDocument, options);
+      }
+export function useDraftsForPracticeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DraftsForPracticeQuery, DraftsForPracticeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DraftsForPracticeQuery, DraftsForPracticeQueryVariables>(DraftsForPracticeDocument, options);
+        }
+export type DraftsForPracticeQueryHookResult = ReturnType<typeof useDraftsForPracticeQuery>;
+export type DraftsForPracticeLazyQueryHookResult = ReturnType<typeof useDraftsForPracticeLazyQuery>;
+export type DraftsForPracticeQueryResult = Apollo.QueryResult<DraftsForPracticeQuery, DraftsForPracticeQueryVariables>;
+export const CreateDraftDocument = gql`
+    mutation createDraft($title: String!, $body: String!) {
+  createDraft(title: $title, body: $body) {
+    id
+    title
+    body
+  }
+}
+    `;
+export type CreateDraftMutationFn = Apollo.MutationFunction<CreateDraftMutation, CreateDraftMutationVariables>;
+
+/**
+ * __useCreateDraftMutation__
+ *
+ * To run a mutation, you first call `useCreateDraftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDraftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDraftMutation, { data, loading, error }] = useCreateDraftMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      body: // value for 'body'
+ *   },
+ * });
+ */
+export function useCreateDraftMutation(baseOptions?: Apollo.MutationHookOptions<CreateDraftMutation, CreateDraftMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDraftMutation, CreateDraftMutationVariables>(CreateDraftDocument, options);
+      }
+export type CreateDraftMutationHookResult = ReturnType<typeof useCreateDraftMutation>;
+export type CreateDraftMutationResult = Apollo.MutationResult<CreateDraftMutation>;
+export type CreateDraftMutationOptions = Apollo.BaseMutationOptions<CreateDraftMutation, CreateDraftMutationVariables>;
