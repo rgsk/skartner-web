@@ -1,19 +1,25 @@
 import { useLazyQuery } from '@apollo/client';
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
+import { useGlobalContext } from 'context/GlobalContext';
 import {
   UsersForLoginPageDocument,
   UsersForLoginPageQuery,
   UsersForLoginPageQueryVariables,
 } from 'gql/graphql';
+import { RedirectUrlQueryParam } from 'hooks/useUserRequired';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-interface IGreLoginPageProps {}
-const GreLoginPage: React.FC<IGreLoginPageProps> = ({}) => {
+interface ILoginPageProps {}
+const LoginPage: React.FC<ILoginPageProps> = ({}) => {
+  const router = useRouter();
+  const { [RedirectUrlQueryParam]: redirectUrl } = router.query;
   const [emailInput, setEmailInput] = useState('');
   const [getUsersForLoginPage, usersForLoginPageQueryResult] = useLazyQuery<
     UsersForLoginPageQuery,
     UsersForLoginPageQueryVariables
   >(UsersForLoginPageDocument);
+  const { setUser } = useGlobalContext();
   const handleEmailSubmit = async () => {
     const { data } = await getUsersForLoginPage({
       variables: {
@@ -22,7 +28,13 @@ const GreLoginPage: React.FC<IGreLoginPageProps> = ({}) => {
     });
     const users = data?.users;
     if (users && users.length > 0) {
-      console.log(users[0]);
+      const user = users[0];
+      setUser(user);
+      if (typeof redirectUrl === 'string') {
+        router.push(redirectUrl);
+      } else {
+        router.push('/');
+      }
     }
   };
   return (
@@ -67,4 +79,4 @@ const GreLoginPage: React.FC<IGreLoginPageProps> = ({}) => {
     </div>
   );
 };
-export default GreLoginPage;
+export default LoginPage;

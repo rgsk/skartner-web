@@ -1,10 +1,9 @@
-import * as React from 'react';
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import Copyright from 'components/Sample/Copyright';
 import Link from 'components/Sample/Link';
 import ProTip from 'components/Sample/ProTip';
-import Copyright from 'components/Sample/Copyright';
 
 export default function Home() {
   return (
@@ -26,6 +25,9 @@ export default function Home() {
         </Link>
         <ProTip />
         <Copyright />
+        <Link href="/gre" color="secondary">
+          Gre Page
+        </Link>
       </Box>
     </Container>
   );

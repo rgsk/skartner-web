@@ -6,6 +6,7 @@ import {
   GreWordsQueryVariables,
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/useQueryTracker';
+import useUserRequired from 'hooks/useUserRequired';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -20,6 +21,7 @@ interface IGreHistoryPageProps {}
 const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  useUserRequired();
 
   const greWordsQueryResult = useQuery<GreWordsQuery, GreWordsQueryVariables>(
     GreWordsDocument,
@@ -56,11 +58,11 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
     const { [QueryParams.page]: pageParam, [QueryParams.query]: queryParam } =
       params;
-    if (pageParam) {
+    if (typeof pageParam === 'string') {
       setCurrentPage(+pageParam);
     }
-    if (queryParam) {
-      setQueryInput(queryParam as string);
+    if (typeof queryParam === 'string') {
+      setQueryInput(queryParam);
     }
     onParamsAssignedToState();
   });
