@@ -7,7 +7,7 @@ import { useEffect, useMemo } from 'react';
 export const RedirectUrlQueryParam = 'redirect-url';
 
 const useUserRequired = () => {
-  const { user } = useGlobalContext();
+  const { user, userStatePopulated } = useGlobalContext();
   const router = useRouter();
 
   const userPresent = useMemo(() => {
@@ -17,6 +17,7 @@ const useUserRequired = () => {
   }, [user]);
 
   useEffect(() => {
+    if (!userStatePopulated) return;
     if (!userPresent) {
       const returnUrl = router.asPath;
       // we use router.replace instead of router.push
@@ -27,7 +28,7 @@ const useUserRequired = () => {
       });
       router.replace(loginPageRedirectPath);
     }
-  }, [router, userPresent]);
+  }, [userStatePopulated, router, userPresent]);
   return userPresent;
 };
 export default useUserRequired;

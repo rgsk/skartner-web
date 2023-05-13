@@ -1,9 +1,12 @@
+import UserRequired from 'components/Auth/UserRequired';
 import GrePage from 'components/GrePage/GrePage';
 
 const Page = () => {
   return (
     <div>
-      <GrePage />
+      <UserRequired>
+        <GrePage />
+      </UserRequired>
     </div>
   );
 };

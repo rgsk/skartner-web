@@ -1,25 +1,20 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useStateRef from './useStateRef';
 
 // Hook
 const useLocalStorageState = <T>(key: string, initialValue: T) => {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === 'undefined') {
-      return initialValue;
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
+  const [statePopulated, setStatePopulated] = useState(false);
+  useEffect(() => {
+    // Get from local storage by key
+    const item = window.localStorage.getItem(key);
+    if (item) {
+      setStoredValue(JSON.parse(item));
     }
-    try {
-      // Get from local storage by key
-      const item = window.localStorage.getItem(key);
-      // Parse stored json or if none return initialValue
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      // If error also return initialValue
-      console.log(error);
-      return initialValue;
-    }
-  });
+    setStatePopulated(true);
+  }, [key]);
 
   const storedValueRef = useStateRef(storedValue);
   // Return a wrapped version of useState's setter function that ...
@@ -45,7 +40,7 @@ const useLocalStorageState = <T>(key: string, initialValue: T) => {
     },
     [key, storedValueRef]
   );
-  return [storedValue, setValue] as const;
+  return [storedValue, setValue, statePopulated] as const;
 };
 
 export default useLocalStorageState;

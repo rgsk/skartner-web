@@ -8,7 +8,6 @@ import {
   SendSinglePromptQuery,
   SendSinglePromptQueryVariables,
 } from 'gql/graphql';
-import useUserRequired from 'hooks/useUserRequired';
 import { useEffect, useState } from 'react';
 const wordSearchPrompts = [
   'list meaning and 3 easy example sentences for word - {word}',
@@ -22,7 +21,6 @@ const replaceWord = (word: string, prompt: string) => {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
-  useUserRequired();
   const sendSinglePromptQueryResult = useQuery<
     SendSinglePromptQuery,
     SendSinglePromptQueryVariables

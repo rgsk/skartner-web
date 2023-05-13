@@ -6,12 +6,14 @@ import useLocalStorageState from 'hooks/useLocalStorageState';
 import { createContext, useContext } from 'react';
 
 const useGlobalContextValue = () => {
-  const [user, setUser] = useLocalStorageState<
+  const [user, setUser, userStatePopulated] = useLocalStorageState<
     UsersForLoginPageQuery['users'][number] | undefined | null
   >(LocalStorageKeys.user, undefined);
+
   return {
     user,
     setUser,
+    userStatePopulated,
   };
 };
 

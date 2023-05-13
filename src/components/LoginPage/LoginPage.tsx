@@ -6,9 +6,9 @@ import {
   UsersForLoginPageQuery,
   UsersForLoginPageQueryVariables,
 } from 'gql/graphql';
-import { RedirectUrlQueryParam } from 'hooks/useUserRequired';
+import { RedirectUrlQueryParam } from 'hooks/auth/useUserRequired';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 interface ILoginPageProps {}
 const LoginPage: React.FC<ILoginPageProps> = ({}) => {
@@ -20,7 +20,8 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
     UsersForLoginPageQueryVariables
   >(UsersForLoginPageDocument);
   const { setUser } = useGlobalContext();
-  const handleEmailSubmit = async () => {
+  const handleEmailSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
     const { data } = await getUsersForLoginPage({
       variables: {
         where: { email: { equals: emailInput } },
@@ -52,33 +53,35 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
           height: '70vh',
         }}
       >
-        <TextField
-          label="Email"
-          variant="outlined"
-          value={emailInput}
-          onChange={(e) => {
-            setEmailInput(e.target.value);
-          }}
-          sx={{
-            width: '400px',
-            maxWidth: '90vw',
-          }}
-        />
-        <Box sx={{ mt: 4 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleEmailSubmit}
-            disabled={usersForLoginPageQueryResult.loading}
-            startIcon={
-              usersForLoginPageQueryResult.loading ? (
-                <CircularProgress size={24} />
-              ) : null
-            }
-          >
-            Submit
-          </Button>
-        </Box>
+        <form onSubmit={handleEmailSubmit}>
+          <TextField
+            label="Email"
+            variant="outlined"
+            value={emailInput}
+            onChange={(e) => {
+              setEmailInput(e.target.value);
+            }}
+            sx={{
+              width: '400px',
+              maxWidth: '90vw',
+            }}
+          />
+          <Box sx={{ mt: 4 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={usersForLoginPageQueryResult.loading}
+              startIcon={
+                usersForLoginPageQueryResult.loading ? (
+                  <CircularProgress size={24} />
+                ) : null
+              }
+            >
+              Submit
+            </Button>
+          </Box>
+        </form>
       </Box>
     </div>
   );
