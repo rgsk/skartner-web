@@ -1,6 +1,15 @@
-import { Box, Button, CircularProgress, TextField } from '@mui/material';
+import { Edit } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  TextField,
+} from '@mui/material';
+import { useGlobalContext } from 'context/GlobalContext';
 import {
   useCreateGreWordMutation,
+  useGreWordSearchPromptInputsQuery,
   useSendSinglePromptLazyQuery,
 } from 'gql/graphql';
 import { useState } from 'react';
@@ -17,6 +26,20 @@ const replaceWord = (word: string, prompt: string) => {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
+  const { user } = useGlobalContext();
+  const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
+    useState(false);
+  const greWordSearchPromptInputsQueryResult =
+    useGreWordSearchPromptInputsQuery({
+      variables: {
+        where: {
+          userId: {
+            equals: user!.id,
+          },
+        },
+      },
+      skip: !user,
+    });
   const [sendSinglePrompt, sendSinglePromptQueryResult] =
     useSendSinglePromptLazyQuery();
   const [createGreWord, createGreWordMutationResult] = useCreateGreWordMutation(
@@ -53,20 +76,33 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           }}
         />
       </Box>
-      <div>
-        {wordSearchPrompts.map((prompt, i) => (
-          <Button
-            variant="text"
-            key={i}
-            onClick={() => {
-              submitWord(wordSearchPrompts[i]);
-            }}
-          >
-            {prompt}
-          </Button>
-        ))}
-      </div>
-      <WordSearchPrompts />
+      <Box>
+        <IconButton
+          onClick={() => {
+            setModifyingWordSearchPrompts((prev) => !prev);
+          }}
+        >
+          <Edit />
+        </IconButton>
+        <Box>
+          {greWordSearchPromptInputsQueryResult.data?.greWordSearchPromptInputs.map(
+            (promptInput) => {
+              return (
+                <Button
+                  variant="text"
+                  key={promptInput.id}
+                  onClick={() => {
+                    submitWord(promptInput.text);
+                  }}
+                >
+                  {promptInput.text}
+                </Button>
+              );
+            }
+          )}
+        </Box>
+      </Box>
+      {modifyingWordSearchPrompts && <WordSearchPrompts />}
       <div className="h-[50px] mt-4">
         {sendSinglePromptQueryResult.loading && <CircularProgress />}
       </div>

@@ -77,9 +77,16 @@ const CreateWordSearchPromptForm: React.FC<
         <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <TextField
             label="Text"
-            {...register('text', { required: true })}
+            {...register('text', {
+              required: true,
+              pattern: /.*\{word\}.*/,
+            })}
             error={!!errors.text}
-            helperText={errors.text ? 'Text is required' : ''}
+            helperText={
+              errors.text
+                ? 'Text is required and must contain the string "{word}"'
+                : 'Text must contain the string "{word}"'
+            }
             sx={{ mb: 1 }}
           />
         </DialogContent>
