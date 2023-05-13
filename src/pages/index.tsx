@@ -28,6 +28,9 @@ export default function Home() {
         <Link href="/gre" color="secondary">
           Gre Page
         </Link>
+        <Link href="/gre?name=rahul&page=3" color="secondary">
+          Gre History Page
+        </Link>
       </Box>
     </Container>
   );

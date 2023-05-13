@@ -1,4 +1,5 @@
 import { useGlobalContext } from 'context/GlobalContext';
+import { addParamsToPath } from 'lib/queryParamsUtils';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
@@ -17,7 +18,10 @@ const useUserRequired = () => {
     // we use router.replace instead of router.push
     // this allows user to come back, at previous page (on which userRequired was not necassary)
     // when clicking brower back button
-    router.replace(`/login?${RedirectUrlQueryParam}=` + returnUrl);
+    const loginPageRedirectPath = addParamsToPath('/login', {
+      [RedirectUrlQueryParam]: returnUrl,
+    });
+    router.replace(loginPageRedirectPath);
   }, [router, user]);
 };
 export default useUserRequired;
