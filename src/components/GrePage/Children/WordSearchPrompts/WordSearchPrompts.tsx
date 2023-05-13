@@ -24,7 +24,7 @@ import CreateWordSearchPromptForm from './Children/CreateWordSearchPromptForm';
 import EditWordSearchPromptForm from './Children/EditWordSearchPromptForm';
 
 const WordSearchPrompts: React.FC = () => {
-  const { user, setUser, metaFields } = useGlobalContext();
+  const { user, setUser, metaFields, userParsedMeta } = useGlobalContext();
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [editedPromptInput, setEditedPromptInput] = useState<{
     id: string;
@@ -60,7 +60,9 @@ const WordSearchPrompts: React.FC = () => {
     },
   });
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(
+    !!userParsedMeta?.showDefaultGreWordSearchPromptInputs
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (user && metaFields) {
@@ -70,7 +72,7 @@ const WordSearchPrompts: React.FC = () => {
         variables: {
           id: user.id,
           meta: JSON.stringify({
-            ...JSON.parse(user.meta),
+            ...userParsedMeta,
             [metaFields.user.showDefaultGreWordSearchPromptInputs]: newValue,
           }),
         },

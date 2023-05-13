@@ -13,7 +13,7 @@ import {
   useGreWordSearchPromptInputsQuery,
   useSendSinglePromptLazyQuery,
 } from 'gql/graphql';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 
 const replaceWord = (word: string, prompt: string) => {
@@ -23,17 +23,9 @@ const replaceWord = (word: string, prompt: string) => {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
-  const { user, metaFields } = useGlobalContext();
+  const { user, userParsedMeta } = useGlobalContext();
   const { greConfiguration } = useGreContext();
-  const showDefaultGreWordSearchPromptInputs = useMemo(() => {
-    return (
-      user &&
-      metaFields &&
-      JSON.parse(user.meta)[
-        metaFields.user.showDefaultGreWordSearchPromptInputs
-      ]
-    );
-  }, [metaFields, user]);
+
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
   const greWordSearchPromptInputsQueryResult =
@@ -97,7 +89,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             flexDirection: 'column',
           }}
         >
-          {showDefaultGreWordSearchPromptInputs &&
+          {userParsedMeta?.showDefaultGreWordSearchPromptInputs &&
             greConfiguration?.defaultGreWordSearchPromptInputs.map(
               (input, i) => {
                 return (
