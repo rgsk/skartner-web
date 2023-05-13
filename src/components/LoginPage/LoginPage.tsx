@@ -30,10 +30,14 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
     if (users && users.length > 0) {
       const user = users[0];
       setUser(user);
+
+      // here we are using router.replace
+      // to ensure we get to previous page on browser back button click
+      // rather than /login page
       if (typeof redirectUrl === 'string') {
-        router.push(redirectUrl);
+        router.replace(redirectUrl);
       } else {
-        router.push('/');
+        router.replace('/');
       }
     }
   };
