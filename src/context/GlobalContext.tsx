@@ -1,7 +1,7 @@
 // context/GlobalContext.tsx
 
 import { LocalStorageKeys } from 'constants/globalConstants';
-import { UsersForLoginPageQuery } from 'gql/graphql';
+import { UsersForLoginPageQuery, useMetaFieldsQuery } from 'gql/graphql';
 import useLocalStorageState from 'hooks/utils/useLocalStorageState';
 import { createContext, useContext } from 'react';
 
@@ -10,9 +10,12 @@ const useGlobalContextValue = () => {
     UsersForLoginPageQuery['users'][number] | undefined | null
   >(LocalStorageKeys.user, undefined);
 
+  const { data: { metaFields } = {} } = useMetaFieldsQuery();
+
   return {
     user,
     setUser,
+    metaFields,
     userStatePopulated,
   };
 };

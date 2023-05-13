@@ -8,6 +8,7 @@ import theme from 'theme';
 
 import { ApolloProvider } from '@apollo/client';
 import { GlobalContextProvider } from 'context/GlobalContext';
+import { GreContextProvider } from 'context/GreContext';
 import apolloClient from 'lib/apolloClient';
 import 'styles/globals.css';
 
@@ -30,7 +31,9 @@ export default function MyApp(props: MyAppProps) {
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           <GlobalContextProvider>
-            <Component {...pageProps} />
+            <GreContextProvider>
+              <Component {...pageProps} />
+            </GreContextProvider>
           </GlobalContextProvider>
         </ThemeProvider>
       </CacheProvider>

@@ -15,3 +15,9 @@ mutation createGreWord(
     id
   }
 }
+
+query GreConfiguration {
+  greConfiguration {
+    defaultGreWordSearchPromptInputs
+  }
+}

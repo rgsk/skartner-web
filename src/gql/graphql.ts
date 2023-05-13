@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Json: any;
 };
 
 export type GptPrompt = {
@@ -24,6 +25,11 @@ export type GptPrompt = {
   input: Scalars['String'];
   response: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type GreConfiguration = {
+  __typename?: 'GreConfiguration';
+  defaultGreWordSearchPromptInputs: Array<Scalars['String']>;
 };
 
 export type GreWord = {
@@ -56,6 +62,16 @@ export type GreWordWhereInput = {
   spelling?: InputMaybe<StringFilter>;
 };
 
+export type MetaFields = {
+  __typename?: 'MetaFields';
+  user: MetaFields_User;
+};
+
+export type MetaFields_User = {
+  __typename?: 'MetaFields_User';
+  showDefaultGreWordSearchPromptInputs: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createDraft?: Maybe<Post>;
@@ -65,6 +81,7 @@ export type Mutation = {
   deleteGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   publish?: Maybe<Post>;
   updateGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
+  updateUser?: Maybe<User>;
 };
 
 
@@ -89,6 +106,7 @@ export type MutationCreateGreWordSearchPromptInputArgs = {
 
 export type MutationCreateUserArgs = {
   email: Scalars['String'];
+  meta?: InputMaybe<Scalars['Json']>;
 };
 
 
@@ -107,6 +125,13 @@ export type MutationUpdateGreWordSearchPromptInputArgs = {
   text: Scalars['String'];
 };
 
+
+export type MutationUpdateUserArgs = {
+  email?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  meta?: InputMaybe<Scalars['Json']>;
+};
+
 export type Post = {
   __typename?: 'Post';
   body?: Maybe<Scalars['String']>;
@@ -122,9 +147,11 @@ export type Query = {
   allPosts?: Maybe<Array<Maybe<Post>>>;
   drafts?: Maybe<Array<Maybe<Post>>>;
   gptPrompts?: Maybe<Array<Maybe<GptPrompt>>>;
+  greConfiguration: GreConfiguration;
   greWordSearchPromptInputs: Array<GreWordSearchPromptInput>;
   greWords: Array<GreWord>;
   greWordsCount: Scalars['Int'];
+  metaFields: MetaFields;
   posts?: Maybe<Array<Maybe<Post>>>;
   sendSinglePrompt?: Maybe<Scalars['String']>;
   users: Array<User>;
@@ -193,6 +220,7 @@ export type User = {
   email: Scalars['String'];
   greWordSearchPromptInputs: Array<GreWordSearchPromptInput>;
   id: Scalars['String'];
+  meta?: Maybe<Scalars['Json']>;
   updatedAt: Scalars['String'];
 };
 
@@ -231,6 +259,15 @@ export type DeleteGreWordSearchPromptInputMutationVariables = Exact<{
 
 export type DeleteGreWordSearchPromptInputMutation = { __typename?: 'Mutation', deleteGreWordSearchPromptInput?: { __typename?: 'GreWordSearchPromptInput', id: string } | null };
 
+export type UpdateMetaForUserMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  meta?: InputMaybe<Scalars['Json']>;
+}>;
+
+
+export type UpdateMetaForUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'User', id: string, email: string, meta?: any | null } | null };
+
 export type SendSinglePromptQueryVariables = Exact<{
   input: Scalars['String'];
 }>;
@@ -247,6 +284,11 @@ export type CreateGreWordMutationVariables = Exact<{
 
 export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord?: { __typename?: 'GreWord', id: string } | null };
 
+export type GreConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GreConfigurationQuery = { __typename?: 'Query', greConfiguration: { __typename?: 'GreConfiguration', defaultGreWordSearchPromptInputs: Array<string> } };
+
 export type GreWordsQueryVariables = Exact<{
   where?: InputMaybe<GreWordWhereInput>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -261,14 +303,14 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, email: string } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, email: string, meta?: any | null } | null };
 
 export type UsersForLoginPageQueryVariables = Exact<{
   where?: InputMaybe<UserWhereInput>;
 }>;
 
 
-export type UsersForLoginPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string }> };
+export type UsersForLoginPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, meta?: any | null }> };
 
 export type DraftsForPracticeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -282,6 +324,11 @@ export type CreateDraftMutationVariables = Exact<{
 
 
 export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __typename?: 'Post', id: string, title?: string | null, body?: string | null } | null };
+
+export type MetaFieldsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MetaFieldsQuery = { __typename?: 'Query', metaFields: { __typename?: 'MetaFields', user: { __typename?: 'MetaFields_User', showDefaultGreWordSearchPromptInputs: string } } };
 
 
 export const GreWordSearchPromptInputsDocument = gql`
@@ -424,6 +471,43 @@ export function useDeleteGreWordSearchPromptInputMutation(baseOptions?: Apollo.M
 export type DeleteGreWordSearchPromptInputMutationHookResult = ReturnType<typeof useDeleteGreWordSearchPromptInputMutation>;
 export type DeleteGreWordSearchPromptInputMutationResult = Apollo.MutationResult<DeleteGreWordSearchPromptInputMutation>;
 export type DeleteGreWordSearchPromptInputMutationOptions = Apollo.BaseMutationOptions<DeleteGreWordSearchPromptInputMutation, DeleteGreWordSearchPromptInputMutationVariables>;
+export const UpdateMetaForUserDocument = gql`
+    mutation updateMetaForUser($id: String, $email: String, $meta: Json) {
+  updateUser(id: $id, email: $email, meta: $meta) {
+    id
+    email
+    meta
+  }
+}
+    `;
+export type UpdateMetaForUserMutationFn = Apollo.MutationFunction<UpdateMetaForUserMutation, UpdateMetaForUserMutationVariables>;
+
+/**
+ * __useUpdateMetaForUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateMetaForUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMetaForUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMetaForUserMutation, { data, loading, error }] = useUpdateMetaForUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      email: // value for 'email'
+ *      meta: // value for 'meta'
+ *   },
+ * });
+ */
+export function useUpdateMetaForUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMetaForUserMutation, UpdateMetaForUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMetaForUserMutation, UpdateMetaForUserMutationVariables>(UpdateMetaForUserDocument, options);
+      }
+export type UpdateMetaForUserMutationHookResult = ReturnType<typeof useUpdateMetaForUserMutation>;
+export type UpdateMetaForUserMutationResult = Apollo.MutationResult<UpdateMetaForUserMutation>;
+export type UpdateMetaForUserMutationOptions = Apollo.BaseMutationOptions<UpdateMetaForUserMutation, UpdateMetaForUserMutationVariables>;
 export const SendSinglePromptDocument = gql`
     query sendSinglePrompt($input: String!) {
   sendSinglePrompt(input: $input)
@@ -496,6 +580,40 @@ export function useCreateGreWordMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateGreWordMutationHookResult = ReturnType<typeof useCreateGreWordMutation>;
 export type CreateGreWordMutationResult = Apollo.MutationResult<CreateGreWordMutation>;
 export type CreateGreWordMutationOptions = Apollo.BaseMutationOptions<CreateGreWordMutation, CreateGreWordMutationVariables>;
+export const GreConfigurationDocument = gql`
+    query GreConfiguration {
+  greConfiguration {
+    defaultGreWordSearchPromptInputs
+  }
+}
+    `;
+
+/**
+ * __useGreConfigurationQuery__
+ *
+ * To run a query within a React component, call `useGreConfigurationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGreConfigurationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGreConfigurationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGreConfigurationQuery(baseOptions?: Apollo.QueryHookOptions<GreConfigurationQuery, GreConfigurationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GreConfigurationQuery, GreConfigurationQueryVariables>(GreConfigurationDocument, options);
+      }
+export function useGreConfigurationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GreConfigurationQuery, GreConfigurationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GreConfigurationQuery, GreConfigurationQueryVariables>(GreConfigurationDocument, options);
+        }
+export type GreConfigurationQueryHookResult = ReturnType<typeof useGreConfigurationQuery>;
+export type GreConfigurationLazyQueryHookResult = ReturnType<typeof useGreConfigurationLazyQuery>;
+export type GreConfigurationQueryResult = Apollo.QueryResult<GreConfigurationQuery, GreConfigurationQueryVariables>;
 export const GreWordsDocument = gql`
     query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
   greWords(where: $where, skip: $skip, take: $take) {
@@ -545,6 +663,7 @@ export const CreateUserDocument = gql`
   createUser(email: $email) {
     id
     email
+    meta
   }
 }
     `;
@@ -579,6 +698,7 @@ export const UsersForLoginPageDocument = gql`
   users(where: $where) {
     id
     email
+    meta
   }
 }
     `;
@@ -683,3 +803,39 @@ export function useCreateDraftMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateDraftMutationHookResult = ReturnType<typeof useCreateDraftMutation>;
 export type CreateDraftMutationResult = Apollo.MutationResult<CreateDraftMutation>;
 export type CreateDraftMutationOptions = Apollo.BaseMutationOptions<CreateDraftMutation, CreateDraftMutationVariables>;
+export const MetaFieldsDocument = gql`
+    query metaFields {
+  metaFields {
+    user {
+      showDefaultGreWordSearchPromptInputs
+    }
+  }
+}
+    `;
+
+/**
+ * __useMetaFieldsQuery__
+ *
+ * To run a query within a React component, call `useMetaFieldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMetaFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMetaFieldsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMetaFieldsQuery(baseOptions?: Apollo.QueryHookOptions<MetaFieldsQuery, MetaFieldsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MetaFieldsQuery, MetaFieldsQueryVariables>(MetaFieldsDocument, options);
+      }
+export function useMetaFieldsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MetaFieldsQuery, MetaFieldsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MetaFieldsQuery, MetaFieldsQueryVariables>(MetaFieldsDocument, options);
+        }
+export type MetaFieldsQueryHookResult = ReturnType<typeof useMetaFieldsQuery>;
+export type MetaFieldsLazyQueryHookResult = ReturnType<typeof useMetaFieldsLazyQuery>;
+export type MetaFieldsQueryResult = Apollo.QueryResult<MetaFieldsQuery, MetaFieldsQueryVariables>;

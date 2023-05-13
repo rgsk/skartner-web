@@ -7,17 +7,14 @@ import {
   TextField,
 } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
+import { useGreContext } from 'context/GreContext';
 import {
   useCreateGreWordMutation,
   useGreWordSearchPromptInputsQuery,
   useSendSinglePromptLazyQuery,
 } from 'gql/graphql';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
-const wordSearchPrompts = [
-  'list meaning and 3 easy example sentences for word - {word}',
-  'list meaning in simple words and 3 easy example sentences for word - {word}',
-];
 
 const replaceWord = (word: string, prompt: string) => {
   return prompt.replace(/{word}/g, word);
@@ -26,7 +23,17 @@ const replaceWord = (word: string, prompt: string) => {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
-  const { user } = useGlobalContext();
+  const { user, metaFields } = useGlobalContext();
+  const { greConfiguration } = useGreContext();
+  const showDefaultGreWordSearchPromptInputs = useMemo(() => {
+    return (
+      user &&
+      metaFields &&
+      JSON.parse(user.meta)[
+        metaFields.user.showDefaultGreWordSearchPromptInputs
+      ]
+    );
+  }, [metaFields, user]);
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
   const greWordSearchPromptInputsQueryResult =
@@ -71,7 +78,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              submitWord(wordSearchPrompts[0]);
+              // submitWord(greConfiguration?.defaultGreWordSearchPromptInputs[0]);
             }
           }}
         />
@@ -84,7 +91,28 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
         >
           <Edit />
         </IconButton>
-        <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {showDefaultGreWordSearchPromptInputs &&
+            greConfiguration?.defaultGreWordSearchPromptInputs.map(
+              (input, i) => {
+                return (
+                  <Button
+                    variant="text"
+                    key={i}
+                    onClick={() => {
+                      submitWord(input);
+                    }}
+                  >
+                    {input}
+                  </Button>
+                );
+              }
+            )}
           {greWordSearchPromptInputsQueryResult.data?.greWordSearchPromptInputs.map(
             (promptInput) => {
               return (

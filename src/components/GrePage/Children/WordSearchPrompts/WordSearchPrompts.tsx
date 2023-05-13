@@ -2,6 +2,8 @@ import { Add, Delete, Edit } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Checkbox,
+  FormControlLabel,
   IconButton,
   Paper,
   Table,
@@ -15,13 +17,14 @@ import { useGlobalContext } from 'context/GlobalContext';
 import {
   useDeleteGreWordSearchPromptInputMutation,
   useGreWordSearchPromptInputsQuery,
+  useUpdateMetaForUserMutation,
 } from 'gql/graphql';
 import { useState } from 'react';
 import CreateWordSearchPromptForm from './Children/CreateWordSearchPromptForm';
 import EditWordSearchPromptForm from './Children/EditWordSearchPromptForm';
 
 const WordSearchPrompts: React.FC = () => {
-  const { user } = useGlobalContext();
+  const { user, setUser, metaFields } = useGlobalContext();
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [editedPromptInput, setEditedPromptInput] = useState<{
     id: string;
@@ -56,9 +59,36 @@ const WordSearchPrompts: React.FC = () => {
       }
     },
   });
+  const [updateMetaForUser] = useUpdateMetaForUserMutation();
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (user && metaFields) {
+      const newValue = event.target.checked;
+      setChecked(newValue);
+      updateMetaForUser({
+        variables: {
+          id: user.id,
+          meta: JSON.stringify({
+            ...JSON.parse(user.meta),
+            [metaFields.user.showDefaultGreWordSearchPromptInputs]: newValue,
+          }),
+        },
+      }).then(({ data }) => {
+        const updatedUser = data?.updateUser;
+        if (updatedUser) {
+          setUser(updatedUser);
+        }
+      });
+    }
+  };
 
   return (
     <Box>
+      <FormControlLabel
+        control={<Checkbox checked={checked} onChange={handleChange} />}
+        label="Show Default GreWordSearchPromptInputs"
+      />
       <CreateWordSearchPromptForm
         open={createFormOpen}
         onClose={() => {
