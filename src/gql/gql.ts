@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "query greWordSearchPromptInputs($where: GreWordSearchPromptInputWhereInput) {\n  greWordSearchPromptInputs(where: $where) {\n    id\n    text\n    userId\n  }\n}": types.GreWordSearchPromptInputsDocument,
     "query sendSinglePrompt($input: String!) {\n  sendSinglePrompt(input: $input)\n}\n\nmutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!) {\n  createGreWord(\n    spelling: $spelling\n    promptInput: $promptInput\n    promptResponse: $promptResponse\n  ) {\n    id\n  }\n}": types.SendSinglePromptDocument,
     "query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {\n  greWords(where: $where, skip: $skip, take: $take) {\n    id\n    spelling\n    gptPrompts {\n      id\n      input\n      response\n    }\n  }\n  greWordsCount(where: $where)\n}": types.GreWordsDocument,
     "mutation createUser($email: String!) {\n  createUser(email: $email) {\n    id\n    email\n  }\n}\n\nquery usersForLoginPage($where: UserWhereInput) {\n  users(where: $where) {\n    id\n    email\n  }\n}": types.CreateUserDocument,
@@ -33,6 +34,10 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query greWordSearchPromptInputs($where: GreWordSearchPromptInputWhereInput) {\n  greWordSearchPromptInputs(where: $where) {\n    id\n    text\n    userId\n  }\n}"): (typeof documents)["query greWordSearchPromptInputs($where: GreWordSearchPromptInputWhereInput) {\n  greWordSearchPromptInputs(where: $where) {\n    id\n    text\n    userId\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

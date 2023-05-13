@@ -44,6 +44,12 @@ export type GreWordSearchPromptInput = {
   userId: Scalars['String'];
 };
 
+export type GreWordSearchPromptInputWhereInput = {
+  id?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
 export type GreWordWhereInput = {
   id?: InputMaybe<StringFilter>;
   spelling?: InputMaybe<StringFilter>;
@@ -126,6 +132,7 @@ export type QueryGptPromptsArgs = {
 export type QueryGreWordSearchPromptInputsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<GreWordSearchPromptInputWhereInput>;
 };
 
 
@@ -180,6 +187,13 @@ export type UserWhereInput = {
   id?: InputMaybe<StringFilter>;
 };
 
+export type GreWordSearchPromptInputsQueryVariables = Exact<{
+  where?: InputMaybe<GreWordSearchPromptInputWhereInput>;
+}>;
+
+
+export type GreWordSearchPromptInputsQuery = { __typename?: 'Query', greWordSearchPromptInputs: Array<{ __typename?: 'GreWordSearchPromptInput', id: string, text: string, userId: string }> };
+
 export type SendSinglePromptQueryVariables = Exact<{
   input: Scalars['String'];
 }>;
@@ -233,6 +247,7 @@ export type CreateDraftMutationVariables = Exact<{
 export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __typename?: 'Post', id: string, title?: string | null, body?: string | null } | null };
 
 
+export const GreWordSearchPromptInputsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"greWordSearchPromptInputs"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"GreWordSearchPromptInputWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"greWordSearchPromptInputs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>;
 export const SendSinglePromptDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"sendSinglePrompt"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sendSinglePrompt"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<SendSinglePromptQuery, SendSinglePromptQueryVariables>;
 export const CreateGreWordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createGreWord"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"spelling"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"promptInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"promptResponse"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createGreWord"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"spelling"},"value":{"kind":"Variable","name":{"kind":"Name","value":"spelling"}}},{"kind":"Argument","name":{"kind":"Name","value":"promptInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"promptInput"}}},{"kind":"Argument","name":{"kind":"Name","value":"promptResponse"},"value":{"kind":"Variable","name":{"kind":"Name","value":"promptResponse"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateGreWordMutation, CreateGreWordMutationVariables>;
 export const GreWordsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"greWords"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"GreWordWhereInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"take"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"greWords"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}},{"kind":"Argument","name":{"kind":"Name","value":"take"},"value":{"kind":"Variable","name":{"kind":"Name","value":"take"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"spelling"}},{"kind":"Field","name":{"kind":"Name","value":"gptPrompts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"input"}},{"kind":"Field","name":{"kind":"Name","value":"response"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"greWordsCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}]}]}}]} as unknown as DocumentNode<GreWordsQuery, GreWordsQueryVariables>;

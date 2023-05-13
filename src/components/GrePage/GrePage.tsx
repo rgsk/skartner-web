@@ -8,7 +8,8 @@ import {
   SendSinglePromptQuery,
   SendSinglePromptQueryVariables,
 } from 'gql/graphql';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 const wordSearchPrompts = [
   'list meaning and 3 easy example sentences for word - {word}',
   'list meaning in simple words and 3 easy example sentences for word - {word}',
@@ -41,9 +42,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       });
     }
   };
-  useEffect(() => {
-    console.log({ wordInput });
-  }, [wordInput]);
+
   return (
     <div className="p-4">
       <Box>
@@ -74,6 +73,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           </Button>
         ))}
       </div>
+      <WordSearchPrompts />
       <div className="h-[50px] mt-4">
         {sendSinglePromptQueryResult.loading && <CircularProgress />}
       </div>
