@@ -1,13 +1,8 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import {
-  CreateUserDocument,
-  CreateUserMutation,
-  CreateUserMutationVariables,
-  UsersForLoginPageDocument,
-  UsersForLoginPageQuery,
-  UsersForLoginPageQueryVariables,
+  useCreateUserMutation,
+  useUsersForLoginPageLazyQuery,
 } from 'gql/graphql';
 import { RedirectUrlQueryParam } from 'hooks/auth/useUserRequired';
 import { useRouter } from 'next/router';
@@ -18,16 +13,11 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
   const router = useRouter();
   const { [RedirectUrlQueryParam]: redirectUrl } = router.query;
   const [emailInput, setEmailInput] = useState('');
-  const [getUsersForLoginPage, usersForLoginPageQueryResult] = useLazyQuery<
-    UsersForLoginPageQuery,
-    UsersForLoginPageQueryVariables
-  >(UsersForLoginPageDocument);
+  const [getUsersForLoginPage, usersForLoginPageQueryResult] =
+    useUsersForLoginPageLazyQuery();
   const { setUser } = useGlobalContext();
 
-  const [createUser, createUserMutationResult] = useMutation<
-    CreateUserMutation,
-    CreateUserMutationVariables
-  >(CreateUserDocument);
+  const [createUser, createUserMutationResult] = useCreateUserMutation();
 
   const redirectUser = () => {
     // here we are using router.replace

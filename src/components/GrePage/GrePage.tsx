@@ -1,12 +1,7 @@
-import { useMutation, useQuery } from '@apollo/client';
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import {
-  CreateGreWordDocument,
-  CreateGreWordMutation,
-  CreateGreWordMutationVariables,
-  SendSinglePromptDocument,
-  SendSinglePromptQuery,
-  SendSinglePromptQueryVariables,
+  useCreateGreWordMutation,
+  useSendSinglePromptLazyQuery,
 } from 'gql/graphql';
 import { useState } from 'react';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
@@ -22,23 +17,21 @@ const replaceWord = (word: string, prompt: string) => {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
-  const sendSinglePromptQueryResult = useQuery<
-    SendSinglePromptQuery,
-    SendSinglePromptQueryVariables
-  >(SendSinglePromptDocument);
-  const [createGreWordMutationFunction, createGreWordMutationResult] =
-    useMutation<CreateGreWordMutation, CreateGreWordMutationVariables>(
-      CreateGreWordDocument,
-      {
-        onCompleted: (data) => {
-          console.log(data);
-        },
-      }
-    );
+  const [sendSinglePrompt, sendSinglePromptQueryResult] =
+    useSendSinglePromptLazyQuery();
+  const [createGreWord, createGreWordMutationResult] = useCreateGreWordMutation(
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+    }
+  );
   const submitWord = async (prompt: string) => {
     if (wordInput) {
-      sendSinglePromptQueryResult.refetch({
-        input: replaceWord(wordInput, prompt),
+      sendSinglePrompt({
+        variables: {
+          input: replaceWord(wordInput, prompt),
+        },
       });
     }
   };
@@ -88,7 +81,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             sendSinglePromptQueryResult.variables?.input &&
             sendSinglePromptQueryResult.data?.sendSinglePrompt
           ) {
-            createGreWordMutationFunction({
+            createGreWord({
               variables: {
                 spelling: wordInput,
                 promptInput: sendSinglePromptQueryResult.variables?.input,

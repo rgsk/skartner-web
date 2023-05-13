@@ -1,10 +1,5 @@
-import { useQuery } from '@apollo/client';
 import { Box, Button, CircularProgress } from '@mui/material';
-import {
-  GreWordsDocument,
-  GreWordsQuery,
-  GreWordsQueryVariables,
-} from 'gql/graphql';
+import { useGreWordsQuery } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useEffect, useMemo, useState } from 'react';
@@ -21,16 +16,13 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const greWordsQueryResult = useQuery<GreWordsQuery, GreWordsQueryVariables>(
-    GreWordsDocument,
-    {
-      variables: {
-        where: { spelling: { startsWith: queryInput } },
-        skip: (currentPage - 1) * itemsPerPage,
-        take: itemsPerPage,
-      },
-    }
-  );
+  const greWordsQueryResult = useGreWordsQuery({
+    variables: {
+      where: { spelling: { startsWith: queryInput } },
+      skip: (currentPage - 1) * itemsPerPage,
+      take: itemsPerPage,
+    },
+  });
 
   const totalPages = useMemo(
     () =>
