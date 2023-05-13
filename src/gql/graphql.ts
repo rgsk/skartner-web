@@ -60,7 +60,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createDraft?: Maybe<Post>;
   createGreWord?: Maybe<GreWord>;
-  createGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
+  createGreWordSearchPromptInput: GreWordSearchPromptInput;
   createUser?: Maybe<User>;
   deleteGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   publish?: Maybe<Post>;
@@ -214,7 +214,7 @@ export type CreateGreWordSearchPromptInputMutationVariables = Exact<{
 }>;
 
 
-export type CreateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', createGreWordSearchPromptInput?: { __typename?: 'GreWordSearchPromptInput', id: string, text: string } | null };
+export type CreateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', createGreWordSearchPromptInput: { __typename?: 'GreWordSearchPromptInput', id: string, text: string } };
 
 export type UpdateGreWordSearchPromptInputMutationVariables = Exact<{
   text: Scalars['String'];
