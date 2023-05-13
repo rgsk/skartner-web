@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import {
   CreateGreWordDocument,
   CreateGreWordMutation,
@@ -8,7 +8,7 @@ import {
   SendSinglePromptQuery,
   SendSinglePromptQueryVariables,
 } from 'gql/graphql';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 const wordSearchPrompts = [
   'list meaning and 3 easy example sentences for word - {word}',
   'list meaning in simple words and 3 easy example sentences for word - {word}',
@@ -41,11 +41,15 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       });
     }
   };
+  useEffect(() => {
+    console.log({ wordInput });
+  }, [wordInput]);
   return (
     <div className="p-4">
-      <p>
-        word:{' '}
-        <input
+      <Box>
+        <TextField
+          label="Word"
+          variant="outlined"
           value={wordInput}
           onChange={(e) => {
             setWordInput(e.target.value);
@@ -56,17 +60,18 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             }
           }}
         />
-      </p>
+      </Box>
       <div>
         {wordSearchPrompts.map((prompt, i) => (
-          <button
+          <Button
+            variant="text"
             key={i}
             onClick={() => {
               submitWord(wordSearchPrompts[i]);
             }}
           >
             {prompt}
-          </button>
+          </Button>
         ))}
       </div>
       <div className="h-[50px] mt-4">

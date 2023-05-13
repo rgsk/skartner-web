@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"yarn codegen:watch\" \"next dev\"",
+    "dev": "concurrently \"yarn codegen:watch\" \"next dev -p 3001\"",
     "build": "next build",
     "type-check": "tsc",
     "prestart": "yarn codegen && yarn type-check",

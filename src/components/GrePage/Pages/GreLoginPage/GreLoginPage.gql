@@ -1,0 +1,13 @@
+mutation createUser($email: String!) {
+  createUser(email: $email) {
+    id
+    email
+  }
+}
+
+query usersForLoginPage($where: UserWhereInput) {
+  users(where: $where) {
+    id
+    email
+  }
+}
