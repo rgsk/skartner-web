@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+import useStateRef from './useStateRef';
 
 // Hook
 const useLocalStorageState = <T>(key: string, initialValue: T) => {
@@ -20,8 +21,7 @@ const useLocalStorageState = <T>(key: string, initialValue: T) => {
     }
   });
 
-  const storedValueRef = useRef(storedValue);
-  storedValueRef.current = storedValue;
+  const storedValueRef = useStateRef(storedValue);
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
   const setValue = useCallback(
