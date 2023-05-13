@@ -1,5 +1,6 @@
 // context/GlobalContext.tsx
 
+import { LocalStorageKeys } from 'constants/globalConstants';
 import { UsersForLoginPageQuery } from 'gql/graphql';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import { createContext, useContext } from 'react';
@@ -7,7 +8,7 @@ import { createContext, useContext } from 'react';
 const useGlobalContextValue = () => {
   const [user, setUser] = useLocalStorageState<
     UsersForLoginPageQuery['users'][number] | undefined | null
-  >('user', undefined);
+  >(LocalStorageKeys.user, undefined);
   return {
     user,
     setUser,
