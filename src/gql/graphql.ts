@@ -62,7 +62,9 @@ export type Mutation = {
   createGreWord?: Maybe<GreWord>;
   createGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   createUser?: Maybe<User>;
+  deleteGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   publish?: Maybe<Post>;
+  updateGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
 };
 
 
@@ -90,8 +92,19 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteGreWordSearchPromptInputArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationPublishArgs = {
   draftId: Scalars['String'];
+};
+
+
+export type MutationUpdateGreWordSearchPromptInputArgs = {
+  id: Scalars['String'];
+  text: Scalars['String'];
 };
 
 export type Post = {
@@ -195,6 +208,29 @@ export type GreWordSearchPromptInputsQueryVariables = Exact<{
 
 export type GreWordSearchPromptInputsQuery = { __typename?: 'Query', greWordSearchPromptInputs: Array<{ __typename?: 'GreWordSearchPromptInput', id: string, text: string, userId: string }> };
 
+export type CreateGreWordSearchPromptInputMutationVariables = Exact<{
+  text: Scalars['String'];
+  userId: Scalars['String'];
+}>;
+
+
+export type CreateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', createGreWordSearchPromptInput?: { __typename?: 'GreWordSearchPromptInput', id: string, text: string } | null };
+
+export type UpdateGreWordSearchPromptInputMutationVariables = Exact<{
+  text: Scalars['String'];
+  id: Scalars['String'];
+}>;
+
+
+export type UpdateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', updateGreWordSearchPromptInput?: { __typename?: 'GreWordSearchPromptInput', id: string, text: string } | null };
+
+export type DeleteGreWordSearchPromptInputMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteGreWordSearchPromptInputMutation = { __typename?: 'Mutation', deleteGreWordSearchPromptInput?: { __typename?: 'GreWordSearchPromptInput', id: string } | null };
+
 export type SendSinglePromptQueryVariables = Exact<{
   input: Scalars['String'];
 }>;
@@ -285,6 +321,109 @@ export function useGreWordSearchPromptInputsLazyQuery(baseOptions?: Apollo.LazyQ
 export type GreWordSearchPromptInputsQueryHookResult = ReturnType<typeof useGreWordSearchPromptInputsQuery>;
 export type GreWordSearchPromptInputsLazyQueryHookResult = ReturnType<typeof useGreWordSearchPromptInputsLazyQuery>;
 export type GreWordSearchPromptInputsQueryResult = Apollo.QueryResult<GreWordSearchPromptInputsQuery, GreWordSearchPromptInputsQueryVariables>;
+export const CreateGreWordSearchPromptInputDocument = gql`
+    mutation createGreWordSearchPromptInput($text: String!, $userId: String!) {
+  createGreWordSearchPromptInput(text: $text, userId: $userId) {
+    id
+    text
+  }
+}
+    `;
+export type CreateGreWordSearchPromptInputMutationFn = Apollo.MutationFunction<CreateGreWordSearchPromptInputMutation, CreateGreWordSearchPromptInputMutationVariables>;
+
+/**
+ * __useCreateGreWordSearchPromptInputMutation__
+ *
+ * To run a mutation, you first call `useCreateGreWordSearchPromptInputMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGreWordSearchPromptInputMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGreWordSearchPromptInputMutation, { data, loading, error }] = useCreateGreWordSearchPromptInputMutation({
+ *   variables: {
+ *      text: // value for 'text'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useCreateGreWordSearchPromptInputMutation(baseOptions?: Apollo.MutationHookOptions<CreateGreWordSearchPromptInputMutation, CreateGreWordSearchPromptInputMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGreWordSearchPromptInputMutation, CreateGreWordSearchPromptInputMutationVariables>(CreateGreWordSearchPromptInputDocument, options);
+      }
+export type CreateGreWordSearchPromptInputMutationHookResult = ReturnType<typeof useCreateGreWordSearchPromptInputMutation>;
+export type CreateGreWordSearchPromptInputMutationResult = Apollo.MutationResult<CreateGreWordSearchPromptInputMutation>;
+export type CreateGreWordSearchPromptInputMutationOptions = Apollo.BaseMutationOptions<CreateGreWordSearchPromptInputMutation, CreateGreWordSearchPromptInputMutationVariables>;
+export const UpdateGreWordSearchPromptInputDocument = gql`
+    mutation updateGreWordSearchPromptInput($text: String!, $id: String!) {
+  updateGreWordSearchPromptInput(text: $text, id: $id) {
+    id
+    text
+  }
+}
+    `;
+export type UpdateGreWordSearchPromptInputMutationFn = Apollo.MutationFunction<UpdateGreWordSearchPromptInputMutation, UpdateGreWordSearchPromptInputMutationVariables>;
+
+/**
+ * __useUpdateGreWordSearchPromptInputMutation__
+ *
+ * To run a mutation, you first call `useUpdateGreWordSearchPromptInputMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGreWordSearchPromptInputMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGreWordSearchPromptInputMutation, { data, loading, error }] = useUpdateGreWordSearchPromptInputMutation({
+ *   variables: {
+ *      text: // value for 'text'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateGreWordSearchPromptInputMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGreWordSearchPromptInputMutation, UpdateGreWordSearchPromptInputMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGreWordSearchPromptInputMutation, UpdateGreWordSearchPromptInputMutationVariables>(UpdateGreWordSearchPromptInputDocument, options);
+      }
+export type UpdateGreWordSearchPromptInputMutationHookResult = ReturnType<typeof useUpdateGreWordSearchPromptInputMutation>;
+export type UpdateGreWordSearchPromptInputMutationResult = Apollo.MutationResult<UpdateGreWordSearchPromptInputMutation>;
+export type UpdateGreWordSearchPromptInputMutationOptions = Apollo.BaseMutationOptions<UpdateGreWordSearchPromptInputMutation, UpdateGreWordSearchPromptInputMutationVariables>;
+export const DeleteGreWordSearchPromptInputDocument = gql`
+    mutation deleteGreWordSearchPromptInput($id: String!) {
+  deleteGreWordSearchPromptInput(id: $id) {
+    id
+  }
+}
+    `;
+export type DeleteGreWordSearchPromptInputMutationFn = Apollo.MutationFunction<DeleteGreWordSearchPromptInputMutation, DeleteGreWordSearchPromptInputMutationVariables>;
+
+/**
+ * __useDeleteGreWordSearchPromptInputMutation__
+ *
+ * To run a mutation, you first call `useDeleteGreWordSearchPromptInputMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGreWordSearchPromptInputMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteGreWordSearchPromptInputMutation, { data, loading, error }] = useDeleteGreWordSearchPromptInputMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteGreWordSearchPromptInputMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGreWordSearchPromptInputMutation, DeleteGreWordSearchPromptInputMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteGreWordSearchPromptInputMutation, DeleteGreWordSearchPromptInputMutationVariables>(DeleteGreWordSearchPromptInputDocument, options);
+      }
+export type DeleteGreWordSearchPromptInputMutationHookResult = ReturnType<typeof useDeleteGreWordSearchPromptInputMutation>;
+export type DeleteGreWordSearchPromptInputMutationResult = Apollo.MutationResult<DeleteGreWordSearchPromptInputMutation>;
+export type DeleteGreWordSearchPromptInputMutationOptions = Apollo.BaseMutationOptions<DeleteGreWordSearchPromptInputMutation, DeleteGreWordSearchPromptInputMutationVariables>;
 export const SendSinglePromptDocument = gql`
     query sendSinglePrompt($input: String!) {
   sendSinglePrompt(input: $input)
