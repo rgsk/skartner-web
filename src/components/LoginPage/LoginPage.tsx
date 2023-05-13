@@ -1,7 +1,10 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import {
+  CreateUserDocument,
+  CreateUserMutation,
+  CreateUserMutationVariables,
   UsersForLoginPageDocument,
   UsersForLoginPageQuery,
   UsersForLoginPageQueryVariables,
@@ -20,6 +23,23 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
     UsersForLoginPageQueryVariables
   >(UsersForLoginPageDocument);
   const { setUser } = useGlobalContext();
+
+  const [createUser, createUserMutationResult] = useMutation<
+    CreateUserMutation,
+    CreateUserMutationVariables
+  >(CreateUserDocument);
+
+  const redirectUser = () => {
+    // here we are using router.replace
+    // to ensure we get to previous page on browser back button click
+    // rather than /login page
+    if (typeof redirectUrl === 'string') {
+      router.replace(redirectUrl);
+    } else {
+      router.replace('/');
+    }
+  };
+
   const handleEmailSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     const { data } = await getUsersForLoginPage({
@@ -31,14 +51,17 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
     if (users && users.length > 0) {
       const user = users[0];
       setUser(user);
-
-      // here we are using router.replace
-      // to ensure we get to previous page on browser back button click
-      // rather than /login page
-      if (typeof redirectUrl === 'string') {
-        router.replace(redirectUrl);
-      } else {
-        router.replace('/');
+      redirectUser();
+    } else {
+      const result = await createUser({
+        variables: {
+          email: emailInput,
+        },
+      });
+      const user = result.data?.createUser;
+      if (user) {
+        setUser(user);
+        redirectUser();
       }
     }
   };
