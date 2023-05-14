@@ -14,6 +14,7 @@ import {
   useSendSinglePromptLazyQuery,
 } from 'gql/graphql';
 import { useState } from 'react';
+import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 
 const replaceWord = (word: string, prompt: string) => {
@@ -79,6 +80,13 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                 );
               }
             }
+          }}
+        />
+      </Box>
+      <Box sx={{ mt: 2 }}>
+        <CustomPromptInput
+          submit={({ text }) => {
+            submitWord(text);
           }}
         />
       </Box>
