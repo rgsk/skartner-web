@@ -116,8 +116,17 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       <div>
         {greWordsQueryResult.data?.greWords.map((greWord) => {
           return (
-            <Box key={greWord.id} sx={{ borderTop: '2px solid red', mt: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              key={greWord.id}
+              sx={{ borderTop: '2px solid red', mt: 2, pt: 2 }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
                 <Typography fontWeight={'bold'} fontSize={20}>
                   {greWord.spelling}
                 </Typography>
@@ -138,6 +147,8 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
                       <Box
                         sx={{
                           display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
                         }}
                       >
                         <p>Input: {gptPrompt.input}</p>
@@ -173,7 +184,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
                           <Delete />
                         </IconButton>
                       </Box>
-                      <p className="whitespace-pre-line border border-solid p-2 border-green-300">
+                      <p className="whitespace-pre-line border border-solid p-2 border-green-500">
                         {gptPrompt.response}
                       </p>
                     </div>
