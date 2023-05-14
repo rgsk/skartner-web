@@ -1,4 +1,5 @@
 import { Box, Button, CircularProgress } from '@mui/material';
+import { useGlobalContext } from 'context/GlobalContext';
 import { useGreWordsQuery } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
@@ -13,12 +14,16 @@ const itemsPerPage = 5;
 
 interface IGreHistoryPageProps {}
 const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
+  const { user } = useGlobalContext();
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const greWordsQueryResult = useGreWordsQuery({
     variables: {
-      where: { spelling: { startsWith: queryInput } },
+      where: {
+        spelling: { startsWith: queryInput },
+        userId: { equals: user!.id },
+      },
       skip: (currentPage - 1) * itemsPerPage,
       take: itemsPerPage,
     },
@@ -82,7 +87,9 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
                   return (
                     <div key={gptPrompt.id}>
                       <p>Input: {gptPrompt.input}</p>
-                      <p>Response: {gptPrompt.response}</p>
+                      <p className="whitespace-pre-line">
+                        {gptPrompt.response}
+                      </p>
                     </div>
                   );
                 })}

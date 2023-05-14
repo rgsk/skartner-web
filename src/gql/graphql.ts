@@ -25,6 +25,8 @@ export type GptPrompt = {
   input: Scalars['String'];
   response: Scalars['String'];
   updatedAt: Scalars['String'];
+  user?: Maybe<User>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type GreConfiguration = {
@@ -39,6 +41,8 @@ export type GreWord = {
   id: Scalars['String'];
   spelling: Scalars['String'];
   updatedAt: Scalars['String'];
+  user?: Maybe<User>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type GreWordSearchPromptInput = {
@@ -60,6 +64,7 @@ export type GreWordSearchPromptInputWhereInput = {
 export type GreWordWhereInput = {
   id?: InputMaybe<StringFilter>;
   spelling?: InputMaybe<StringFilter>;
+  userId?: InputMaybe<StringFilter>;
 };
 
 export type MetaFields = {
@@ -95,6 +100,7 @@ export type MutationCreateGreWordArgs = {
   promptInput: Scalars['String'];
   promptResponse: Scalars['String'];
   spelling: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 
@@ -218,7 +224,9 @@ export type User = {
   __typename?: 'User';
   createdAt: Scalars['String'];
   email: Scalars['String'];
+  gptPrompts: Array<GptPrompt>;
   greWordSearchPromptInputs: Array<GreWordSearchPromptInput>;
+  greWords: Array<GreWord>;
   id: Scalars['String'];
   meta?: Maybe<Scalars['Json']>;
   updatedAt: Scalars['String'];
@@ -279,6 +287,7 @@ export type CreateGreWordMutationVariables = Exact<{
   spelling: Scalars['String'];
   promptInput: Scalars['String'];
   promptResponse: Scalars['String'];
+  userId: Scalars['String'];
 }>;
 
 
@@ -542,11 +551,12 @@ export type SendSinglePromptQueryHookResult = ReturnType<typeof useSendSinglePro
 export type SendSinglePromptLazyQueryHookResult = ReturnType<typeof useSendSinglePromptLazyQuery>;
 export type SendSinglePromptQueryResult = Apollo.QueryResult<SendSinglePromptQuery, SendSinglePromptQueryVariables>;
 export const CreateGreWordDocument = gql`
-    mutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!) {
+    mutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!, $userId: String!) {
   createGreWord(
     spelling: $spelling
     promptInput: $promptInput
     promptResponse: $promptResponse
+    userId: $userId
   ) {
     id
   }
@@ -570,6 +580,7 @@ export type CreateGreWordMutationFn = Apollo.MutationFunction<CreateGreWordMutat
  *      spelling: // value for 'spelling'
  *      promptInput: // value for 'promptInput'
  *      promptResponse: // value for 'promptResponse'
+ *      userId: // value for 'userId'
  *   },
  * });
  */

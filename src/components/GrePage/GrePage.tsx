@@ -70,7 +70,11 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              // submitWord(greConfiguration?.defaultGreWordSearchPromptInputs[0]);
+              if (greConfiguration) {
+                submitWord(
+                  greConfiguration.defaultGreWordSearchPromptInputs[0]
+                );
+              }
             }
           }}
         />
@@ -130,7 +134,15 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       <p className="whitespace-pre-line">
         {sendSinglePromptQueryResult.data?.sendSinglePrompt}
       </p>
-      <button
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={createGreWordMutationResult.loading}
+        startIcon={
+          createGreWordMutationResult.loading ? (
+            <CircularProgress size={24} />
+          ) : null
+        }
         onClick={() => {
           if (
             wordInput &&
@@ -143,13 +155,14 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                 promptInput: sendSinglePromptQueryResult.variables?.input,
                 promptResponse:
                   sendSinglePromptQueryResult.data?.sendSinglePrompt,
+                userId: user!.id,
               },
             });
           }
         }}
       >
         Save
-      </button>
+      </Button>
     </div>
   );
 };

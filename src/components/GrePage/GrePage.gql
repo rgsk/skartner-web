@@ -6,11 +6,13 @@ mutation createGreWord(
   $spelling: String!
   $promptInput: String!
   $promptResponse: String!
+  $userId: String!
 ) {
   createGreWord(
     spelling: $spelling
     promptInput: $promptInput
     promptResponse: $promptResponse
+    userId: $userId
   ) {
     id
   }
