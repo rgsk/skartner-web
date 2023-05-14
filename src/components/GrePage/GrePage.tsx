@@ -79,6 +79,37 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           }}
         />
       </Box>
+      <Box sx={{ mt: 3 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={createGreWordMutationResult.loading}
+          startIcon={
+            createGreWordMutationResult.loading ? (
+              <CircularProgress size={24} />
+            ) : null
+          }
+          onClick={() => {
+            if (
+              wordInput &&
+              sendSinglePromptQueryResult.variables?.input &&
+              sendSinglePromptQueryResult.data?.sendSinglePrompt
+            ) {
+              createGreWord({
+                variables: {
+                  spelling: wordInput,
+                  promptInput: sendSinglePromptQueryResult.variables?.input,
+                  promptResponse:
+                    sendSinglePromptQueryResult.data?.sendSinglePrompt,
+                  userId: user!.id,
+                },
+              });
+            }
+          }}
+        >
+          Save
+        </Button>
+      </Box>
       <Box>
         <IconButton
           onClick={() => {
@@ -127,42 +158,11 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
         </Box>
       </Box>
       {modifyingWordSearchPrompts && <WordSearchPrompts />}
-      <div className="h-[50px] mt-4">
-        {sendSinglePromptQueryResult.loading && <CircularProgress />}
-      </div>
+      {sendSinglePromptQueryResult.loading && <CircularProgress />}
 
       <p className="whitespace-pre-line">
         {sendSinglePromptQueryResult.data?.sendSinglePrompt}
       </p>
-      <Button
-        variant="contained"
-        color="primary"
-        disabled={createGreWordMutationResult.loading}
-        startIcon={
-          createGreWordMutationResult.loading ? (
-            <CircularProgress size={24} />
-          ) : null
-        }
-        onClick={() => {
-          if (
-            wordInput &&
-            sendSinglePromptQueryResult.variables?.input &&
-            sendSinglePromptQueryResult.data?.sendSinglePrompt
-          ) {
-            createGreWord({
-              variables: {
-                spelling: wordInput,
-                promptInput: sendSinglePromptQueryResult.variables?.input,
-                promptResponse:
-                  sendSinglePromptQueryResult.data?.sendSinglePrompt,
-                userId: user!.id,
-              },
-            });
-          }
-        }}
-      >
-        Save
-      </Button>
     </div>
   );
 };
