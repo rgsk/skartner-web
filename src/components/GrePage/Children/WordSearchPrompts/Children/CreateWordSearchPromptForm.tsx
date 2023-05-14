@@ -76,6 +76,7 @@ const CreateWordSearchPromptForm: React.FC<
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <TextField
+            multiline
             label="Text"
             {...register('text', {
               required: true,
@@ -87,7 +88,7 @@ const CreateWordSearchPromptForm: React.FC<
                 ? 'Text is required and must contain the string "{word}"'
                 : 'Text must contain the string "{word}"'
             }
-            sx={{ mb: 1 }}
+            sx={{ mb: 1, width: '30vw' }}
           />
         </DialogContent>
         <DialogActions>
