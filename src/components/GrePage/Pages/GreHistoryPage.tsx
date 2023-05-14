@@ -4,6 +4,7 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  TextField,
   Typography,
 } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
@@ -101,8 +102,8 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   return (
     <div className="p-4">
       <div>
-        <input
-          type="text"
+        <TextField
+          label="Word"
           value={queryInput}
           onChange={(e) => {
             setQueryInput(e.target.value);
