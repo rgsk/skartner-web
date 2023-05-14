@@ -303,7 +303,7 @@ export type CreateGreWordMutationVariables = Exact<{
 }>;
 
 
-export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord: { __typename?: 'GreWord', id: string } };
+export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord: { __typename?: 'GreWord', id: string, spelling: string, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string }> } };
 
 export type GreConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -585,6 +585,12 @@ export const CreateGreWordDocument = gql`
     userId: $userId
   ) {
     id
+    spelling
+    gptPrompts {
+      id
+      input
+      response
+    }
   }
 }
     `;

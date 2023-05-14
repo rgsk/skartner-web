@@ -15,6 +15,12 @@ mutation createGreWord(
     userId: $userId
   ) {
     id
+    spelling
+    gptPrompts {
+      id
+      input
+      response
+    }
   }
 }
 

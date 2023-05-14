@@ -13,7 +13,7 @@ import {
   useGreWordSearchPromptInputsQuery,
   useSendSinglePromptLazyQuery,
 } from 'gql/graphql';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 
@@ -62,6 +62,15 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     }
   };
 
+  const tryingToSavePreviousResponseAgain = useMemo(() => {
+    return !!createGreWordMutationResult.data?.createGreWord.gptPrompts.some(
+      (p) => p.response === sendSinglePromptQueryResult.data?.sendSinglePrompt
+    );
+  }, [
+    createGreWordMutationResult.data?.createGreWord,
+    sendSinglePromptQueryResult.data?.sendSinglePrompt,
+  ]);
+
   return (
     <div className="p-4">
       <Box>
@@ -98,7 +107,8 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             createGreWordMutationResult.loading ||
             sendSinglePromptQueryResult.loading ||
             !wordInput ||
-            wordInput !== lastSubmittedWord
+            wordInput !== lastSubmittedWord ||
+            tryingToSavePreviousResponseAgain
           }
           startIcon={
             createGreWordMutationResult.loading ? (
