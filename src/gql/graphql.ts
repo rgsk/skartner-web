@@ -83,6 +83,8 @@ export type Mutation = {
   createGreWord?: Maybe<GreWord>;
   createGreWordSearchPromptInput: GreWordSearchPromptInput;
   createUser?: Maybe<User>;
+  deleteGptPrompt?: Maybe<GptPrompt>;
+  deleteGreWord?: Maybe<GreWord>;
   deleteGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   publish?: Maybe<Post>;
   updateGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
@@ -113,6 +115,16 @@ export type MutationCreateGreWordSearchPromptInputArgs = {
 export type MutationCreateUserArgs = {
   email: Scalars['String'];
   meta?: InputMaybe<Scalars['Json']>;
+};
+
+
+export type MutationDeleteGptPromptArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteGreWordArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -305,7 +317,21 @@ export type GreWordsQueryVariables = Exact<{
 }>;
 
 
-export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string }> }> };
+export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, greWordId?: string | null }> }> };
+
+export type DeleteGreWordMutationVariables = Exact<{
+  deleteGreWordId: Scalars['String'];
+}>;
+
+
+export type DeleteGreWordMutation = { __typename?: 'Mutation', deleteGreWord?: { __typename?: 'GreWord', id: string } | null };
+
+export type DeleteGptPromptMutationVariables = Exact<{
+  deleteGptPromptId: Scalars['String'];
+}>;
+
+
+export type DeleteGptPromptMutation = { __typename?: 'Mutation', deleteGptPrompt?: { __typename?: 'GptPrompt', id: string } | null };
 
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
@@ -634,6 +660,7 @@ export const GreWordsDocument = gql`
       id
       input
       response
+      greWordId
     }
   }
   greWordsCount(where: $where)
@@ -669,6 +696,72 @@ export function useGreWordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GreWordsQueryHookResult = ReturnType<typeof useGreWordsQuery>;
 export type GreWordsLazyQueryHookResult = ReturnType<typeof useGreWordsLazyQuery>;
 export type GreWordsQueryResult = Apollo.QueryResult<GreWordsQuery, GreWordsQueryVariables>;
+export const DeleteGreWordDocument = gql`
+    mutation DeleteGreWord($deleteGreWordId: String!) {
+  deleteGreWord(id: $deleteGreWordId) {
+    id
+  }
+}
+    `;
+export type DeleteGreWordMutationFn = Apollo.MutationFunction<DeleteGreWordMutation, DeleteGreWordMutationVariables>;
+
+/**
+ * __useDeleteGreWordMutation__
+ *
+ * To run a mutation, you first call `useDeleteGreWordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGreWordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteGreWordMutation, { data, loading, error }] = useDeleteGreWordMutation({
+ *   variables: {
+ *      deleteGreWordId: // value for 'deleteGreWordId'
+ *   },
+ * });
+ */
+export function useDeleteGreWordMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGreWordMutation, DeleteGreWordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteGreWordMutation, DeleteGreWordMutationVariables>(DeleteGreWordDocument, options);
+      }
+export type DeleteGreWordMutationHookResult = ReturnType<typeof useDeleteGreWordMutation>;
+export type DeleteGreWordMutationResult = Apollo.MutationResult<DeleteGreWordMutation>;
+export type DeleteGreWordMutationOptions = Apollo.BaseMutationOptions<DeleteGreWordMutation, DeleteGreWordMutationVariables>;
+export const DeleteGptPromptDocument = gql`
+    mutation DeleteGptPrompt($deleteGptPromptId: String!) {
+  deleteGptPrompt(id: $deleteGptPromptId) {
+    id
+  }
+}
+    `;
+export type DeleteGptPromptMutationFn = Apollo.MutationFunction<DeleteGptPromptMutation, DeleteGptPromptMutationVariables>;
+
+/**
+ * __useDeleteGptPromptMutation__
+ *
+ * To run a mutation, you first call `useDeleteGptPromptMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGptPromptMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteGptPromptMutation, { data, loading, error }] = useDeleteGptPromptMutation({
+ *   variables: {
+ *      deleteGptPromptId: // value for 'deleteGptPromptId'
+ *   },
+ * });
+ */
+export function useDeleteGptPromptMutation(baseOptions?: Apollo.MutationHookOptions<DeleteGptPromptMutation, DeleteGptPromptMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteGptPromptMutation, DeleteGptPromptMutationVariables>(DeleteGptPromptDocument, options);
+      }
+export type DeleteGptPromptMutationHookResult = ReturnType<typeof useDeleteGptPromptMutation>;
+export type DeleteGptPromptMutationResult = Apollo.MutationResult<DeleteGptPromptMutation>;
+export type DeleteGptPromptMutationOptions = Apollo.BaseMutationOptions<DeleteGptPromptMutation, DeleteGptPromptMutationVariables>;
 export const CreateUserDocument = gql`
     mutation createUser($email: String!) {
   createUser(email: $email) {

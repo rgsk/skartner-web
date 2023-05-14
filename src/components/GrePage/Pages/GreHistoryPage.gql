@@ -6,7 +6,20 @@ query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
       id
       input
       response
+      greWordId
     }
   }
   greWordsCount(where: $where)
+}
+
+mutation DeleteGreWord($deleteGreWordId: String!) {
+  deleteGreWord(id: $deleteGreWordId) {
+    id
+  }
+}
+
+mutation DeleteGptPrompt($deleteGptPromptId: String!) {
+  deleteGptPrompt(id: $deleteGptPromptId) {
+    id
+  }
 }

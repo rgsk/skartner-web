@@ -1,6 +1,11 @@
 import { Box, Button, CircularProgress } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
-import { useGreWordsQuery } from 'gql/graphql';
+import {
+  GreWordsQuery,
+  useDeleteGptPromptMutation,
+  useDeleteGreWordMutation,
+  useGreWordsQuery,
+} from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useEffect, useMemo, useState } from 'react';
@@ -28,6 +33,9 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       take: itemsPerPage,
     },
   });
+  const [deleteGreWord] = useDeleteGreWordMutation();
+
+  const [deleteGptPrompt] = useDeleteGptPromptMutation();
 
   const totalPages = useMemo(
     () =>
@@ -62,6 +70,27 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     onParamsAssignedToState();
   });
 
+  const handleDeleteGreWord = (greWord: GreWordsQuery['greWords'][number]) => {
+    deleteGreWord({
+      variables: {
+        deleteGreWordId: greWord.id,
+      },
+      update(cache, { data }) {
+        if (data?.deleteGreWord) {
+          cache.modify({
+            fields: {
+              greWords(existingWords, { readField }) {
+                return existingWords.filter((word: any) => {
+                  return data.deleteGreWord?.id !== readField('id', word);
+                });
+              },
+            },
+          });
+        }
+      },
+    });
+  };
+
   return (
     <div>
       <div>
@@ -80,13 +109,56 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
         {greWordsQueryResult.data?.greWords.map((greWord) => {
           return (
             <Box key={greWord.id} sx={{ borderTop: '2px solid red', mt: 2 }}>
-              <p>Spelling: {greWord.spelling}</p>
+              <div>
+                <p>Spelling: {greWord.spelling}</p>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    handleDeleteGreWord(greWord);
+                  }}
+                >
+                  Delete word
+                </Button>
+              </div>
               <div>
                 <p>Gre Prompts</p>
                 {greWord.gptPrompts.map((gptPrompt) => {
                   return (
                     <div key={gptPrompt.id}>
                       <p>Input: {gptPrompt.input}</p>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          deleteGptPrompt({
+                            variables: {
+                              deleteGptPromptId: gptPrompt.id,
+                            },
+                            update(cache, { data }) {
+                              if (data?.deleteGptPrompt) {
+                                cache.modify({
+                                  id: cache.identify(greWord),
+                                  fields: {
+                                    gptPrompts(
+                                      existingPrompts = [],
+                                      { readField }
+                                    ) {
+                                      return existingPrompts.filter(
+                                        (prompt: any) =>
+                                          readField('id', prompt) !==
+                                          gptPrompt.id
+                                      );
+                                    },
+                                  },
+                                });
+                              }
+                            },
+                          });
+                        }}
+                      >
+                        Delete Prompt
+                      </Button>
                       <p className="whitespace-pre-line">
                         {gptPrompt.response}
                       </p>
