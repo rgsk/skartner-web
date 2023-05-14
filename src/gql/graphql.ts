@@ -80,7 +80,7 @@ export type MetaFields_User = {
 export type Mutation = {
   __typename?: 'Mutation';
   createDraft?: Maybe<Post>;
-  createGreWord?: Maybe<GreWord>;
+  createGreWord: GreWord;
   createGreWordSearchPromptInput: GreWordSearchPromptInput;
   createUser?: Maybe<User>;
   deleteGptPrompt?: Maybe<GptPrompt>;
@@ -303,7 +303,7 @@ export type CreateGreWordMutationVariables = Exact<{
 }>;
 
 
-export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord?: { __typename?: 'GreWord', id: string } | null };
+export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord: { __typename?: 'GreWord', id: string } };
 
 export type GreConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 

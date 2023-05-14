@@ -48,12 +48,15 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       },
     }
   );
+  const [lastSubmittedWord, setLastSubmittedWord] = useState(wordInput);
   const submitWord = async (prompt: string) => {
     if (wordInput) {
       sendSinglePrompt({
         variables: {
           input: replaceWord(wordInput, prompt),
         },
+      }).then(() => {
+        setLastSubmittedWord(wordInput);
       });
     }
   };
@@ -83,7 +86,12 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
         <Button
           variant="contained"
           color="primary"
-          disabled={createGreWordMutationResult.loading}
+          disabled={
+            createGreWordMutationResult.loading ||
+            sendSinglePromptQueryResult.loading ||
+            !wordInput ||
+            wordInput !== lastSubmittedWord
+          }
           startIcon={
             createGreWordMutationResult.loading ? (
               <CircularProgress size={24} />
