@@ -1,4 +1,11 @@
-import { Box, Button, CircularProgress } from '@mui/material';
+import { Delete } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import {
   GreWordsQuery,
@@ -92,7 +99,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   };
 
   return (
-    <div>
+    <div className="p-4">
       <div>
         <input
           type="text"
@@ -109,57 +116,63 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
         {greWordsQueryResult.data?.greWords.map((greWord) => {
           return (
             <Box key={greWord.id} sx={{ borderTop: '2px solid red', mt: 2 }}>
-              <div>
-                <p>Spelling: {greWord.spelling}</p>
-                <Button
-                  variant="contained"
-                  color="primary"
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography fontWeight={'bold'} fontSize={20}>
+                  {greWord.spelling}
+                </Typography>
+                <IconButton
+                  color="error"
                   onClick={() => {
                     handleDeleteGreWord(greWord);
                   }}
                 >
-                  Delete word
-                </Button>
-              </div>
+                  <Delete />
+                </IconButton>
+              </Box>
               <div>
                 <p>Gre Prompts</p>
                 {greWord.gptPrompts.map((gptPrompt) => {
                   return (
                     <div key={gptPrompt.id}>
-                      <p>Input: {gptPrompt.input}</p>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          deleteGptPrompt({
-                            variables: {
-                              deleteGptPromptId: gptPrompt.id,
-                            },
-                            update(cache, { data }) {
-                              if (data?.deleteGptPrompt) {
-                                cache.modify({
-                                  id: cache.identify(greWord),
-                                  fields: {
-                                    gptPrompts(
-                                      existingPrompts = [],
-                                      { readField }
-                                    ) {
-                                      return existingPrompts.filter(
-                                        (prompt: any) =>
-                                          readField('id', prompt) !==
-                                          gptPrompt.id
-                                      );
-                                    },
-                                  },
-                                });
-                              }
-                            },
-                          });
+                      <Box
+                        sx={{
+                          display: 'flex',
                         }}
                       >
-                        Delete Prompt
-                      </Button>
-                      <p className="whitespace-pre-line">
+                        <p>Input: {gptPrompt.input}</p>
+                        <IconButton
+                          color="error"
+                          onClick={() => {
+                            deleteGptPrompt({
+                              variables: {
+                                deleteGptPromptId: gptPrompt.id,
+                              },
+                              update(cache, { data }) {
+                                if (data?.deleteGptPrompt) {
+                                  cache.modify({
+                                    id: cache.identify(greWord),
+                                    fields: {
+                                      gptPrompts(
+                                        existingPrompts = [],
+                                        { readField }
+                                      ) {
+                                        return existingPrompts.filter(
+                                          (prompt: any) =>
+                                            readField('id', prompt) !==
+                                            gptPrompt.id
+                                        );
+                                      },
+                                    },
+                                  });
+                                }
+                              },
+                            });
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Box>
+                      <p className="whitespace-pre-line border border-solid p-2 border-green-300">
                         {gptPrompt.response}
                       </p>
                     </div>
