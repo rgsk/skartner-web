@@ -148,6 +148,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
           {userParsedMeta?.showDefaultGreWordSearchPromptInputs &&

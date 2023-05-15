@@ -1,4 +1,8 @@
-import { Box, TextField } from '@mui/material';
+import { gql } from '@apollo/client';
+import { Save } from '@mui/icons-material';
+import { Box, IconButton, TextField } from '@mui/material';
+import { useGlobalContext } from 'context/GlobalContext';
+import { useCreateGreWordSearchPromptInputMutation } from 'gql/graphql';
 import { SubmitHandler, useForm } from 'react-hook-form';
 interface FormInput {
   text: string;
@@ -13,9 +17,52 @@ const CustomPromptInput: React.FC<ICustomPromptInputProps> = ({ submit }) => {
     formState: { errors },
     reset,
   } = useForm<FormInput>();
+  const { user } = useGlobalContext();
+
+  const [createGreWordSearchPromptInput, { loading: isCreating }] =
+    useCreateGreWordSearchPromptInputMutation();
+
+  const handleSave = async (formData: FormInput) => {
+    try {
+      await createGreWordSearchPromptInput({
+        variables: { text: formData.text, userId: user!.id },
+        update: (cache, { data }) => {
+          const newPromptInput = data?.createGreWordSearchPromptInput;
+          cache.modify({
+            fields: {
+              greWordSearchPromptInputs(existingPromptInputs = []) {
+                const newPromptInputRef = cache.writeFragment({
+                  data: newPromptInput,
+                  fragment: gql`
+                    fragment NewPromptInput on GreWordSearchPromptInput {
+                      id
+                      text
+                      userId
+                    }
+                  `,
+                });
+
+                return [newPromptInputRef, ...existingPromptInputs];
+              },
+            },
+          });
+        },
+      });
+      reset();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
-      <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
         <form onSubmit={handleSubmit(submit)}>
           <TextField
             label="Text"
@@ -32,6 +79,9 @@ const CustomPromptInput: React.FC<ICustomPromptInputProps> = ({ submit }) => {
             sx={{ mb: 1, minWidth: '50vw' }}
           />
         </form>
+        <IconButton size="large" onClick={handleSubmit(handleSave)}>
+          <Save />
+        </IconButton>
       </Box>
     </div>
   );

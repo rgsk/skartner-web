@@ -262,7 +262,7 @@ export type CreateGreWordSearchPromptInputMutationVariables = Exact<{
 }>;
 
 
-export type CreateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', createGreWordSearchPromptInput: { __typename?: 'GreWordSearchPromptInput', id: string, text: string } };
+export type CreateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', createGreWordSearchPromptInput: { __typename?: 'GreWordSearchPromptInput', id: string, text: string, userId: string } };
 
 export type UpdateGreWordSearchPromptInputMutationVariables = Exact<{
   text: Scalars['String'];
@@ -270,7 +270,7 @@ export type UpdateGreWordSearchPromptInputMutationVariables = Exact<{
 }>;
 
 
-export type UpdateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', updateGreWordSearchPromptInput?: { __typename?: 'GreWordSearchPromptInput', id: string, text: string } | null };
+export type UpdateGreWordSearchPromptInputMutation = { __typename?: 'Mutation', updateGreWordSearchPromptInput?: { __typename?: 'GreWordSearchPromptInput', id: string, text: string, userId: string } | null };
 
 export type DeleteGreWordSearchPromptInputMutationVariables = Exact<{
   id: Scalars['String'];
@@ -408,6 +408,7 @@ export const CreateGreWordSearchPromptInputDocument = gql`
   createGreWordSearchPromptInput(text: $text, userId: $userId) {
     id
     text
+    userId
   }
 }
     `;
@@ -443,6 +444,7 @@ export const UpdateGreWordSearchPromptInputDocument = gql`
   updateGreWordSearchPromptInput(text: $text, id: $id) {
     id
     text
+    userId
   }
 }
     `;
