@@ -89,7 +89,7 @@ const WordSearchPrompts: React.FC = () => {
     <Box>
       <FormControlLabel
         control={<Checkbox checked={checked} onChange={handleChange} />}
-        label="Show Default GreWordSearchPromptInputs"
+        label="Show Predefined GreWordSearchPromptInputs"
       />
       <CreateWordSearchPromptForm
         open={createFormOpen}

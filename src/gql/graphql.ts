@@ -74,6 +74,7 @@ export type MetaFields = {
 
 export type MetaFields_User = {
   __typename?: 'MetaFields_User';
+  defaultGreWordSearchPromptInput: Scalars['String'];
   showDefaultGreWordSearchPromptInputs: Scalars['String'];
 };
 
@@ -363,7 +364,7 @@ export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __t
 export type MetaFieldsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MetaFieldsQuery = { __typename?: 'Query', metaFields: { __typename?: 'MetaFields', user: { __typename?: 'MetaFields_User', showDefaultGreWordSearchPromptInputs: string } } };
+export type MetaFieldsQuery = { __typename?: 'Query', metaFields: { __typename?: 'MetaFields', user: { __typename?: 'MetaFields_User', showDefaultGreWordSearchPromptInputs: string, defaultGreWordSearchPromptInput: string } } };
 
 
 export const GreWordSearchPromptInputsDocument = gql`
@@ -920,6 +921,7 @@ export const MetaFieldsDocument = gql`
   metaFields {
     user {
       showDefaultGreWordSearchPromptInputs
+      defaultGreWordSearchPromptInput
     }
   }
 }

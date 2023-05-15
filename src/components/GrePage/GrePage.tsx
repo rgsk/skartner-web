@@ -2,6 +2,7 @@ import { Edit } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   IconButton,
   TextField,
@@ -12,6 +13,7 @@ import {
   useCreateGreWordMutation,
   useGreWordSearchPromptInputsQuery,
   useSendSinglePromptLazyQuery,
+  useUpdateMetaForUserMutation,
 } from 'gql/graphql';
 import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
@@ -24,8 +26,9 @@ const replaceWord = (word: string, prompt: string) => {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
-  const { user, userParsedMeta } = useGlobalContext();
+  const { user, userParsedMeta, metaFields, setUser } = useGlobalContext();
   const { greConfiguration } = useGreContext();
+  const [updateMetaForUser] = useUpdateMetaForUserMutation();
 
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
@@ -71,6 +74,26 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     sendSinglePromptQueryResult.data?.sendSinglePrompt,
   ]);
 
+  const handleDefaultPromptInputTextChange = (newPromptInputText: string) => {
+    if (user && metaFields) {
+      updateMetaForUser({
+        variables: {
+          id: user.id,
+          meta: JSON.stringify({
+            ...userParsedMeta,
+            [metaFields.user.defaultGreWordSearchPromptInput]:
+              newPromptInputText,
+          }),
+        },
+      }).then(({ data }) => {
+        const updatedUser = data?.updateUser;
+        if (updatedUser) {
+          setUser(updatedUser);
+        }
+      });
+    }
+  };
+
   return (
     <div className="p-4">
       <Box>
@@ -85,7 +108,8 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             if (e.key === 'Enter') {
               if (greConfiguration) {
                 submitWord(
-                  greConfiguration.defaultGreWordSearchPromptInputs[0]
+                  userParsedMeta?.defaultGreWordSearchPromptInput ??
+                    greConfiguration.defaultGreWordSearchPromptInputs[0]
                 );
               }
             }
@@ -148,37 +172,66 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'start',
           }}
         >
           {userParsedMeta?.showDefaultGreWordSearchPromptInputs &&
             greConfiguration?.defaultGreWordSearchPromptInputs.map(
               (input, i) => {
                 return (
-                  <Button
-                    variant="text"
-                    key={i}
-                    onClick={() => {
-                      submitWord(input);
-                    }}
-                  >
-                    {input}
-                  </Button>
+                  <Box key={i}>
+                    <Checkbox
+                      checked={
+                        userParsedMeta?.defaultGreWordSearchPromptInput ===
+                        input
+                      }
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        const newValue = event.target.checked;
+                        if (newValue) {
+                          handleDefaultPromptInputTextChange(input);
+                        }
+                      }}
+                    />
+                    <Button
+                      variant="text"
+                      onClick={() => {
+                        submitWord(input);
+                      }}
+                    >
+                      {input}
+                    </Button>
+                  </Box>
                 );
               }
             )}
           {greWordSearchPromptInputsQueryResult.data?.greWordSearchPromptInputs.map(
-            (promptInput) => {
+            (promptInput, i) => {
               return (
-                <Button
-                  variant="text"
-                  key={promptInput.id}
-                  onClick={() => {
-                    submitWord(promptInput.text);
-                  }}
-                >
-                  {promptInput.text}
-                </Button>
+                <Box key={i}>
+                  <Checkbox
+                    checked={
+                      userParsedMeta?.defaultGreWordSearchPromptInput ===
+                      promptInput.text
+                    }
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      const newValue = event.target.checked;
+                      if (newValue) {
+                        handleDefaultPromptInputTextChange(promptInput.text);
+                      }
+                    }}
+                  />
+                  <Button
+                    variant="text"
+                    key={promptInput.id}
+                    onClick={() => {
+                      submitWord(promptInput.text);
+                    }}
+                  >
+                    {promptInput.text}
+                  </Button>
+                </Box>
               );
             }
           )}

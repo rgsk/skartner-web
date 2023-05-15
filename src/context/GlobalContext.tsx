@@ -14,12 +14,19 @@ const useGlobalContextValue = () => {
 
   const userParsedMeta = useMemo(() => {
     if (user && metaFields) {
+      const jsonParsedMeta = JSON.parse(user.meta);
       return {
         [metaFields.user
           .showDefaultGreWordSearchPromptInputs as 'showDefaultGreWordSearchPromptInputs']:
-          JSON.parse(user.meta)[
+          jsonParsedMeta[
             metaFields.user.showDefaultGreWordSearchPromptInputs
           ] as undefined | null | boolean,
+        [metaFields.user
+          .defaultGreWordSearchPromptInput as 'defaultGreWordSearchPromptInput']:
+          jsonParsedMeta[metaFields.user.defaultGreWordSearchPromptInput] as
+            | undefined
+            | null
+            | string,
       };
     }
   }, [metaFields, user]);

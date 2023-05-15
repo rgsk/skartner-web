@@ -2,6 +2,7 @@ query metaFields {
   metaFields {
     user {
       showDefaultGreWordSearchPromptInputs
+      defaultGreWordSearchPromptInput
     }
   }
 }
