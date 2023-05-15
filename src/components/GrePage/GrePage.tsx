@@ -1,11 +1,15 @@
-import { Edit } from '@mui/icons-material';
+import { Cancel, Edit, ExpandMore } from '@mui/icons-material';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Checkbox,
   CircularProgress,
   IconButton,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import { useGreContext } from 'context/GreContext';
@@ -160,84 +164,118 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           Save
         </Button>
       </Box>
-      <Box>
-        <IconButton
-          onClick={() => {
-            setModifyingWordSearchPrompts((prev) => !prev);
-          }}
-        >
-          <Edit />
-        </IconButton>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'start',
-          }}
-        >
-          {userParsedMeta?.showDefaultGreWordSearchPromptInputs &&
-            greConfiguration?.defaultGreWordSearchPromptInputs.map(
-              (input, i) => {
+      <Box sx={{ my: 4 }}>
+        <CollapsibleComponent head="Prompts">
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <IconButton
+              onClick={() => {
+                setModifyingWordSearchPrompts((prev) => !prev);
+              }}
+            >
+              <Edit />
+            </IconButton>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'start',
+            }}
+          >
+            {userParsedMeta?.showDefaultGreWordSearchPromptInputs ||
+            greConfiguration?.defaultGreWordSearchPromptInputs.includes(
+              userParsedMeta?.defaultGreWordSearchPromptInput!
+            )
+              ? greConfiguration?.defaultGreWordSearchPromptInputs.map(
+                  (input, i) => {
+                    return (
+                      <Box key={i}>
+                        <Checkbox
+                          checked={
+                            userParsedMeta?.defaultGreWordSearchPromptInput ===
+                              input ||
+                            (!userParsedMeta?.defaultGreWordSearchPromptInput &&
+                              i == 0)
+                          }
+                          onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            const newValue = event.target.checked;
+                            // we can only select something as default
+                            if (newValue) {
+                              handleDefaultPromptInputTextChange(input);
+                            }
+                          }}
+                        />
+                        <Button
+                          variant="text"
+                          onClick={() => {
+                            submitWord(input);
+                          }}
+                        >
+                          {input}
+                        </Button>
+                      </Box>
+                    );
+                  }
+                )
+              : null}
+            {greWordSearchPromptInputsQueryResult.data?.greWordSearchPromptInputs.map(
+              (promptInput, i) => {
                 return (
                   <Box key={i}>
                     <Checkbox
                       checked={
                         userParsedMeta?.defaultGreWordSearchPromptInput ===
-                        input
+                        promptInput.text
                       }
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
                       ) => {
                         const newValue = event.target.checked;
                         if (newValue) {
-                          handleDefaultPromptInputTextChange(input);
+                          handleDefaultPromptInputTextChange(promptInput.text);
                         }
                       }}
                     />
                     <Button
                       variant="text"
+                      key={promptInput.id}
                       onClick={() => {
-                        submitWord(input);
+                        submitWord(promptInput.text);
                       }}
                     >
-                      {input}
+                      {promptInput.text}
                     </Button>
                   </Box>
                 );
               }
             )}
-          {greWordSearchPromptInputsQueryResult.data?.greWordSearchPromptInputs.map(
-            (promptInput, i) => {
-              return (
-                <Box key={i}>
-                  <Checkbox
-                    checked={
-                      userParsedMeta?.defaultGreWordSearchPromptInput ===
-                      promptInput.text
-                    }
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      const newValue = event.target.checked;
-                      if (newValue) {
-                        handleDefaultPromptInputTextChange(promptInput.text);
-                      }
-                    }}
-                  />
-                  <Button
-                    variant="text"
-                    key={promptInput.id}
-                    onClick={() => {
-                      submitWord(promptInput.text);
-                    }}
-                  >
-                    {promptInput.text}
-                  </Button>
-                </Box>
-              );
-            }
+          </Box>
+          {modifyingWordSearchPrompts && (
+            <Box sx={{ borderTop: '2px solid black', mt: 4, pt: 4 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                }}
+              >
+                <IconButton
+                  onClick={() => {
+                    setModifyingWordSearchPrompts(false);
+                  }}
+                  sx={{
+                    m: 2,
+                  }}
+                >
+                  <Cancel />
+                </IconButton>
+              </Box>
+              <WordSearchPrompts />
+            </Box>
           )}
-        </Box>
+        </CollapsibleComponent>
       </Box>
-      {modifyingWordSearchPrompts && <WordSearchPrompts />}
       {sendSinglePromptQueryResult.loading && <CircularProgress />}
 
       <p className="whitespace-pre-line">
@@ -247,3 +285,19 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   );
 };
 export default GrePage;
+
+interface ICollapsibleComponentProps {
+  head: string;
+  children: any;
+}
+
+function CollapsibleComponent({ head, children }: ICollapsibleComponentProps) {
+  return (
+    <Accordion>
+      <AccordionSummary expandIcon={<ExpandMore />}>
+        <Typography variant="h6">{head}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>{children}</AccordionDetails>
+    </Accordion>
+  );
+}

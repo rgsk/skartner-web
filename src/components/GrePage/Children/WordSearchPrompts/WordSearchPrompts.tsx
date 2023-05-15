@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
+import { useGreContext } from 'context/GreContext';
 import {
   useDeleteGreWordSearchPromptInputMutation,
   useGreWordSearchPromptInputsQuery,
@@ -26,6 +27,8 @@ import EditWordSearchPromptForm from './Children/EditWordSearchPromptForm';
 const WordSearchPrompts: React.FC = () => {
   const { user, setUser, metaFields, userParsedMeta } = useGlobalContext();
   const [createFormOpen, setCreateFormOpen] = useState(false);
+  const { greConfiguration } = useGreContext();
+
   const [editedPromptInput, setEditedPromptInput] = useState<{
     id: string;
     text: string;
@@ -87,10 +90,14 @@ const WordSearchPrompts: React.FC = () => {
 
   return (
     <Box>
-      <FormControlLabel
-        control={<Checkbox checked={checked} onChange={handleChange} />}
-        label="Show Predefined GreWordSearchPromptInputs"
-      />
+      {!greConfiguration?.defaultGreWordSearchPromptInputs.includes(
+        userParsedMeta?.defaultGreWordSearchPromptInput!
+      ) && (
+        <FormControlLabel
+          control={<Checkbox checked={checked} onChange={handleChange} />}
+          label="Show Predefined GreWordSearchPromptInputs"
+        />
+      )}
       <CreateWordSearchPromptForm
         open={createFormOpen}
         onClose={() => {
