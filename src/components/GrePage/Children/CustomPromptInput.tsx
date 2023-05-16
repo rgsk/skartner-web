@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { Save } from '@mui/icons-material';
+import { Save, Send } from '@mui/icons-material';
 import { Box, IconButton, TextField } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import { useCreateGreWordSearchPromptInputMutation } from 'gql/graphql';
@@ -79,9 +79,19 @@ const CustomPromptInput: React.FC<ICustomPromptInputProps> = ({ submit }) => {
             sx={{ mb: 1, minWidth: '50vw' }}
           />
         </form>
-        <IconButton size="large" onClick={handleSubmit(handleSave)}>
-          <Save />
-        </IconButton>
+        <Box
+          sx={{
+            display: 'flex',
+            flex: 1,
+          }}
+        >
+          <IconButton size="large" onClick={handleSubmit(submit)}>
+            <Send />
+          </IconButton>
+          <IconButton size="large" onClick={handleSubmit(handleSave)}>
+            <Save />
+          </IconButton>
+        </Box>
       </Box>
     </div>
   );

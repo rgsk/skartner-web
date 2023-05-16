@@ -170,6 +170,7 @@ export type Query = {
   greWordSearchPromptInputs: Array<GreWordSearchPromptInput>;
   greWords: Array<GreWord>;
   greWordsCount: Scalars['Int'];
+  hello: HelloWorld;
   metaFields: MetaFields;
   posts?: Maybe<Array<Maybe<Post>>>;
   sendSinglePrompt?: Maybe<Scalars['String']>;
@@ -248,6 +249,11 @@ export type User = {
 export type UserWhereInput = {
   email?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
+};
+
+export type HelloWorld = {
+  __typename?: 'helloWorld';
+  message: Scalars['String'];
 };
 
 export type GreWordSearchPromptInputsQueryVariables = Exact<{

@@ -1,4 +1,4 @@
-import { Cancel, Edit, ExpandMore } from '@mui/icons-material';
+import { Cancel, Edit, ExpandMore, Send } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -98,6 +98,15 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     }
   };
 
+  const handleWordSearch = () => {
+    if (greConfiguration) {
+      submitWord(
+        userParsedMeta?.defaultGreWordSearchPromptInput ??
+          greConfiguration.defaultGreWordSearchPromptInputs[0]
+      );
+    }
+  };
+
   return (
     <div className="p-4">
       <Box>
@@ -110,15 +119,18 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              if (greConfiguration) {
-                submitWord(
-                  userParsedMeta?.defaultGreWordSearchPromptInput ??
-                    greConfiguration.defaultGreWordSearchPromptInputs[0]
-                );
-              }
+              handleWordSearch();
             }
           }}
         />
+        <IconButton
+          size="large"
+          onClick={() => {
+            handleWordSearch();
+          }}
+        >
+          <Send />
+        </IconButton>
       </Box>
       <Box sx={{ mt: 2 }}>
         <CustomPromptInput
