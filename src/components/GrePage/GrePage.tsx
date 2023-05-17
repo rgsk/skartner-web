@@ -163,7 +163,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             ) {
               createGreWord({
                 variables: {
-                  spelling: wordInput,
+                  spelling: wordInput.toLowerCase(),
                   promptInput: sendSinglePromptQueryResult.variables?.input,
                   promptResponse:
                     sendSinglePromptQueryResult.data?.sendSinglePrompt,
@@ -288,6 +288,9 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           )}
         </CollapsibleComponent>
       </Box>
+      <Typography fontWeight={'bold'} fontSize={18}>
+        {wordInput.toLowerCase()}
+      </Typography>
       {sendSinglePromptQueryResult.loading && <CircularProgress />}
 
       <p className="whitespace-pre-line">
