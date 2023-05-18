@@ -15,6 +15,7 @@ import {
   useGreWordsQuery,
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
+import { useWindowFocus } from 'hooks/utils/useWindowFocus';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -30,6 +31,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const { user } = useGlobalContext();
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const { isWindowFocused } = useWindowFocus();
 
   const greWordsQueryResult = useGreWordsQuery({
     variables: {
@@ -41,6 +43,12 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       take: itemsPerPage,
     },
   });
+  const refetchGreWords = greWordsQueryResult.refetch;
+  useEffect(() => {
+    if (isWindowFocused) {
+      refetchGreWords();
+    }
+  }, [isWindowFocused, refetchGreWords]);
   const [deleteGreWord] = useDeleteGreWordMutation();
 
   const [deleteGptPrompt] = useDeleteGptPromptMutation();
