@@ -59,6 +59,20 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     }
   );
   const [lastSubmittedWord, setLastSubmittedWord] = useState(wordInput);
+
+  const savedGreWord = getGreWordsResult.data?.greWords[0];
+  const refreshSavedGreWord = () => {
+    getGreWords({
+      variables: {
+        where: {
+          spelling: {
+            equals: wordInput,
+          },
+        },
+      },
+      fetchPolicy: 'network-only',
+    });
+  };
   const submitWord = async (prompt: string) => {
     if (wordInput) {
       sendSinglePrompt({
@@ -68,16 +82,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       }).then(() => {
         setLastSubmittedWord(wordInput);
       });
-      getGreWords({
-        variables: {
-          where: {
-            spelling: {
-              equals: wordInput,
-            },
-          },
-        },
-        fetchPolicy: 'network-only',
-      });
+      refreshSavedGreWord();
     }
   };
 
@@ -118,7 +123,6 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       );
     }
   };
-  const savedGreWord = getGreWordsResult.data?.greWords[0];
 
   const renderSave = () => {
     return (
@@ -151,6 +155,8 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                   sendSinglePromptQueryResult.data?.sendSinglePrompt,
                 userId: user!.id,
               },
+            }).then(() => {
+              refreshSavedGreWord();
             });
           }
         }}
@@ -305,7 +311,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           )}
         </CollapsibleComponent>
       </Box>
-      <Typography fontWeight={'bold'} fontSize={18}>
+      <Typography fontWeight={'bold'} variant="h5">
         {wordInput.toLowerCase()}
       </Typography>
 
@@ -317,7 +323,10 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       )}
 
       <Box sx={{ mt: 5 }}>
-        <Typography variant="h6">Search Result</Typography>
+        <Typography variant="h6">Search Result :</Typography>
+        <Typography fontSize={18}>
+          {sendSinglePromptQueryResult.variables?.input}
+        </Typography>
         {sendSinglePromptQueryResult.loading && <CircularProgress />}
         <p className="whitespace-pre-line">
           {sendSinglePromptQueryResult.data?.sendSinglePrompt}
