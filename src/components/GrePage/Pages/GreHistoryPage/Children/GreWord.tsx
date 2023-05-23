@@ -6,6 +6,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import CustomTabs from 'components/Shared/CustomTabs/CustomTabs';
 import {
   GreWordsQuery,
   useDeleteGptPromptMutation,
@@ -125,10 +126,35 @@ const GptPrompt: React.FC<IGptPromptProps> = ({ greWord, gptPrompt }) => {
           <Delete />
         </IconButton>
       </Box>
-      <GptResponse
-        gptPromptId={gptPrompt.id}
-        response={gptPrompt.editedResponse ?? gptPrompt.response}
-      />
+      {gptPrompt.editedResponse ? (
+        <CustomTabs
+          data={[
+            {
+              label: 'Edited Response',
+              component: (
+                <GptResponse
+                  gptPromptId={gptPrompt.id}
+                  response={gptPrompt.editedResponse ?? gptPrompt.response}
+                />
+              ),
+            },
+            {
+              label: 'Response',
+              component: (
+                <GptResponse
+                  gptPromptId={gptPrompt.id}
+                  response={gptPrompt.response}
+                />
+              ),
+            },
+          ]}
+        />
+      ) : (
+        <GptResponse
+          gptPromptId={gptPrompt.id}
+          response={gptPrompt.editedResponse ?? gptPrompt.response}
+        />
+      )}
     </div>
   );
 };
