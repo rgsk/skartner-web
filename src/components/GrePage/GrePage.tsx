@@ -23,7 +23,7 @@ import {
 import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
-import { GreWord } from './Pages/GreHistoryPage';
+import { GreWord } from './Pages/GreHistoryPage/Children/GreWord';
 
 const replaceWord = (word: string, prompt: string) => {
   return prompt.replace(/{word}/g, word);
