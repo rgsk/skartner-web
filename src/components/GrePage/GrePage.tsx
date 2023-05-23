@@ -20,6 +20,7 @@ import {
   useSendSinglePromptLazyQuery,
   useUpdateMetaForUserMutation,
 } from 'gql/graphql';
+import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
 import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
@@ -73,6 +74,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       fetchPolicy: 'network-only',
     });
   };
+  useRunOnWindowFocus(refreshSavedGreWord);
   const submitWord = async (prompt: string) => {
     if (wordInput) {
       sendSinglePrompt({
