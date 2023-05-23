@@ -1,5 +1,11 @@
 import { Delete } from '@mui/icons-material';
-import { Box, IconButton, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import {
   GreWordsQuery,
   useDeleteGptPromptMutation,
@@ -135,27 +141,39 @@ export const GptResponse: React.FC<IGptResponseProps> = ({
   gptPromptId,
 }) => {
   const [value, setValue] = useState(response);
-  const [updateGptPrompt] = useUpdateGptPromptMutation();
+  const [updateGptPrompt, { loading }] = useUpdateGptPromptMutation();
 
   return (
-    <TextField
-      fullWidth
-      multiline
-      variant="outlined"
-      value={value}
-      className="whitespace-pre-line"
-      onKeyDown={(event) => {
-        if (!event.shiftKey && event.key === 'Enter') {
-          event.preventDefault();
-          updateGptPrompt({
-            variables: {
-              id: gptPromptId,
-              editedResponse: value,
-            },
-          });
-        }
-      }}
-      onChange={(event) => setValue(event.target.value)}
-    />
+    <div style={{ position: 'relative' }}>
+      {loading && (
+        <CircularProgress
+          size={20}
+          style={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+          }}
+        />
+      )}
+      <TextField
+        fullWidth
+        multiline
+        variant="outlined"
+        value={value}
+        className="whitespace-pre-line"
+        onKeyDown={(event) => {
+          if (!event.shiftKey && event.key === 'Enter') {
+            event.preventDefault();
+            updateGptPrompt({
+              variables: {
+                id: gptPromptId,
+                editedResponse: value,
+              },
+            });
+          }
+        }}
+        onChange={(event) => setValue(event.target.value)}
+      />
+    </div>
   );
 };
