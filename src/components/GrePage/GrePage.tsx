@@ -16,12 +16,14 @@ import { useGreContext } from 'context/GreContext';
 import {
   useCreateGreWordMutation,
   useGreWordSearchPromptInputsQuery,
+  useGreWordsLazyQuery,
   useSendSinglePromptLazyQuery,
   useUpdateMetaForUserMutation,
 } from 'gql/graphql';
 import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
+import { GreWord } from './Pages/GreHistoryPage';
 
 const replaceWord = (word: string, prompt: string) => {
   return prompt.replace(/{word}/g, word);
@@ -33,7 +35,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const { user, userParsedMeta, metaFields, setUser } = useGlobalContext();
   const { greConfiguration } = useGreContext();
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
-
+  const [getGreWords, getGreWordsResult] = useGreWordsLazyQuery();
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
   const greWordSearchPromptInputsQueryResult =
@@ -65,6 +67,15 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
         },
       }).then(() => {
         setLastSubmittedWord(wordInput);
+      });
+      getGreWords({
+        variables: {
+          where: {
+            spelling: {
+              equals: wordInput,
+            },
+          },
+        },
       });
     }
   };
@@ -106,6 +117,47 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       );
     }
   };
+  const savedGreWord = getGreWordsResult.data?.greWords[0];
+
+  const renderSave = () => {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={
+          createGreWordMutationResult.loading ||
+          sendSinglePromptQueryResult.loading ||
+          !wordInput ||
+          wordInput !== lastSubmittedWord ||
+          tryingToSavePreviousResponseAgain
+        }
+        startIcon={
+          createGreWordMutationResult.loading ? (
+            <CircularProgress size={24} />
+          ) : null
+        }
+        onClick={() => {
+          if (
+            wordInput &&
+            sendSinglePromptQueryResult.variables?.input &&
+            sendSinglePromptQueryResult.data?.sendSinglePrompt
+          ) {
+            createGreWord({
+              variables: {
+                spelling: wordInput.toLowerCase(),
+                promptInput: sendSinglePromptQueryResult.variables?.input,
+                promptResponse:
+                  sendSinglePromptQueryResult.data?.sendSinglePrompt,
+                userId: user!.id,
+              },
+            });
+          }
+        }}
+      >
+        Save
+      </Button>
+    );
+  };
 
   return (
     <div className="p-4">
@@ -139,43 +191,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           }}
         />
       </Box>
-      <Box sx={{ mt: 3 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={
-            createGreWordMutationResult.loading ||
-            sendSinglePromptQueryResult.loading ||
-            !wordInput ||
-            wordInput !== lastSubmittedWord ||
-            tryingToSavePreviousResponseAgain
-          }
-          startIcon={
-            createGreWordMutationResult.loading ? (
-              <CircularProgress size={24} />
-            ) : null
-          }
-          onClick={() => {
-            if (
-              wordInput &&
-              sendSinglePromptQueryResult.variables?.input &&
-              sendSinglePromptQueryResult.data?.sendSinglePrompt
-            ) {
-              createGreWord({
-                variables: {
-                  spelling: wordInput.toLowerCase(),
-                  promptInput: sendSinglePromptQueryResult.variables?.input,
-                  promptResponse:
-                    sendSinglePromptQueryResult.data?.sendSinglePrompt,
-                  userId: user!.id,
-                },
-              });
-            }
-          }}
-        >
-          Save
-        </Button>
-      </Box>
+      <Box sx={{ mt: 3 }}>{renderSave()}</Box>
       <Box sx={{ my: 4 }}>
         <CollapsibleComponent head="Prompts">
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -293,9 +309,20 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       </Typography>
       {sendSinglePromptQueryResult.loading && <CircularProgress />}
 
-      <p className="whitespace-pre-line">
-        {sendSinglePromptQueryResult.data?.sendSinglePrompt}
-      </p>
+      {savedGreWord && (
+        <Box sx={{ mt: 5 }}>
+          <Typography variant="h6">Saved Word</Typography>
+          <GreWord greWord={savedGreWord} />
+        </Box>
+      )}
+
+      <Box sx={{ mt: 5 }}>
+        <Typography variant="h6">Search Result</Typography>
+        <p className="whitespace-pre-line">
+          {sendSinglePromptQueryResult.data?.sendSinglePrompt}
+        </p>
+        <Box sx={{ mt: 3 }}>{renderSave()}</Box>
+      </Box>
     </div>
   );
 };
