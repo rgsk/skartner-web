@@ -19,6 +19,7 @@ export type Scalars = {
 export type GptPrompt = {
   __typename?: 'GptPrompt';
   createdAt: Scalars['String'];
+  editedResponse?: Maybe<Scalars['String']>;
   greWord?: Maybe<GreWord>;
   greWordId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -88,6 +89,7 @@ export type Mutation = {
   deleteGreWord?: Maybe<GreWord>;
   deleteGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   publish?: Maybe<Post>;
+  updateGptPrompt?: Maybe<GptPrompt>;
   updateGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   updateUser?: Maybe<User>;
 };
@@ -136,6 +138,12 @@ export type MutationDeleteGreWordSearchPromptInputArgs = {
 
 export type MutationPublishArgs = {
   draftId: Scalars['String'];
+};
+
+
+export type MutationUpdateGptPromptArgs = {
+  editedResponse?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
 };
 
 
@@ -324,7 +332,7 @@ export type GreWordsQueryVariables = Exact<{
 }>;
 
 
-export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, greWordId?: string | null }> }> };
+export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }> }> };
 
 export type DeleteGreWordMutationVariables = Exact<{
   deleteGreWordId: Scalars['String'];
@@ -339,6 +347,14 @@ export type DeleteGptPromptMutationVariables = Exact<{
 
 
 export type DeleteGptPromptMutation = { __typename?: 'Mutation', deleteGptPrompt?: { __typename?: 'GptPrompt', id: string } | null };
+
+export type UpdateGptPromptMutationVariables = Exact<{
+  id: Scalars['String'];
+  editedResponse?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateGptPromptMutation = { __typename?: 'Mutation', updateGptPrompt?: { __typename?: 'GptPrompt', id: string, editedResponse?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
@@ -675,6 +691,7 @@ export const GreWordsDocument = gql`
       id
       input
       response
+      editedResponse
       greWordId
     }
   }
@@ -777,6 +794,41 @@ export function useDeleteGptPromptMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteGptPromptMutationHookResult = ReturnType<typeof useDeleteGptPromptMutation>;
 export type DeleteGptPromptMutationResult = Apollo.MutationResult<DeleteGptPromptMutation>;
 export type DeleteGptPromptMutationOptions = Apollo.BaseMutationOptions<DeleteGptPromptMutation, DeleteGptPromptMutationVariables>;
+export const UpdateGptPromptDocument = gql`
+    mutation UpdateGptPrompt($id: String!, $editedResponse: String) {
+  updateGptPrompt(id: $id, editedResponse: $editedResponse) {
+    id
+    editedResponse
+  }
+}
+    `;
+export type UpdateGptPromptMutationFn = Apollo.MutationFunction<UpdateGptPromptMutation, UpdateGptPromptMutationVariables>;
+
+/**
+ * __useUpdateGptPromptMutation__
+ *
+ * To run a mutation, you first call `useUpdateGptPromptMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGptPromptMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGptPromptMutation, { data, loading, error }] = useUpdateGptPromptMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      editedResponse: // value for 'editedResponse'
+ *   },
+ * });
+ */
+export function useUpdateGptPromptMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGptPromptMutation, UpdateGptPromptMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGptPromptMutation, UpdateGptPromptMutationVariables>(UpdateGptPromptDocument, options);
+      }
+export type UpdateGptPromptMutationHookResult = ReturnType<typeof useUpdateGptPromptMutation>;
+export type UpdateGptPromptMutationResult = Apollo.MutationResult<UpdateGptPromptMutation>;
+export type UpdateGptPromptMutationOptions = Apollo.BaseMutationOptions<UpdateGptPromptMutation, UpdateGptPromptMutationVariables>;
 export const CreateUserDocument = gql`
     mutation createUser($email: String!) {
   createUser(email: $email) {

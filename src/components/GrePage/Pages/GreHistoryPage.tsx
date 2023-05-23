@@ -13,6 +13,7 @@ import {
   useDeleteGptPromptMutation,
   useDeleteGreWordMutation,
   useGreWordsQuery,
+  useUpdateGptPromptMutation,
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import { useWindowFocus } from 'hooks/utils/useWindowFocus';
@@ -192,9 +193,12 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
                           <Delete />
                         </IconButton>
                       </Box>
-                      <p className="whitespace-pre-line border border-solid p-2 border-green-500">
-                        {gptPrompt.response}
-                      </p>
+                      <GptResponse
+                        gptPromptId={gptPrompt.id}
+                        response={
+                          gptPrompt.editedResponse ?? gptPrompt.response
+                        }
+                      />
                     </div>
                   );
                 })}
@@ -223,3 +227,38 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   );
 };
 export default GreHistoryPage;
+
+interface IGptResponseProps {
+  response: string;
+  gptPromptId: string;
+}
+
+const GptResponse: React.FC<IGptResponseProps> = ({
+  response,
+  gptPromptId,
+}) => {
+  const [value, setValue] = useState(response);
+  const [updateGptPrompt] = useUpdateGptPromptMutation();
+
+  return (
+    <TextField
+      fullWidth
+      multiline
+      variant="outlined"
+      value={value}
+      className="whitespace-pre-line"
+      onKeyDown={(event) => {
+        if (!event.shiftKey && event.key === 'Enter') {
+          event.preventDefault();
+          updateGptPrompt({
+            variables: {
+              id: gptPromptId,
+              editedResponse: value,
+            },
+          });
+        }
+      }}
+      onChange={(event) => setValue(event.target.value)}
+    />
+  );
+};
