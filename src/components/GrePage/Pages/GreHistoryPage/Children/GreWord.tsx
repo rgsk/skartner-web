@@ -18,7 +18,7 @@ interface IGreWordProps {
   greWord: GreWordsQuery['greWords'][number];
 }
 export const GreWord: React.FC<IGreWordProps> = ({ greWord }) => {
-  const [deleteGreWord] = useDeleteGreWordMutation();
+  const [deleteGreWord, deleteGreWordResult] = useDeleteGreWordMutation();
 
   const handleDeleteGreWord = (greWord: GreWordsQuery['greWords'][number]) => {
     deleteGreWord({
@@ -58,6 +58,7 @@ export const GreWord: React.FC<IGreWordProps> = ({ greWord }) => {
           onClick={() => {
             handleDeleteGreWord(greWord);
           }}
+          disabled={deleteGreWordResult.loading}
         >
           <Delete />
         </IconButton>
@@ -83,7 +84,7 @@ interface IGptPromptProps {
   gptPrompt: GreWordsQuery['greWords'][number]['gptPrompts'][number];
 }
 const GptPrompt: React.FC<IGptPromptProps> = ({ greWord, gptPrompt }) => {
-  const [deleteGptPrompt] = useDeleteGptPromptMutation();
+  const [deleteGptPrompt, deleteGptPromptResult] = useDeleteGptPromptMutation();
 
   return (
     <div key={gptPrompt.id}>
@@ -97,6 +98,7 @@ const GptPrompt: React.FC<IGptPromptProps> = ({ greWord, gptPrompt }) => {
         <p>Input: {gptPrompt.input}</p>
         <IconButton
           color="error"
+          disabled={deleteGptPromptResult.loading}
           onClick={() => {
             deleteGptPrompt({
               variables: {
