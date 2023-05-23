@@ -76,6 +76,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             },
           },
         },
+        fetchPolicy: 'network-only',
       });
     }
   };
@@ -307,7 +308,6 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       <Typography fontWeight={'bold'} fontSize={18}>
         {wordInput.toLowerCase()}
       </Typography>
-      {sendSinglePromptQueryResult.loading && <CircularProgress />}
 
       {savedGreWord && (
         <Box sx={{ mt: 5 }}>
@@ -318,6 +318,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
 
       <Box sx={{ mt: 5 }}>
         <Typography variant="h6">Search Result</Typography>
+        {sendSinglePromptQueryResult.loading && <CircularProgress />}
         <p className="whitespace-pre-line">
           {sendSinglePromptQueryResult.data?.sendSinglePrompt}
         </p>
