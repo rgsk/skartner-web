@@ -144,6 +144,7 @@ export type MutationCreateDraftArgs = {
 
 
 export type MutationCreateGreWordArgs = {
+  greWordTagId?: InputMaybe<Scalars['String']>;
   promptInput: Scalars['String'];
   promptResponse: Scalars['String'];
   spelling: Scalars['String'];
@@ -366,10 +367,11 @@ export type CreateGreWordMutationVariables = Exact<{
   promptInput: Scalars['String'];
   promptResponse: Scalars['String'];
   userId: Scalars['String'];
+  greWordTagId?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord: { __typename?: 'GreWord', id: string, spelling: string, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string }> } };
+export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord: { __typename?: 'GreWord', id: string, spelling: string, greWordTagId?: string | null, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string }> } };
 
 export type GreConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -667,15 +669,17 @@ export type SendSinglePromptQueryHookResult = ReturnType<typeof useSendSinglePro
 export type SendSinglePromptLazyQueryHookResult = ReturnType<typeof useSendSinglePromptLazyQuery>;
 export type SendSinglePromptQueryResult = Apollo.QueryResult<SendSinglePromptQuery, SendSinglePromptQueryVariables>;
 export const CreateGreWordDocument = gql`
-    mutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!, $userId: String!) {
+    mutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!, $userId: String!, $greWordTagId: String) {
   createGreWord(
     spelling: $spelling
     promptInput: $promptInput
     promptResponse: $promptResponse
     userId: $userId
+    greWordTagId: $greWordTagId
   ) {
     id
     spelling
+    greWordTagId
     gptPrompts {
       id
       input
@@ -703,6 +707,7 @@ export type CreateGreWordMutationFn = Apollo.MutationFunction<CreateGreWordMutat
  *      promptInput: // value for 'promptInput'
  *      promptResponse: // value for 'promptResponse'
  *      userId: // value for 'userId'
+ *      greWordTagId: // value for 'greWordTagId'
  *   },
  * });
  */

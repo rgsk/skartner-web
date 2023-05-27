@@ -11,20 +11,31 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import { useGlobalContext } from 'context/GlobalContext';
 import { useGreContext } from 'context/GreContext';
 import {
   useCreateGreWordMutation,
   useGreWordSearchPromptInputsQuery,
+  useGreWordTagsQuery,
   useGreWordsLazyQuery,
   useSendSinglePromptLazyQuery,
   useUpdateMetaForUserMutation,
 } from 'gql/graphql';
+import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
+import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 import { GreWord } from './Pages/GreHistoryPage/Children/GreWord';
+
+enum QueryParams {
+  tag = 'tag',
+}
 
 const replaceWord = (word: string, prompt: string) => {
   return prompt.replace(/{word}/g, word);
@@ -36,6 +47,17 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const { user, userParsedMeta, metaFields, setUser } = useGlobalContext();
   const { greConfiguration } = useGreContext();
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
+  const [tag, setTag] = useState<string>('');
+
+  const greWordTagsQueryResult = useGreWordTagsQuery({
+    variables: {
+      where: {
+        userId: {
+          equals: user!.id,
+        },
+      },
+    },
+  });
   const [getGreWords, getGreWordsResult] = useGreWordsLazyQuery();
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
@@ -97,6 +119,25 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     sendSinglePromptQueryResult.data?.sendSinglePrompt,
   ]);
 
+  const queryTrackerInput = useMemo(() => {
+    const result: any = {};
+
+    if (tag) {
+      result[QueryParams.tag] = tag;
+    } else {
+      result[QueryParams.tag] = ValueToDeleteQueryKey;
+    }
+    return result;
+  }, [tag]);
+
+  useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
+    const { [QueryParams.tag]: tagParam } = params;
+    if (typeof tagParam === 'string') {
+      setTag(tagParam);
+    }
+    onParamsAssignedToState();
+  });
+
   const handleDefaultPromptInputTextChange = (newPromptInputText: string) => {
     if (user && metaFields) {
       updateMetaForUser({
@@ -156,6 +197,9 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                 promptResponse:
                   sendSinglePromptQueryResult.data?.sendSinglePrompt,
                 userId: user!.id,
+                greWordTagId: greWordTagsQueryResult.data?.greWordTags.find(
+                  (t) => t.name === tag
+                )?.id,
               },
             }).then(() => {
               refreshSavedGreWord();
@@ -170,6 +214,35 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
 
   return (
     <div className="p-4">
+      <Box
+        sx={{
+          mb: 2,
+        }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Tag</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={tag}
+            label="Tag"
+            onChange={(event) => {
+              setTag(event.target.value);
+            }}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {greWordTagsQueryResult.data?.greWordTags.map((tag) => {
+              return (
+                <MenuItem key={tag.id} value={tag.name}>
+                  {tag.name}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      </Box>
       <Box>
         <TextField
           label="Word"

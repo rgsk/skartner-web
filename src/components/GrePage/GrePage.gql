@@ -7,15 +7,18 @@ mutation createGreWord(
   $promptInput: String!
   $promptResponse: String!
   $userId: String!
+  $greWordTagId: String
 ) {
   createGreWord(
     spelling: $spelling
     promptInput: $promptInput
     promptResponse: $promptResponse
     userId: $userId
+    greWordTagId: $greWordTagId
   ) {
     id
     spelling
+    greWordTagId
     gptPrompts {
       id
       input
