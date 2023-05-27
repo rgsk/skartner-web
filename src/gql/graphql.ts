@@ -31,6 +31,7 @@ export type GptPrompt = {
   greWordId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   input: Scalars['String'];
+  meta: Scalars['Json'];
   response: Scalars['String'];
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
@@ -46,7 +47,10 @@ export type GreWord = {
   __typename?: 'GreWord';
   createdAt: Scalars['String'];
   gptPrompts: Array<GptPrompt>;
+  greWordTag?: Maybe<GreWordTag>;
+  greWordTagId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  meta: Scalars['Json'];
   spelling: Scalars['String'];
   status: GreWordStatus;
   updatedAt: Scalars['String'];
@@ -58,6 +62,7 @@ export type GreWordSearchPromptInput = {
   __typename?: 'GreWordSearchPromptInput';
   createdAt: Scalars['String'];
   id: Scalars['String'];
+  meta: Scalars['Json'];
   text: Scalars['String'];
   updatedAt: Scalars['String'];
   user: User;
@@ -79,7 +84,26 @@ export enum GreWordStatus {
   StillLearning = 'STILL_LEARNING'
 }
 
+export type GreWordTag = {
+  __typename?: 'GreWordTag';
+  createdAt: Scalars['String'];
+  greWords: Array<GreWord>;
+  id: Scalars['String'];
+  meta: Scalars['Json'];
+  name: Scalars['String'];
+  updatedAt: Scalars['String'];
+  user: User;
+  userId: Scalars['String'];
+};
+
+export type GreWordTagWhereInput = {
+  id?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
 export type GreWordWhereInput = {
+  greWordTagId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
   spelling?: InputMaybe<StringFilter>;
   status?: InputMaybe<EnumGreWordStatusFilter>;
@@ -194,6 +218,7 @@ export type Query = {
   gptPrompts?: Maybe<Array<Maybe<GptPrompt>>>;
   greConfiguration: GreConfiguration;
   greWordSearchPromptInputs: Array<GreWordSearchPromptInput>;
+  greWordTags: Array<GreWordTag>;
   greWords: Array<GreWord>;
   greWordsCount: Scalars['Int'];
   hello: HelloWorld;
@@ -220,6 +245,13 @@ export type QueryGreWordSearchPromptInputsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<GreWordSearchPromptInputWhereInput>;
+};
+
+
+export type QueryGreWordTagsArgs = {
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<GreWordTagWhereInput>;
 };
 
 
@@ -266,9 +298,10 @@ export type User = {
   email: Scalars['String'];
   gptPrompts: Array<GptPrompt>;
   greWordSearchPromptInputs: Array<GreWordSearchPromptInput>;
+  greWordTags: Array<GreWordTag>;
   greWords: Array<GreWord>;
   id: Scalars['String'];
-  meta?: Maybe<Scalars['Json']>;
+  meta: Scalars['Json'];
   updatedAt: Scalars['String'];
 };
 
@@ -319,7 +352,7 @@ export type UpdateMetaForUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMetaForUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'User', id: string, email: string, meta?: any | null } | null };
+export type UpdateMetaForUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'User', id: string, email: string, meta: any } | null };
 
 export type SendSinglePromptQueryVariables = Exact<{
   input: Scalars['String'];
@@ -381,19 +414,26 @@ export type UpdateGptPromptMutationVariables = Exact<{
 
 export type UpdateGptPromptMutation = { __typename?: 'Mutation', updateGptPrompt?: { __typename?: 'GptPrompt', id: string, editedResponse?: string | null } | null };
 
+export type GreWordTagsQueryVariables = Exact<{
+  where?: InputMaybe<GreWordTagWhereInput>;
+}>;
+
+
+export type GreWordTagsQuery = { __typename?: 'Query', greWordTags: Array<{ __typename?: 'GreWordTag', id: string, name: string }> };
+
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, email: string, meta?: any | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, email: string, meta: any } | null };
 
 export type UsersForLoginPageQueryVariables = Exact<{
   where?: InputMaybe<UserWhereInput>;
 }>;
 
 
-export type UsersForLoginPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, meta?: any | null }> };
+export type UsersForLoginPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, meta: any }> };
 
 export type DraftsForPracticeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -905,6 +945,42 @@ export function useUpdateGptPromptMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateGptPromptMutationHookResult = ReturnType<typeof useUpdateGptPromptMutation>;
 export type UpdateGptPromptMutationResult = Apollo.MutationResult<UpdateGptPromptMutation>;
 export type UpdateGptPromptMutationOptions = Apollo.BaseMutationOptions<UpdateGptPromptMutation, UpdateGptPromptMutationVariables>;
+export const GreWordTagsDocument = gql`
+    query greWordTags($where: GreWordTagWhereInput) {
+  greWordTags(where: $where) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGreWordTagsQuery__
+ *
+ * To run a query within a React component, call `useGreWordTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGreWordTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGreWordTagsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGreWordTagsQuery(baseOptions?: Apollo.QueryHookOptions<GreWordTagsQuery, GreWordTagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GreWordTagsQuery, GreWordTagsQueryVariables>(GreWordTagsDocument, options);
+      }
+export function useGreWordTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GreWordTagsQuery, GreWordTagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GreWordTagsQuery, GreWordTagsQueryVariables>(GreWordTagsDocument, options);
+        }
+export type GreWordTagsQueryHookResult = ReturnType<typeof useGreWordTagsQuery>;
+export type GreWordTagsLazyQueryHookResult = ReturnType<typeof useGreWordTagsLazyQuery>;
+export type GreWordTagsQueryResult = Apollo.QueryResult<GreWordTagsQuery, GreWordTagsQueryVariables>;
 export const CreateUserDocument = gql`
     mutation createUser($email: String!) {
   createUser(email: $email) {

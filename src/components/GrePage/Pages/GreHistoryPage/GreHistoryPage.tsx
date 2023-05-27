@@ -1,13 +1,17 @@
 import {
   Box,
+  Checkbox,
   Chip,
   CircularProgress,
+  FormControlLabel,
+  FormGroup,
   Pagination,
   TextField,
 } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import {
   GreWordStatus,
+  useGreWordTagsQuery,
   useGreWordsQuery,
   useStatusWiseGreWordCountQuery,
 } from 'gql/graphql';
@@ -21,6 +25,7 @@ enum QueryParams {
   page = 'page',
   query = 'query',
   status = 'status',
+  tag = 'tag',
 }
 
 const itemsPerPage = 5;
@@ -39,17 +44,33 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const { user } = useGlobalContext();
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedOptions, setSelectedOptions] = useState<GreWordStatus[]>(
+  const [selectedStatuses, setSelectedStatuses] = useState<GreWordStatus[]>(
     sortedGreWordStatuses
   );
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const greWordTagsQueryResult = useGreWordTagsQuery({
+    variables: {
+      where: {
+        userId: {
+          equals: user!.id,
+        },
+      },
+    },
+  });
+  const greWordTags = greWordTagsQueryResult.data?.greWordTags ?? [];
 
-  const handleOptionToggle = (option: GreWordStatus) => {
-    if (selectedOptions.includes(option)) {
-      setSelectedOptions(
-        selectedOptions.filter((selectedOption) => selectedOption !== option)
-      );
+  const handleStatusToggle = (status: GreWordStatus) => {
+    if (selectedStatuses.includes(status)) {
+      setSelectedStatuses(selectedStatuses.filter((s) => s !== status));
     } else {
-      setSelectedOptions([...selectedOptions, option]);
+      setSelectedStatuses([...selectedStatuses, status]);
+    }
+  };
+  const handleTagsToggle = (tagName: string) => {
+    if (selectedTags.includes(tagName)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tagName));
+    } else {
+      setSelectedTags([...selectedTags, tagName]);
     }
   };
 
@@ -59,7 +80,14 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
         spelling: { startsWith: queryInput },
         userId: { equals: user!.id },
         status: {
-          in: selectedOptions,
+          in: selectedStatuses,
+        },
+        greWordTagId: {
+          in: selectedTags.length
+            ? selectedTags.map(
+                (tagName) => greWordTags.find((t) => t.name === tagName)!.id
+              )
+            : undefined,
         },
       },
       skip: (currentPage - 1) * itemsPerPage,
@@ -91,13 +119,14 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     } else {
       result[QueryParams.query] = ValueToDeleteQueryKey;
     }
-    if (selectedOptions.length === sortedGreWordStatuses.length) {
+    if (selectedStatuses.length === sortedGreWordStatuses.length) {
       result[QueryParams.status] = ValueToDeleteQueryKey;
     } else {
-      result[QueryParams.status] = selectedOptions;
+      result[QueryParams.status] = selectedStatuses;
     }
+    result[QueryParams.tag] = selectedTags;
     return result;
-  }, [currentPage, queryInput, selectedOptions]);
+  }, [currentPage, queryInput, selectedStatuses, selectedTags]);
 
   useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
     const {
@@ -113,9 +142,9 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     }
     if (statusParam) {
       if (typeof statusParam === 'string') {
-        setSelectedOptions([statusParam as GreWordStatus]);
+        setSelectedStatuses([statusParam as GreWordStatus]);
       } else {
-        setSelectedOptions(statusParam as GreWordStatus[]);
+        setSelectedStatuses(statusParam as GreWordStatus[]);
       }
     }
     onParamsAssignedToState();
@@ -164,11 +193,27 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
               statusWiseGreWordCountResult.data?.[option] || 0
             }) `}
             clickable
-            color={selectedOptions.includes(option) ? 'primary' : 'default'}
-            onClick={() => handleOptionToggle(option)}
+            color={selectedStatuses.includes(option) ? 'primary' : 'default'}
+            onClick={() => handleStatusToggle(option)}
             style={{ margin: '4px' }}
           />
         ))}
+      </Box>
+      <Box>
+        <FormGroup>
+          {greWordTags.map((greWordTag) => (
+            <FormControlLabel
+              key={greWordTag.id}
+              control={
+                <Checkbox
+                  checked={selectedTags.includes(greWordTag.name)}
+                  onChange={() => handleTagsToggle(greWordTag.name)}
+                />
+              }
+              label={greWordTag.name}
+            />
+          ))}
+        </FormGroup>
       </Box>
       <div className="h-[50px] mt-4">
         {greWordsQueryResult.loading && <CircularProgress />}
