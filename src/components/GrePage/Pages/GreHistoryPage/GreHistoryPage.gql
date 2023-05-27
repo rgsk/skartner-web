@@ -2,6 +2,7 @@ query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
   greWords(where: $where, skip: $skip, take: $take) {
     id
     spelling
+    status
     gptPrompts {
       id
       input
@@ -13,6 +14,29 @@ query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
   greWordsCount(where: $where)
 }
 
+query StatusWiseGreWordCount($userId: String!) {
+  STARTED_LEARNING: greWordsCount(
+    where: { status: { equals: STARTED_LEARNING }, userId: { equals: $userId } }
+  )
+  STILL_LEARNING: greWordsCount(
+    where: { status: { equals: STILL_LEARNING }, userId: { equals: $userId } }
+  )
+  ALMOST_LEARNT: greWordsCount(
+    where: { status: { equals: ALMOST_LEARNT }, userId: { equals: $userId } }
+  )
+  FINISHED_LEARNING: greWordsCount(
+    where: {
+      status: { equals: FINISHED_LEARNING }
+      userId: { equals: $userId }
+    }
+  )
+  MEMORY_MODE: greWordsCount(
+    where: { status: { equals: MEMORY_MODE }, userId: { equals: $userId } }
+  )
+  MASTERED: greWordsCount(
+    where: { status: { equals: MASTERED }, userId: { equals: $userId } }
+  )
+}
 mutation DeleteGreWord($deleteGreWordId: String!) {
   deleteGreWord(id: $deleteGreWordId) {
     id

@@ -3,11 +3,14 @@ require('dotenv').config();
 // above is required if variable is defined in local .env
 // docker env is provisioned without this package too
 
-// console.log('process.env.SKARTNER_SERVER', process.env.SKARTNER_SERVER);
+// console.log(
+//   'process.env.NEXT_PUBLIC_SKARTNER_SERVER',
+//   process.env.NEXT_PUBLIC_SKARTNER_SERVER
+// );
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.SKARTNER_SERVER,
+  schema: process.env.NEXT_PUBLIC_SKARTNER_SERVER,
   documents: 'src/**/*.{graphql,gql}',
   generates: {
     'src/gql/graphql.ts': {

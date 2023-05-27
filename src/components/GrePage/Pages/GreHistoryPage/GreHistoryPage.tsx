@@ -1,6 +1,16 @@
-import { Box, CircularProgress, Pagination, TextField } from '@mui/material';
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Pagination,
+  TextField,
+} from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
-import { useGreWordsQuery } from 'gql/graphql';
+import {
+  GreWordStatus,
+  useGreWordsQuery,
+  useStatusWiseGreWordCountQuery,
+} from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
@@ -14,22 +24,50 @@ enum QueryParams {
 
 const itemsPerPage = 5;
 
+const sortedGreWordStatuses = [
+  GreWordStatus.StartedLearning,
+  GreWordStatus.StillLearning,
+  GreWordStatus.AlmostLearnt,
+  GreWordStatus.FinishedLearning,
+  GreWordStatus.MemoryMode,
+  GreWordStatus.Mastered,
+];
+
 interface IGreHistoryPageProps {}
 const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const { user } = useGlobalContext();
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOptions, setSelectedOptions] = useState<GreWordStatus[]>([]);
+
+  const handleOptionToggle = (option: GreWordStatus) => {
+    if (selectedOptions.includes(option)) {
+      setSelectedOptions(
+        selectedOptions.filter((selectedOption) => selectedOption !== option)
+      );
+    } else {
+      setSelectedOptions([...selectedOptions, option]);
+    }
+  };
 
   const greWordsQueryResult = useGreWordsQuery({
     variables: {
       where: {
         spelling: { startsWith: queryInput },
         userId: { equals: user!.id },
+        status: {
+          in: selectedOptions,
+        },
       },
       skip: (currentPage - 1) * itemsPerPage,
       take: itemsPerPage,
     },
   });
+
+  const statusWiseGreWordCountResult = useStatusWiseGreWordCountQuery({
+    variables: { userId: user!.id },
+  });
+
   useRunOnWindowFocus(greWordsQueryResult.refetch);
 
   const totalPages = useMemo(
@@ -99,6 +137,20 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
         }}
       >
         {renderPagination()}
+      </Box>
+      <Box>
+        {sortedGreWordStatuses.map((option) => (
+          <Chip
+            key={option}
+            label={`${option} (${
+              statusWiseGreWordCountResult.data?.[option] || 0
+            }) `}
+            clickable
+            color={selectedOptions.includes(option) ? 'primary' : 'default'}
+            onClick={() => handleOptionToggle(option)}
+            style={{ margin: '4px' }}
+          />
+        ))}
       </Box>
       <div className="h-[50px] mt-4">
         {greWordsQueryResult.loading && <CircularProgress />}

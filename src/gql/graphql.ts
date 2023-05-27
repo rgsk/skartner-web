@@ -16,6 +16,13 @@ export type Scalars = {
   Json: any;
 };
 
+export type EnumGreWordStatusFilter = {
+  equals?: InputMaybe<GreWordStatus>;
+  in?: InputMaybe<Array<GreWordStatus>>;
+  not?: InputMaybe<GreWordStatus>;
+  notIn?: InputMaybe<Array<GreWordStatus>>;
+};
+
 export type GptPrompt = {
   __typename?: 'GptPrompt';
   createdAt: Scalars['String'];
@@ -41,6 +48,7 @@ export type GreWord = {
   gptPrompts: Array<GptPrompt>;
   id: Scalars['String'];
   spelling: Scalars['String'];
+  status: GreWordStatus;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   userId?: Maybe<Scalars['String']>;
@@ -62,9 +70,19 @@ export type GreWordSearchPromptInputWhereInput = {
   userId?: InputMaybe<StringFilter>;
 };
 
+export enum GreWordStatus {
+  AlmostLearnt = 'ALMOST_LEARNT',
+  FinishedLearning = 'FINISHED_LEARNING',
+  Mastered = 'MASTERED',
+  MemoryMode = 'MEMORY_MODE',
+  StartedLearning = 'STARTED_LEARNING',
+  StillLearning = 'STILL_LEARNING'
+}
+
 export type GreWordWhereInput = {
   id?: InputMaybe<StringFilter>;
   spelling?: InputMaybe<StringFilter>;
+  status?: InputMaybe<EnumGreWordStatusFilter>;
   userId?: InputMaybe<StringFilter>;
 };
 
@@ -332,7 +350,14 @@ export type GreWordsQueryVariables = Exact<{
 }>;
 
 
-export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }> }> };
+export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }> }> };
+
+export type StatusWiseGreWordCountQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type StatusWiseGreWordCountQuery = { __typename?: 'Query', STARTED_LEARNING: number, STILL_LEARNING: number, ALMOST_LEARNT: number, FINISHED_LEARNING: number, MEMORY_MODE: number, MASTERED: number };
 
 export type DeleteGreWordMutationVariables = Exact<{
   deleteGreWordId: Scalars['String'];
@@ -687,6 +712,7 @@ export const GreWordsDocument = gql`
   greWords(where: $where, skip: $skip, take: $take) {
     id
     spelling
+    status
     gptPrompts {
       id
       input
@@ -728,6 +754,56 @@ export function useGreWordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GreWordsQueryHookResult = ReturnType<typeof useGreWordsQuery>;
 export type GreWordsLazyQueryHookResult = ReturnType<typeof useGreWordsLazyQuery>;
 export type GreWordsQueryResult = Apollo.QueryResult<GreWordsQuery, GreWordsQueryVariables>;
+export const StatusWiseGreWordCountDocument = gql`
+    query StatusWiseGreWordCount($userId: String!) {
+  STARTED_LEARNING: greWordsCount(
+    where: {status: {equals: STARTED_LEARNING}, userId: {equals: $userId}}
+  )
+  STILL_LEARNING: greWordsCount(
+    where: {status: {equals: STILL_LEARNING}, userId: {equals: $userId}}
+  )
+  ALMOST_LEARNT: greWordsCount(
+    where: {status: {equals: ALMOST_LEARNT}, userId: {equals: $userId}}
+  )
+  FINISHED_LEARNING: greWordsCount(
+    where: {status: {equals: FINISHED_LEARNING}, userId: {equals: $userId}}
+  )
+  MEMORY_MODE: greWordsCount(
+    where: {status: {equals: MEMORY_MODE}, userId: {equals: $userId}}
+  )
+  MASTERED: greWordsCount(
+    where: {status: {equals: MASTERED}, userId: {equals: $userId}}
+  )
+}
+    `;
+
+/**
+ * __useStatusWiseGreWordCountQuery__
+ *
+ * To run a query within a React component, call `useStatusWiseGreWordCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStatusWiseGreWordCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStatusWiseGreWordCountQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useStatusWiseGreWordCountQuery(baseOptions: Apollo.QueryHookOptions<StatusWiseGreWordCountQuery, StatusWiseGreWordCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StatusWiseGreWordCountQuery, StatusWiseGreWordCountQueryVariables>(StatusWiseGreWordCountDocument, options);
+      }
+export function useStatusWiseGreWordCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatusWiseGreWordCountQuery, StatusWiseGreWordCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StatusWiseGreWordCountQuery, StatusWiseGreWordCountQueryVariables>(StatusWiseGreWordCountDocument, options);
+        }
+export type StatusWiseGreWordCountQueryHookResult = ReturnType<typeof useStatusWiseGreWordCountQuery>;
+export type StatusWiseGreWordCountLazyQueryHookResult = ReturnType<typeof useStatusWiseGreWordCountLazyQuery>;
+export type StatusWiseGreWordCountQueryResult = Apollo.QueryResult<StatusWiseGreWordCountQuery, StatusWiseGreWordCountQueryVariables>;
 export const DeleteGreWordDocument = gql`
     mutation DeleteGreWord($deleteGreWordId: String!) {
   deleteGreWord(id: $deleteGreWordId) {
