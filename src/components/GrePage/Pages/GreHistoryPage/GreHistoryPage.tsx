@@ -1,3 +1,4 @@
+import { Delete } from '@mui/icons-material';
 import {
   Box,
   Checkbox,
@@ -5,12 +6,14 @@ import {
   CircularProgress,
   FormControlLabel,
   FormGroup,
+  IconButton,
   Pagination,
   TextField,
 } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import {
   GreWordStatus,
+  useDeleteGreWordTagMutation,
   useGreWordTagsQuery,
   useGreWordsQuery,
   useStatusWiseGreWordCountQuery,
@@ -67,6 +70,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       setSelectedStatuses([...selectedStatuses, status]);
     }
   };
+  const [deleteGreWordTag] = useDeleteGreWordTagMutation();
   const handleTagsToggle = (tagName: string) => {
     if (selectedTags.includes(tagName)) {
       setSelectedTags(selectedTags.filter((t) => t !== tagName));
@@ -202,16 +206,42 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       <Box>
         <FormGroup>
           {greWordTags.map((greWordTag) => (
-            <FormControlLabel
-              key={greWordTag.id}
-              control={
-                <Checkbox
-                  checked={selectedTags.includes(greWordTag.name)}
-                  onChange={() => handleTagsToggle(greWordTag.name)}
-                />
-              }
-              label={greWordTag.name}
-            />
+            <Box key={greWordTag.id}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectedTags.includes(greWordTag.name)}
+                    onChange={() => handleTagsToggle(greWordTag.name)}
+                  />
+                }
+                label={greWordTag.name}
+              />
+              <IconButton
+                onClick={() => {
+                  deleteGreWordTag({
+                    variables: {
+                      name: greWordTag.name,
+                    },
+                    update: (cache, { data }) => {
+                      if (data?.deleteGreWordTag) {
+                        cache.modify({
+                          fields: {
+                            greWordTags(existingTags = [], { readField }) {
+                              return existingTags.filter(
+                                (tagRef: any) =>
+                                  greWordTag.name !== readField('name', tagRef)
+                              );
+                            },
+                          },
+                        });
+                      }
+                    },
+                  });
+                }}
+              >
+                <Delete />
+              </IconButton>
+            </Box>
           ))}
         </FormGroup>
       </Box>
