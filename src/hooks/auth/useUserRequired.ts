@@ -1,4 +1,3 @@
-import { LocalStorageKeys } from 'constants/globalConstants';
 import { useGlobalContext } from 'context/GlobalContext';
 import { addParamsToPath } from 'lib/queryParamsUtils';
 import { useRouter } from 'next/router';
@@ -11,9 +10,7 @@ const useUserRequired = () => {
   const router = useRouter();
 
   const userPresent = useMemo(() => {
-    // localStorage.getItem(LocalStorageKeys.user) check is added so that
-    // we can easily test non-loggedin user behaviours but removing user from localStorage
-    return !!(user && localStorage.getItem(LocalStorageKeys.user));
+    return !!user;
   }, [user]);
 
   useEffect(() => {

@@ -7,8 +7,8 @@ import { createContext, useContext, useMemo } from 'react';
 
 const useGlobalContextValue = () => {
   const [user, setUser, userStatePopulated] = useLocalStorageState<
-    UsersForLoginPageQuery['users'][number] | undefined | null
-  >(LocalStorageKeys.user, undefined);
+    UsersForLoginPageQuery['users'][number]
+  >(LocalStorageKeys.user, null);
 
   const { data: { metaFields } = {} } = useMetaFieldsQuery();
 

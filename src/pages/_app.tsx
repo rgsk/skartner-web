@@ -7,6 +7,7 @@ import Head from 'next/head';
 import theme from 'theme';
 
 import { ApolloProvider } from '@apollo/client';
+import Layout from 'components/Global/Layout';
 import { GlobalContextProvider } from 'context/GlobalContext';
 import { GreContextProvider } from 'context/GreContext';
 import apolloClient from 'lib/apolloClient';
@@ -32,7 +33,9 @@ export default function MyApp(props: MyAppProps) {
           <CssBaseline />
           <GlobalContextProvider>
             <GreContextProvider>
-              <Component {...pageProps} />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
             </GreContextProvider>
           </GlobalContextProvider>
         </ThemeProvider>
