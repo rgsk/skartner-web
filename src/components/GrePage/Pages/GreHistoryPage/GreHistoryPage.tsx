@@ -1,4 +1,4 @@
-import { Button, CircularProgress, TextField } from '@mui/material';
+import { Box, CircularProgress, Pagination, TextField } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import { useGreWordsQuery } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
@@ -65,6 +65,23 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     onParamsAssignedToState();
   });
 
+  const renderPagination = () => {
+    return (
+      <Pagination
+        count={totalPages} // Set the total number of pages
+        page={currentPage} // Set the current page
+        onChange={(event, newPage) => {
+          setCurrentPage(newPage);
+        }} // Handle page changes
+        shape="rounded"
+        variant="outlined"
+        color="primary"
+        showFirstButton
+        showLastButton
+      />
+    );
+  };
+
   return (
     <div className="p-4">
       <div>
@@ -76,6 +93,13 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
           }}
         />
       </div>
+      <Box
+        sx={{
+          my: 2,
+        }}
+      >
+        {renderPagination()}
+      </Box>
       <div className="h-[50px] mt-4">
         {greWordsQueryResult.loading && <CircularProgress />}
       </div>
@@ -84,22 +108,13 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
           return <GreWord key={greWord.id} greWord={greWord} />;
         })}
       </div>
-      <div>
-        {Array.from({ length: totalPages }, (_, index) => {
-          const page = index + 1;
-          return (
-            <Button
-              key={page}
-              variant={page === currentPage ? 'outlined' : 'text'}
-              onClick={() => {
-                setCurrentPage(page);
-              }}
-            >
-              {page}
-            </Button>
-          );
-        })}
-      </div>
+      <Box
+        sx={{
+          my: 2,
+        }}
+      >
+        {renderPagination()}
+      </Box>
     </div>
   );
 };
