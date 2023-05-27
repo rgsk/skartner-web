@@ -207,6 +207,7 @@ export type MutationUpdateGptPromptArgs = {
 export type MutationUpdateGreWordArgs = {
   greWordTagName?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
+  status?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -461,6 +462,7 @@ export type GreWordTagsQuery = { __typename?: 'Query', greWordTags: Array<{ __ty
 export type UpdateGreWordMutationVariables = Exact<{
   updateGreWordId: Scalars['String'];
   greWordTagName?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -1103,8 +1105,12 @@ export type GreWordTagsQueryHookResult = ReturnType<typeof useGreWordTagsQuery>;
 export type GreWordTagsLazyQueryHookResult = ReturnType<typeof useGreWordTagsLazyQuery>;
 export type GreWordTagsQueryResult = Apollo.QueryResult<GreWordTagsQuery, GreWordTagsQueryVariables>;
 export const UpdateGreWordDocument = gql`
-    mutation updateGreWord($updateGreWordId: String!, $greWordTagName: String) {
-  updateGreWord(id: $updateGreWordId, greWordTagName: $greWordTagName) {
+    mutation updateGreWord($updateGreWordId: String!, $greWordTagName: String, $status: String) {
+  updateGreWord(
+    id: $updateGreWordId
+    greWordTagName: $greWordTagName
+    status: $status
+  ) {
     id
   }
 }
@@ -1126,6 +1132,7 @@ export type UpdateGreWordMutationFn = Apollo.MutationFunction<UpdateGreWordMutat
  *   variables: {
  *      updateGreWordId: // value for 'updateGreWordId'
  *      greWordTagName: // value for 'greWordTagName'
+ *      status: // value for 'status'
  *   },
  * });
  */

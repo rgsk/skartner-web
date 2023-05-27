@@ -3,11 +3,14 @@ import {
   Box,
   CircularProgress,
   IconButton,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
 import CustomTabs from 'components/Shared/CustomTabs/CustomTabs';
 import {
+  GreWordStatus,
   GreWordsQuery,
   useDeleteGptPromptMutation,
   useDeleteGreWordMutation,
@@ -15,6 +18,7 @@ import {
   useUpdateGreWordMutation,
 } from 'gql/graphql';
 import { useState } from 'react';
+import { sortedGreWordStatuses } from '../GreHistoryPage';
 import TagInput from './TagInput';
 
 interface IGreWordProps {
@@ -25,6 +29,7 @@ export const GreWord: React.FC<IGreWordProps> = ({ greWord }) => {
   const [selectedTag, setSelectedTag] = useState(
     greWord.greWordTag?.name ?? null
   );
+  const [selectedStatus, setSelectedStatus] = useState(greWord.status);
   const [updateGreWord] = useUpdateGreWordMutation();
 
   const handleDeleteGreWord = (greWord: GreWordsQuery['greWords'][number]) => {
@@ -72,6 +77,7 @@ export const GreWord: React.FC<IGreWordProps> = ({ greWord }) => {
             selectedTag={selectedTag}
             setSelectedTag={(tag) => {
               setSelectedTag(tag);
+              // TODO: we are not updating the cache below
               updateGreWord({
                 variables: {
                   greWordTagName: tag,
@@ -80,6 +86,29 @@ export const GreWord: React.FC<IGreWordProps> = ({ greWord }) => {
               });
             }}
           />
+          <Select
+            labelId="label"
+            id="select"
+            value={selectedStatus}
+            onChange={(e) => {
+              const newWordStatus = e.target.value as GreWordStatus;
+              setSelectedStatus(newWordStatus);
+              updateGreWord({
+                variables: {
+                  updateGreWordId: greWord.id,
+                  status: newWordStatus,
+                },
+              });
+            }}
+          >
+            {sortedGreWordStatuses.map((status) => {
+              return (
+                <MenuItem value={status} key={status}>
+                  {status}
+                </MenuItem>
+              );
+            })}
+          </Select>
           <IconButton
             color="error"
             onClick={() => {

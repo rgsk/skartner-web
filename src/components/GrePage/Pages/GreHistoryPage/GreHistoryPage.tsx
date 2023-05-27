@@ -33,7 +33,7 @@ enum QueryParams {
 
 const itemsPerPage = 5;
 
-const sortedGreWordStatuses = [
+export const sortedGreWordStatuses = [
   GreWordStatus.StartedLearning,
   GreWordStatus.StillLearning,
   GreWordStatus.AlmostLearnt,

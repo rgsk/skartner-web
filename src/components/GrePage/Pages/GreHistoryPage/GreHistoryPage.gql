@@ -67,8 +67,16 @@ query greWordTags($where: GreWordTagWhereInput) {
   }
 }
 
-mutation updateGreWord($updateGreWordId: String!, $greWordTagName: String) {
-  updateGreWord(id: $updateGreWordId, greWordTagName: $greWordTagName) {
+mutation updateGreWord(
+  $updateGreWordId: String!
+  $greWordTagName: String
+  $status: String
+) {
+  updateGreWord(
+    id: $updateGreWordId
+    greWordTagName: $greWordTagName
+    status: $status
+  ) {
     id
   }
 }
