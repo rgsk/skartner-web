@@ -20,6 +20,7 @@ import { GreWord } from './Children/GreWord';
 enum QueryParams {
   page = 'page',
   query = 'query',
+  status = 'status',
 }
 
 const itemsPerPage = 5;
@@ -38,7 +39,9 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const { user } = useGlobalContext();
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedOptions, setSelectedOptions] = useState<GreWordStatus[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<GreWordStatus[]>(
+    sortedGreWordStatuses
+  );
 
   const handleOptionToggle = (option: GreWordStatus) => {
     if (selectedOptions.includes(option)) {
@@ -88,17 +91,32 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     } else {
       result[QueryParams.query] = ValueToDeleteQueryKey;
     }
+    if (selectedOptions.length === sortedGreWordStatuses.length) {
+      result[QueryParams.status] = ValueToDeleteQueryKey;
+    } else {
+      result[QueryParams.status] = selectedOptions;
+    }
     return result;
-  }, [currentPage, queryInput]);
+  }, [currentPage, queryInput, selectedOptions]);
 
   useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
-    const { [QueryParams.page]: pageParam, [QueryParams.query]: queryParam } =
-      params;
+    const {
+      [QueryParams.page]: pageParam,
+      [QueryParams.query]: queryParam,
+      [QueryParams.status]: statusParam,
+    } = params;
     if (typeof pageParam === 'string') {
       setCurrentPage(+pageParam);
     }
     if (typeof queryParam === 'string') {
       setQueryInput(queryParam);
+    }
+    if (statusParam) {
+      if (typeof statusParam === 'string') {
+        setSelectedOptions([statusParam as GreWordStatus]);
+      } else {
+        setSelectedOptions(statusParam as GreWordStatus[]);
+      }
     }
     onParamsAssignedToState();
   });
