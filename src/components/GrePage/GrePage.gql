@@ -32,3 +32,10 @@ query GreConfiguration {
     defaultGreWordSearchPromptInputs
   }
 }
+
+mutation CreateGreWordTag($name: String!, $userId: String!) {
+  createGreWordTag(name: $name, userId: $userId) {
+    id
+    name
+  }
+}

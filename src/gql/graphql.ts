@@ -126,6 +126,7 @@ export type Mutation = {
   createDraft?: Maybe<Post>;
   createGreWord: GreWord;
   createGreWordSearchPromptInput: GreWordSearchPromptInput;
+  createGreWordTag: GreWordTag;
   createUser?: Maybe<User>;
   deleteGptPrompt?: Maybe<GptPrompt>;
   deleteGreWord?: Maybe<GreWord>;
@@ -154,6 +155,12 @@ export type MutationCreateGreWordArgs = {
 
 export type MutationCreateGreWordSearchPromptInputArgs = {
   text: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+
+export type MutationCreateGreWordTagArgs = {
+  name: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -377,6 +384,14 @@ export type GreConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GreConfigurationQuery = { __typename?: 'Query', greConfiguration: { __typename?: 'GreConfiguration', defaultGreWordSearchPromptInputs: Array<string> } };
+
+export type CreateGreWordTagMutationVariables = Exact<{
+  name: Scalars['String'];
+  userId: Scalars['String'];
+}>;
+
+
+export type CreateGreWordTagMutation = { __typename?: 'Mutation', createGreWordTag: { __typename?: 'GreWordTag', id: string, name: string } };
 
 export type GreWordsQueryVariables = Exact<{
   where?: InputMaybe<GreWordWhereInput>;
@@ -752,6 +767,41 @@ export function useGreConfigurationLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GreConfigurationQueryHookResult = ReturnType<typeof useGreConfigurationQuery>;
 export type GreConfigurationLazyQueryHookResult = ReturnType<typeof useGreConfigurationLazyQuery>;
 export type GreConfigurationQueryResult = Apollo.QueryResult<GreConfigurationQuery, GreConfigurationQueryVariables>;
+export const CreateGreWordTagDocument = gql`
+    mutation CreateGreWordTag($name: String!, $userId: String!) {
+  createGreWordTag(name: $name, userId: $userId) {
+    id
+    name
+  }
+}
+    `;
+export type CreateGreWordTagMutationFn = Apollo.MutationFunction<CreateGreWordTagMutation, CreateGreWordTagMutationVariables>;
+
+/**
+ * __useCreateGreWordTagMutation__
+ *
+ * To run a mutation, you first call `useCreateGreWordTagMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGreWordTagMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGreWordTagMutation, { data, loading, error }] = useCreateGreWordTagMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useCreateGreWordTagMutation(baseOptions?: Apollo.MutationHookOptions<CreateGreWordTagMutation, CreateGreWordTagMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGreWordTagMutation, CreateGreWordTagMutationVariables>(CreateGreWordTagDocument, options);
+      }
+export type CreateGreWordTagMutationHookResult = ReturnType<typeof useCreateGreWordTagMutation>;
+export type CreateGreWordTagMutationResult = Apollo.MutationResult<CreateGreWordTagMutation>;
+export type CreateGreWordTagMutationOptions = Apollo.BaseMutationOptions<CreateGreWordTagMutation, CreateGreWordTagMutationVariables>;
 export const GreWordsDocument = gql`
     query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
   greWords(where: $where, skip: $skip, take: $take) {

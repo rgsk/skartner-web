@@ -11,10 +11,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import { useGlobalContext } from 'context/GlobalContext';
 import { useGreContext } from 'context/GreContext';
 import {
@@ -32,14 +28,16 @@ import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 import { GreWord } from './Pages/GreHistoryPage/Children/GreWord';
-
-enum QueryParams {
-  tag = 'tag',
-}
+import TagInput from './Pages/GreHistoryPage/Children/TagInput';
 
 const replaceWord = (word: string, prompt: string) => {
   return prompt.replace(/{word}/g, word);
 };
+
+enum QueryParams {
+  tag = 'tag',
+}
+export const noneTag = 'none';
 
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
@@ -47,7 +45,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const { user, userParsedMeta, metaFields, setUser } = useGlobalContext();
   const { greConfiguration } = useGreContext();
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
-  const [tag, setTag] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const greWordTagsQueryResult = useGreWordTagsQuery({
     variables: {
@@ -82,6 +80,25 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     }
   );
   const [lastSubmittedWord, setLastSubmittedWord] = useState(wordInput);
+
+  const queryTrackerInput = useMemo(() => {
+    const result: any = {};
+
+    if (selectedTag && selectedTag !== noneTag) {
+      result[QueryParams.tag] = selectedTag;
+    } else {
+      result[QueryParams.tag] = ValueToDeleteQueryKey;
+    }
+    return result;
+  }, [selectedTag]);
+
+  useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
+    const { [QueryParams.tag]: tagParam } = params;
+    if (typeof tagParam === 'string') {
+      setSelectedTag(tagParam);
+    }
+    onParamsAssignedToState();
+  });
 
   const savedGreWord = getGreWordsResult.data?.greWords[0];
   const refreshSavedGreWord = () => {
@@ -118,25 +135,6 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     createGreWordMutationResult.data?.createGreWord,
     sendSinglePromptQueryResult.data?.sendSinglePrompt,
   ]);
-
-  const queryTrackerInput = useMemo(() => {
-    const result: any = {};
-
-    if (tag) {
-      result[QueryParams.tag] = tag;
-    } else {
-      result[QueryParams.tag] = ValueToDeleteQueryKey;
-    }
-    return result;
-  }, [tag]);
-
-  useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
-    const { [QueryParams.tag]: tagParam } = params;
-    if (typeof tagParam === 'string') {
-      setTag(tagParam);
-    }
-    onParamsAssignedToState();
-  });
 
   const handleDefaultPromptInputTextChange = (newPromptInputText: string) => {
     if (user && metaFields) {
@@ -198,7 +196,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                   sendSinglePromptQueryResult.data?.sendSinglePrompt,
                 userId: user!.id,
                 greWordTagId: greWordTagsQueryResult.data?.greWordTags.find(
-                  (t) => t.name === tag
+                  (t) => t.name === selectedTag
                 )?.id,
               },
             }).then(() => {
@@ -214,35 +212,10 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
 
   return (
     <div className="p-4">
-      <Box
-        sx={{
-          mb: 2,
-        }}
-      >
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Tag</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={tag}
-            label="Tag"
-            onChange={(event) => {
-              setTag(event.target.value);
-            }}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {greWordTagsQueryResult.data?.greWordTags.map((tag) => {
-              return (
-                <MenuItem key={tag.id} value={tag.name}>
-                  {tag.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
+      <Box sx={{ mb: 2 }}>
+        <TagInput selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
       </Box>
+
       <Box>
         <TextField
           label="Word"
