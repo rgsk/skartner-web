@@ -39,3 +39,10 @@ mutation CreateGreWordTag($name: String!, $userId: String!) {
     name
   }
 }
+
+mutation DeleteGreWordTag($name: String!) {
+  deleteGreWordTag(name: $name) {
+    id
+    name
+  }
+}

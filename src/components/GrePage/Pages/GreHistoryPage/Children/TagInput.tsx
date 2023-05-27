@@ -1,8 +1,19 @@
 import { gql } from '@apollo/client';
-import { Autocomplete, TextField, Typography } from '@mui/material';
+import { Delete } from '@mui/icons-material';
+import {
+  Autocomplete,
+  Box,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { noneTag } from 'components/GrePage/GrePage';
 import { useGlobalContext } from 'context/GlobalContext';
-import { useCreateGreWordTagMutation, useGreWordTagsQuery } from 'gql/graphql';
+import {
+  useCreateGreWordTagMutation,
+  useDeleteGreWordTagMutation,
+  useGreWordTagsQuery,
+} from 'gql/graphql';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 interface ITagInputProps {
@@ -16,6 +27,7 @@ const TagInput: React.FC<ITagInputProps> = ({
   const { user } = useGlobalContext();
 
   const [createGreWordTag] = useCreateGreWordTagMutation();
+  const [deleteGreWordTag] = useDeleteGreWordTagMutation();
   const greWordTagsQueryResult = useGreWordTagsQuery({
     variables: {
       where: {
@@ -51,16 +63,49 @@ const TagInput: React.FC<ITagInputProps> = ({
       renderInput={(params) => {
         return <TextField {...params} label="Tag" variant="outlined" />;
       }}
-      renderOption={(props, option) => {
+      renderOption={(props, tagName) => {
         return (
-          <Typography
-            sx={{
-              fontStyle: option === noneTag ? 'italic' : 'normal',
-            }}
-            {...props}
+          <Box
+            key={tagName}
+            sx={{ display: 'flex', justifyContent: 'space-between' }}
           >
-            {option}
-          </Typography>
+            <Typography
+              sx={{
+                fontStyle: tagName === noneTag ? 'italic' : 'normal',
+                flex: 1,
+              }}
+              {...props}
+            >
+              {tagName}
+            </Typography>
+            <IconButton
+              onClick={() => {
+                if (tagName !== noneTag) {
+                  deleteGreWordTag({
+                    variables: {
+                      name: tagName,
+                    },
+                    update: (cache, { data }) => {
+                      if (data?.deleteGreWordTag) {
+                        cache.modify({
+                          fields: {
+                            greWordTags(existingTags = [], { readField }) {
+                              return existingTags.filter(
+                                (tagRef: any) =>
+                                  tagName !== readField('name', tagRef)
+                              );
+                            },
+                          },
+                        });
+                      }
+                    },
+                  });
+                }
+              }}
+            >
+              <Delete />
+            </IconButton>
+          </Box>
         );
       }}
       clearOnBlur
