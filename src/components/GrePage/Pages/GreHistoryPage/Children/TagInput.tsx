@@ -14,11 +14,11 @@ import {
   useDeleteGreWordTagMutation,
   useGreWordTagsQuery,
 } from 'gql/graphql';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 
 interface ITagInputProps {
   selectedTag: string | null;
-  setSelectedTag: Dispatch<SetStateAction<string | null>>;
+  setSelectedTag: (tag: string | null) => void;
 }
 const TagInput: React.FC<ITagInputProps> = ({
   selectedTag,
@@ -52,6 +52,7 @@ const TagInput: React.FC<ITagInputProps> = ({
 
   return (
     <Autocomplete
+      fullWidth
       value={selectedTag}
       options={filteredOptions}
       onChange={(event, value) => {

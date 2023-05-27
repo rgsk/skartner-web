@@ -12,14 +12,20 @@ import {
   useDeleteGptPromptMutation,
   useDeleteGreWordMutation,
   useUpdateGptPromptMutation,
+  useUpdateGreWordMutation,
 } from 'gql/graphql';
 import { useState } from 'react';
+import TagInput from './TagInput';
 
 interface IGreWordProps {
   greWord: GreWordsQuery['greWords'][number];
 }
 export const GreWord: React.FC<IGreWordProps> = ({ greWord }) => {
   const [deleteGreWord, deleteGreWordResult] = useDeleteGreWordMutation();
+  const [selectedTag, setSelectedTag] = useState(
+    greWord.greWordTag?.name ?? null
+  );
+  const [updateGreWord] = useUpdateGreWordMutation();
 
   const handleDeleteGreWord = (greWord: GreWordsQuery['greWords'][number]) => {
     deleteGreWord({
@@ -54,15 +60,36 @@ export const GreWord: React.FC<IGreWordProps> = ({ greWord }) => {
         <Typography fontWeight={'bold'} fontSize={20}>
           {greWord.spelling}
         </Typography>
-        <IconButton
-          color="error"
-          onClick={() => {
-            handleDeleteGreWord(greWord);
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            minWidth: 300,
           }}
-          disabled={deleteGreWordResult.loading}
         >
-          <Delete />
-        </IconButton>
+          <TagInput
+            selectedTag={selectedTag}
+            setSelectedTag={(tag) => {
+              setSelectedTag(tag);
+              updateGreWord({
+                variables: {
+                  greWordTagName: tag,
+                  updateGreWordId: greWord.id,
+                },
+              });
+            }}
+          />
+          <IconButton
+            color="error"
+            onClick={() => {
+              handleDeleteGreWord(greWord);
+            }}
+            disabled={deleteGreWordResult.loading}
+          >
+            <Delete />
+          </IconButton>
+        </Box>
       </Box>
       <div>
         <p>Gre Prompts</p>

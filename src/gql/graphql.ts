@@ -134,6 +134,7 @@ export type Mutation = {
   deleteGreWordTag: GreWordTag;
   publish?: Maybe<Post>;
   updateGptPrompt?: Maybe<GptPrompt>;
+  updateGreWord?: Maybe<GreWord>;
   updateGreWordSearchPromptInput?: Maybe<GreWordSearchPromptInput>;
   updateUser?: Maybe<User>;
 };
@@ -199,6 +200,12 @@ export type MutationPublishArgs = {
 
 export type MutationUpdateGptPromptArgs = {
   editedResponse?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+};
+
+
+export type MutationUpdateGreWordArgs = {
+  greWordTagName?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
 };
 
@@ -413,7 +420,7 @@ export type GreWordsQueryVariables = Exact<{
 }>;
 
 
-export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }> }> };
+export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }>, greWordTag?: { __typename?: 'GreWordTag', id: string, name: string } | null }> };
 
 export type StatusWiseGreWordCountQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -450,6 +457,14 @@ export type GreWordTagsQueryVariables = Exact<{
 
 
 export type GreWordTagsQuery = { __typename?: 'Query', greWordTags: Array<{ __typename?: 'GreWordTag', id: string, name: string }> };
+
+export type UpdateGreWordMutationVariables = Exact<{
+  updateGreWordId: Scalars['String'];
+  greWordTagName?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateGreWordMutation = { __typename?: 'Mutation', updateGreWord?: { __typename?: 'GreWord', id: string } | null };
 
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
@@ -862,6 +877,10 @@ export const GreWordsDocument = gql`
       editedResponse
       greWordId
     }
+    greWordTag {
+      id
+      name
+    }
   }
   greWordsCount(where: $where)
 }
@@ -1083,6 +1102,40 @@ export function useGreWordTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GreWordTagsQueryHookResult = ReturnType<typeof useGreWordTagsQuery>;
 export type GreWordTagsLazyQueryHookResult = ReturnType<typeof useGreWordTagsLazyQuery>;
 export type GreWordTagsQueryResult = Apollo.QueryResult<GreWordTagsQuery, GreWordTagsQueryVariables>;
+export const UpdateGreWordDocument = gql`
+    mutation updateGreWord($updateGreWordId: String!, $greWordTagName: String) {
+  updateGreWord(id: $updateGreWordId, greWordTagName: $greWordTagName) {
+    id
+  }
+}
+    `;
+export type UpdateGreWordMutationFn = Apollo.MutationFunction<UpdateGreWordMutation, UpdateGreWordMutationVariables>;
+
+/**
+ * __useUpdateGreWordMutation__
+ *
+ * To run a mutation, you first call `useUpdateGreWordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGreWordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGreWordMutation, { data, loading, error }] = useUpdateGreWordMutation({
+ *   variables: {
+ *      updateGreWordId: // value for 'updateGreWordId'
+ *      greWordTagName: // value for 'greWordTagName'
+ *   },
+ * });
+ */
+export function useUpdateGreWordMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGreWordMutation, UpdateGreWordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGreWordMutation, UpdateGreWordMutationVariables>(UpdateGreWordDocument, options);
+      }
+export type UpdateGreWordMutationHookResult = ReturnType<typeof useUpdateGreWordMutation>;
+export type UpdateGreWordMutationResult = Apollo.MutationResult<UpdateGreWordMutation>;
+export type UpdateGreWordMutationOptions = Apollo.BaseMutationOptions<UpdateGreWordMutation, UpdateGreWordMutationVariables>;
 export const CreateUserDocument = gql`
     mutation createUser($email: String!) {
   createUser(email: $email) {

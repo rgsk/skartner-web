@@ -47,6 +47,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const [selectedStatuses, setSelectedStatuses] = useState<GreWordStatus[]>(
     sortedGreWordStatuses
   );
+
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const greWordTagsQueryResult = useGreWordTagsQuery({
     variables: {
@@ -94,7 +95,6 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       take: itemsPerPage,
     },
   });
-
   const statusWiseGreWordCountResult = useStatusWiseGreWordCountQuery({
     variables: { userId: user!.id },
   });

@@ -10,6 +10,10 @@ query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
       editedResponse
       greWordId
     }
+    greWordTag {
+      id
+      name
+    }
   }
   greWordsCount(where: $where)
 }
@@ -60,5 +64,11 @@ query greWordTags($where: GreWordTagWhereInput) {
   greWordTags(where: $where) {
     id
     name
+  }
+}
+
+mutation updateGreWord($updateGreWordId: String!, $greWordTagName: String) {
+  updateGreWord(id: $updateGreWordId, greWordTagName: $greWordTagName) {
+    id
   }
 }
