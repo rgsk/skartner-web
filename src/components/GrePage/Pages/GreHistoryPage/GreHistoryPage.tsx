@@ -79,7 +79,11 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       setSelectedTags([...selectedTags, tagName]);
     }
   };
-
+  const selectedTagIds = selectedTags.length
+    ? selectedTags.map(
+        (tagName) => greWordTags.find((t) => t.name === tagName)!.id
+      )
+    : undefined;
   const greWordsQueryResult = useGreWordsQuery({
     variables: {
       where: {
@@ -89,11 +93,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
           in: selectedStatuses,
         },
         greWordTagId: {
-          in: selectedTags.length
-            ? selectedTags.map(
-                (tagName) => greWordTags.find((t) => t.name === tagName)!.id
-              )
-            : undefined,
+          in: selectedTagIds,
         },
       },
       skip: (currentPage - 1) * itemsPerPage,
@@ -101,7 +101,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     },
   });
   const statusWiseGreWordCountResult = useStatusWiseGreWordCountQuery({
-    variables: { userId: user!.id },
+    variables: { userId: user!.id, selectedTagIds: selectedTagIds },
   });
 
   useRunOnWindowFocus(greWordsQueryResult.refetch);
@@ -265,7 +265,15 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       </div>
       <div>
         {greWordsQueryResult.data?.greWords.map((greWord) => {
-          return <GreWord key={greWord.id} greWord={greWord} />;
+          return (
+            <GreWord
+              key={greWord.id}
+              greWord={greWord}
+              refetchStatusWiseGreWordCountResult={() => {
+                statusWiseGreWordCountResult.refetch();
+              }}
+            />
+          );
         })}
       </div>
       <Box
