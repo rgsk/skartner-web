@@ -1,4 +1,4 @@
-import { Delete } from '@mui/icons-material';
+import { Delete, Save } from '@mui/icons-material';
 import {
   Box,
   CircularProgress,
@@ -227,6 +227,15 @@ export const GptResponse: React.FC<IGptResponseProps> = ({
   const [value, setValue] = useState(response);
   const [updateGptPrompt, { loading }] = useUpdateGptPromptMutation();
 
+  const saveCurrentValue = () => {
+    updateGptPrompt({
+      variables: {
+        id: gptPromptId,
+        editedResponse: value,
+      },
+    });
+  };
+
   return (
     <div style={{ position: 'relative' }}>
       {loading && (
@@ -239,25 +248,33 @@ export const GptResponse: React.FC<IGptResponseProps> = ({
           }}
         />
       )}
-      <TextField
-        fullWidth
-        multiline
-        variant="outlined"
-        value={value}
-        className="whitespace-pre-line"
-        onKeyDown={(event) => {
-          if (!event.shiftKey && event.key === 'Enter') {
-            event.preventDefault();
-            updateGptPrompt({
-              variables: {
-                id: gptPromptId,
-                editedResponse: value,
-              },
-            });
-          }
-        }}
-        onChange={(event) => setValue(event.target.value)}
-      />
+      <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'end',
+            opacity: value === response ? 0 : 1,
+          }}
+        >
+          <IconButton onClick={saveCurrentValue}>
+            <Save />
+          </IconButton>
+        </Box>
+        <TextField
+          fullWidth
+          multiline
+          variant="outlined"
+          value={value}
+          className="whitespace-pre-line"
+          onKeyDown={(event) => {
+            if (!event.shiftKey && event.key === 'Enter') {
+              event.preventDefault();
+              saveCurrentValue();
+            }
+          }}
+          onChange={(event) => setValue(event.target.value)}
+        />
+      </Box>
     </div>
   );
 };
