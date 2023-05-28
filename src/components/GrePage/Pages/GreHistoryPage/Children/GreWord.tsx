@@ -1,4 +1,4 @@
-import { Delete, Save } from '@mui/icons-material';
+import { Delete, Edit, Save } from '@mui/icons-material';
 import {
   Box,
   CircularProgress,
@@ -225,6 +225,7 @@ export const GptResponse: React.FC<IGptResponseProps> = ({
   gptPromptId,
 }) => {
   const [value, setValue] = useState(response);
+  const [editModeActive, setEditModeActive] = useState(false);
   const [updateGptPrompt, { loading }] = useUpdateGptPromptMutation();
 
   const saveCurrentValue = () => {
@@ -233,6 +234,8 @@ export const GptResponse: React.FC<IGptResponseProps> = ({
         id: gptPromptId,
         editedResponse: value,
       },
+    }).then(() => {
+      setEditModeActive(false);
     });
   };
 
@@ -253,27 +256,47 @@ export const GptResponse: React.FC<IGptResponseProps> = ({
           sx={{
             display: 'flex',
             justifyContent: 'end',
-            opacity: value === response ? 0 : 1,
           }}
         >
-          <IconButton onClick={saveCurrentValue}>
+          {!editModeActive && (
+            <IconButton
+              onClick={() => {
+                setEditModeActive(true);
+              }}
+            >
+              <Edit />
+            </IconButton>
+          )}
+          <IconButton
+            onClick={saveCurrentValue}
+            sx={{
+              opacity: value !== response ? 1 : 0,
+            }}
+          >
             <Save />
           </IconButton>
         </Box>
-        <TextField
-          fullWidth
-          multiline
-          variant="outlined"
-          value={value}
-          className="whitespace-pre-line"
-          onKeyDown={(event) => {
-            if (!event.shiftKey && event.key === 'Enter') {
-              event.preventDefault();
-              saveCurrentValue();
-            }
-          }}
-          onChange={(event) => setValue(event.target.value)}
-        />
+        {editModeActive ? (
+          <TextField
+            fullWidth
+            multiline
+            variant="outlined"
+            value={value}
+            className="whitespace-pre-line"
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                setEditModeActive(false);
+              }
+              if (!event.shiftKey && event.key === 'Enter') {
+                event.preventDefault();
+                saveCurrentValue();
+              }
+            }}
+            onChange={(event) => setValue(event.target.value)}
+          />
+        ) : (
+          <p className="whitespace-pre-line m-0 p-0">{response}</p>
+        )}
       </Box>
     </div>
   );

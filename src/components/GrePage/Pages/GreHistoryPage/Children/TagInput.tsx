@@ -53,6 +53,7 @@ const TagInput: React.FC<ITagInputProps> = ({
   return (
     <Autocomplete
       fullWidth
+      sx={{ minWidth: '300px' }}
       value={selectedTag}
       options={filteredOptions}
       onChange={(event, value) => {
