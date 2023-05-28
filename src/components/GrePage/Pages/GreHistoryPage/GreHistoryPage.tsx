@@ -9,6 +9,7 @@ import {
   IconButton,
   Pagination,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import {
@@ -137,6 +138,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       [QueryParams.page]: pageParam,
       [QueryParams.query]: queryParam,
       [QueryParams.status]: statusParam,
+      [QueryParams.tag]: tagParam,
     } = params;
     if (typeof pageParam === 'string') {
       setCurrentPage(+pageParam);
@@ -151,6 +153,14 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
         setSelectedStatuses(statusParam as GreWordStatus[]);
       }
     }
+    if (tagParam) {
+      if (typeof tagParam === 'string') {
+        setSelectedTags([tagParam as GreWordStatus]);
+      } else {
+        setSelectedTags(tagParam as GreWordStatus[]);
+      }
+    }
+
     onParamsAssignedToState();
   });
 
@@ -244,6 +254,11 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
             </Box>
           ))}
         </FormGroup>
+      </Box>
+      <Box>
+        <Typography>
+          Total - {greWordsQueryResult.data?.greWordsCount}
+        </Typography>
       </Box>
       <div className="h-[50px] mt-4">
         {greWordsQueryResult.loading && <CircularProgress />}
