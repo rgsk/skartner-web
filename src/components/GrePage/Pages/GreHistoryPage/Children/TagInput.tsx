@@ -179,7 +179,7 @@ const TagInput: React.FC<ITagInputProps> = ({
           onClick={() => {
             createNewGreWordTagFromSearchInput();
           }}
-          disabled={enableCreateNewGreWordTagFromSearchInput}
+          disabled={!enableCreateNewGreWordTagFromSearchInput}
         >
           Add
         </Button>
