@@ -81,6 +81,7 @@ const TagInput: React.FC<ITagInputProps> = ({
           });
         },
         onCompleted: () => {
+          setSelectedTags([...selectedTags, tagSearchInput]);
           setTagSearchInput('');
         },
       });
