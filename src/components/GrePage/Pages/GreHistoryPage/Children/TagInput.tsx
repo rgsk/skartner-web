@@ -135,9 +135,7 @@ const TagInput: React.FC<ITagInputProps> = ({
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             if (tagSearchInput) {
-              if (tagNames.includes(tagSearchInput)) {
-                setSelectedTags([...selectedTags, tagSearchInput]);
-              } else {
+              if (!tagNames.includes(tagSearchInput)) {
                 createGreWordTag({
                   variables: {
                     name: tagSearchInput,

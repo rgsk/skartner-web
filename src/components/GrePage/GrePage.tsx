@@ -16,6 +16,7 @@ import { useGreContext } from 'context/GreContext';
 import {
   useCreateGreWordMutation,
   useGreWordSearchPromptInputsQuery,
+  useGreWordTagsQuery,
   useGreWordsLazyQuery,
   useSendSinglePromptLazyQuery,
   useUpdateMetaForUserMutation,
@@ -43,7 +44,6 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const { greConfiguration } = useGreContext();
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
   const [getGreWords, getGreWordsResult] = useGreWordsLazyQuery();
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
@@ -67,6 +67,20 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       },
     }
   );
+
+  const greWordTagsQueryResult = useGreWordTagsQuery({
+    variables: {
+      where: {
+        userId: {
+          equals: user!.id,
+        },
+      },
+    },
+  });
+
+  const validTagNames = greWordTagsQueryResult.data?.greWordTags.map(
+    (t) => t.name
+  );
   const [lastSubmittedWord, setLastSubmittedWord] = useState(wordInput);
 
   const queryTrackerInput = useMemo(() => {
@@ -79,12 +93,14 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     const { [QueryParams.tag]: tagParam } = params;
     if (tagParam) {
       if (typeof tagParam === 'string') {
-        setSelectedTags([tagParam]);
+        if (validTagNames?.includes(tagParam)) {
+          setSelectedTags([tagParam]);
+        }
       } else {
-        setSelectedTags(tagParam);
+        setSelectedTags(tagParam.filter((v) => !!validTagNames?.includes(v)));
       }
     }
-    onParamsAssignedToState();
+    onParamsAssignedToState(true);
   });
 
   const savedGreWord = getGreWordsResult.data?.greWords[0];
@@ -100,7 +116,12 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       fetchPolicy: 'network-only',
     });
   };
-  useRunOnWindowFocus(refreshSavedGreWord);
+
+  useRunOnWindowFocus(() => {
+    refreshSavedGreWord();
+    greWordTagsQueryResult.refetch();
+  });
+
   const submitWord = async (prompt: string) => {
     if (wordInput) {
       sendSinglePrompt({
