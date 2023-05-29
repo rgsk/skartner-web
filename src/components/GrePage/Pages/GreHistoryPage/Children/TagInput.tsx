@@ -116,6 +116,7 @@ const TagInput: React.FC<ITagInputProps> = ({
           value={tagSearchInput}
           options={filteredOptions}
           onChange={(event, value) => {
+            setTagSearchInput('');
             if (value) {
               if (!selectedTags.includes(value)) {
                 setSelectedTags([...selectedTags, value]);
