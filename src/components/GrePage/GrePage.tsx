@@ -16,14 +16,12 @@ import { useGreContext } from 'context/GreContext';
 import {
   useCreateGreWordMutation,
   useGreWordSearchPromptInputsQuery,
-  useGreWordTagsQuery,
   useGreWordsLazyQuery,
   useSendSinglePromptLazyQuery,
   useUpdateMetaForUserMutation,
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
-import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
@@ -37,7 +35,6 @@ const replaceWord = (word: string, prompt: string) => {
 enum QueryParams {
   tag = 'tag',
 }
-export const noneTag = 'none';
 
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
@@ -45,17 +42,8 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const { user, userParsedMeta, metaFields, setUser } = useGlobalContext();
   const { greConfiguration } = useGreContext();
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const greWordTagsQueryResult = useGreWordTagsQuery({
-    variables: {
-      where: {
-        userId: {
-          equals: user!.id,
-        },
-      },
-    },
-  });
   const [getGreWords, getGreWordsResult] = useGreWordsLazyQuery();
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
@@ -83,19 +71,18 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
 
   const queryTrackerInput = useMemo(() => {
     const result: any = {};
-
-    if (selectedTag && selectedTag !== noneTag) {
-      result[QueryParams.tag] = selectedTag;
-    } else {
-      result[QueryParams.tag] = ValueToDeleteQueryKey;
-    }
+    result[QueryParams.tag] = selectedTags;
     return result;
-  }, [selectedTag]);
+  }, [selectedTags]);
 
   useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
     const { [QueryParams.tag]: tagParam } = params;
-    if (typeof tagParam === 'string') {
-      setSelectedTag(tagParam);
+    if (tagParam) {
+      if (typeof tagParam === 'string') {
+        setSelectedTags([tagParam]);
+      } else {
+        setSelectedTags(tagParam);
+      }
     }
     onParamsAssignedToState();
   });
@@ -195,9 +182,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                 promptResponse:
                   sendSinglePromptQueryResult.data?.sendSinglePrompt,
                 userId: user!.id,
-                greWordTagId: greWordTagsQueryResult.data?.greWordTags.find(
-                  (t) => t.name === selectedTag
-                )?.id,
+                greWordTags: selectedTags.map((tagName) => ({ name: tagName })),
               },
             }).then(() => {
               refreshSavedGreWord();
@@ -213,7 +198,10 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   return (
     <div className="p-4">
       <Box sx={{ mb: 2 }}>
-        <TagInput selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+        <TagInput
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
       </Box>
 
       <Box>

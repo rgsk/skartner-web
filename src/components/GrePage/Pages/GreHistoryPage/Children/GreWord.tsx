@@ -30,8 +30,8 @@ export const GreWord: React.FC<IGreWordProps> = ({
   refetchStatusWiseGreWordCountResult,
 }) => {
   const [deleteGreWord, deleteGreWordResult] = useDeleteGreWordMutation();
-  const [selectedTag, setSelectedTag] = useState(
-    greWord.greWordTag?.name ?? null
+  const [selectedTags, setSelectedTags] = useState(
+    greWord.greWordTags?.map((t) => t.name) ?? []
   );
   const [selectedStatus, setSelectedStatus] = useState(greWord.status);
   const [updateGreWord] = useUpdateGreWordMutation();
@@ -75,17 +75,18 @@ export const GreWord: React.FC<IGreWordProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             minWidth: 300,
+            gap: 2,
           }}
         >
           <TagInput
-            selectedTag={selectedTag}
-            setSelectedTag={(tag) => {
-              setSelectedTag(tag);
+            selectedTags={selectedTags}
+            setSelectedTags={(tags) => {
+              setSelectedTags(tags);
               // TODO: we are not updating the cache below
               updateGreWord({
                 variables: {
-                  greWordTagName: tag,
                   updateGreWordId: greWord.id,
+                  greWordTags: tags.map((t) => ({ name: t })),
                 },
               }).then(() => {
                 refetchStatusWiseGreWordCountResult?.();

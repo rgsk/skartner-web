@@ -47,8 +47,7 @@ export type GreWord = {
   __typename?: 'GreWord';
   createdAt: Scalars['String'];
   gptPrompts: Array<GptPrompt>;
-  greWordTag?: Maybe<GreWordTag>;
-  greWordTagId?: Maybe<Scalars['String']>;
+  greWordTags?: Maybe<Array<GreWordTag>>;
   id: Scalars['String'];
   meta: Scalars['Json'];
   spelling: Scalars['String'];
@@ -96,14 +95,25 @@ export type GreWordTag = {
   userId: Scalars['String'];
 };
 
+export type GreWordTagListRelationFilter = {
+  every?: InputMaybe<GreWordTagWhereInput>;
+  none?: InputMaybe<GreWordTagWhereInput>;
+  some?: InputMaybe<GreWordTagWhereInput>;
+};
+
 export type GreWordTagWhereInput = {
   id?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
   userId?: InputMaybe<StringFilter>;
 };
 
+export type GreWordTagWhereUniqueInput = {
+  id?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type GreWordWhereInput = {
-  greWordTagId?: InputMaybe<StringFilter>;
+  greWordTags?: InputMaybe<GreWordTagListRelationFilter>;
   id?: InputMaybe<StringFilter>;
   spelling?: InputMaybe<StringFilter>;
   status?: InputMaybe<EnumGreWordStatusFilter>;
@@ -147,7 +157,7 @@ export type MutationCreateDraftArgs = {
 
 
 export type MutationCreateGreWordArgs = {
-  greWordTagId?: InputMaybe<Scalars['String']>;
+  greWordTags?: InputMaybe<Array<InputMaybe<GreWordTagWhereUniqueInput>>>;
   promptInput: Scalars['String'];
   promptResponse: Scalars['String'];
   spelling: Scalars['String'];
@@ -205,7 +215,7 @@ export type MutationUpdateGptPromptArgs = {
 
 
 export type MutationUpdateGreWordArgs = {
-  greWordTagName?: InputMaybe<Scalars['String']>;
+  greWordTags?: InputMaybe<Array<InputMaybe<GreWordTagWhereUniqueInput>>>;
   id: Scalars['String'];
   status?: InputMaybe<Scalars['String']>;
 };
@@ -388,11 +398,11 @@ export type CreateGreWordMutationVariables = Exact<{
   promptInput: Scalars['String'];
   promptResponse: Scalars['String'];
   userId: Scalars['String'];
-  greWordTagId?: InputMaybe<Scalars['String']>;
+  greWordTags?: InputMaybe<Array<InputMaybe<GreWordTagWhereUniqueInput>> | InputMaybe<GreWordTagWhereUniqueInput>>;
 }>;
 
 
-export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord: { __typename?: 'GreWord', id: string, spelling: string, greWordTagId?: string | null, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string }> } };
+export type CreateGreWordMutation = { __typename?: 'Mutation', createGreWord: { __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }>, greWordTags?: Array<{ __typename?: 'GreWordTag', id: string, name: string }> | null } };
 
 export type GreConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -421,11 +431,11 @@ export type GreWordsQueryVariables = Exact<{
 }>;
 
 
-export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }>, greWordTag?: { __typename?: 'GreWordTag', id: string, name: string } | null }> };
+export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWords: Array<{ __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }>, greWordTags?: Array<{ __typename?: 'GreWordTag', id: string, name: string }> | null }> };
 
 export type StatusWiseGreWordCountQueryVariables = Exact<{
   userId: Scalars['String'];
-  selectedTagIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  selectedTags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
@@ -462,7 +472,7 @@ export type GreWordTagsQuery = { __typename?: 'Query', greWordTags: Array<{ __ty
 
 export type UpdateGreWordMutationVariables = Exact<{
   updateGreWordId: Scalars['String'];
-  greWordTagName?: InputMaybe<Scalars['String']>;
+  greWordTags?: InputMaybe<Array<InputMaybe<GreWordTagWhereUniqueInput>> | InputMaybe<GreWordTagWhereUniqueInput>>;
   status?: InputMaybe<Scalars['String']>;
 }>;
 
@@ -715,21 +725,27 @@ export type SendSinglePromptQueryHookResult = ReturnType<typeof useSendSinglePro
 export type SendSinglePromptLazyQueryHookResult = ReturnType<typeof useSendSinglePromptLazyQuery>;
 export type SendSinglePromptQueryResult = Apollo.QueryResult<SendSinglePromptQuery, SendSinglePromptQueryVariables>;
 export const CreateGreWordDocument = gql`
-    mutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!, $userId: String!, $greWordTagId: String) {
+    mutation createGreWord($spelling: String!, $promptInput: String!, $promptResponse: String!, $userId: String!, $greWordTags: [GreWordTagWhereUniqueInput]) {
   createGreWord(
     spelling: $spelling
     promptInput: $promptInput
     promptResponse: $promptResponse
     userId: $userId
-    greWordTagId: $greWordTagId
+    greWordTags: $greWordTags
   ) {
     id
     spelling
-    greWordTagId
+    status
     gptPrompts {
       id
       input
       response
+      editedResponse
+      greWordId
+    }
+    greWordTags {
+      id
+      name
     }
   }
 }
@@ -753,7 +769,7 @@ export type CreateGreWordMutationFn = Apollo.MutationFunction<CreateGreWordMutat
  *      promptInput: // value for 'promptInput'
  *      promptResponse: // value for 'promptResponse'
  *      userId: // value for 'userId'
- *      greWordTagId: // value for 'greWordTagId'
+ *      greWordTags: // value for 'greWordTags'
  *   },
  * });
  */
@@ -880,7 +896,7 @@ export const GreWordsDocument = gql`
       editedResponse
       greWordId
     }
-    greWordTag {
+    greWordTags {
       id
       name
     }
@@ -919,24 +935,24 @@ export type GreWordsQueryHookResult = ReturnType<typeof useGreWordsQuery>;
 export type GreWordsLazyQueryHookResult = ReturnType<typeof useGreWordsLazyQuery>;
 export type GreWordsQueryResult = Apollo.QueryResult<GreWordsQuery, GreWordsQueryVariables>;
 export const StatusWiseGreWordCountDocument = gql`
-    query StatusWiseGreWordCount($userId: String!, $selectedTagIds: [String!]) {
+    query StatusWiseGreWordCount($userId: String!, $selectedTags: [String!]) {
   STARTED_LEARNING: greWordsCount(
-    where: {status: {equals: STARTED_LEARNING}, userId: {equals: $userId}, greWordTagId: {in: $selectedTagIds}}
+    where: {status: {equals: STARTED_LEARNING}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
   )
   STILL_LEARNING: greWordsCount(
-    where: {status: {equals: STILL_LEARNING}, userId: {equals: $userId}, greWordTagId: {in: $selectedTagIds}}
+    where: {status: {equals: STILL_LEARNING}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
   )
   ALMOST_LEARNT: greWordsCount(
-    where: {status: {equals: ALMOST_LEARNT}, userId: {equals: $userId}, greWordTagId: {in: $selectedTagIds}}
+    where: {status: {equals: ALMOST_LEARNT}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
   )
   FINISHED_LEARNING: greWordsCount(
-    where: {status: {equals: FINISHED_LEARNING}, userId: {equals: $userId}, greWordTagId: {in: $selectedTagIds}}
+    where: {status: {equals: FINISHED_LEARNING}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
   )
   MEMORY_MODE: greWordsCount(
-    where: {status: {equals: MEMORY_MODE}, userId: {equals: $userId}, greWordTagId: {in: $selectedTagIds}}
+    where: {status: {equals: MEMORY_MODE}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
   )
   MASTERED: greWordsCount(
-    where: {status: {equals: MASTERED}, userId: {equals: $userId}, greWordTagId: {in: $selectedTagIds}}
+    where: {status: {equals: MASTERED}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
   )
 }
     `;
@@ -954,7 +970,7 @@ export const StatusWiseGreWordCountDocument = gql`
  * const { data, loading, error } = useStatusWiseGreWordCountQuery({
  *   variables: {
  *      userId: // value for 'userId'
- *      selectedTagIds: // value for 'selectedTagIds'
+ *      selectedTags: // value for 'selectedTags'
  *   },
  * });
  */
@@ -1107,12 +1123,8 @@ export type GreWordTagsQueryHookResult = ReturnType<typeof useGreWordTagsQuery>;
 export type GreWordTagsLazyQueryHookResult = ReturnType<typeof useGreWordTagsLazyQuery>;
 export type GreWordTagsQueryResult = Apollo.QueryResult<GreWordTagsQuery, GreWordTagsQueryVariables>;
 export const UpdateGreWordDocument = gql`
-    mutation updateGreWord($updateGreWordId: String!, $greWordTagName: String, $status: String) {
-  updateGreWord(
-    id: $updateGreWordId
-    greWordTagName: $greWordTagName
-    status: $status
-  ) {
+    mutation updateGreWord($updateGreWordId: String!, $greWordTags: [GreWordTagWhereUniqueInput], $status: String) {
+  updateGreWord(id: $updateGreWordId, greWordTags: $greWordTags, status: $status) {
     id
   }
 }
@@ -1133,7 +1145,7 @@ export type UpdateGreWordMutationFn = Apollo.MutationFunction<UpdateGreWordMutat
  * const [updateGreWordMutation, { data, loading, error }] = useUpdateGreWordMutation({
  *   variables: {
  *      updateGreWordId: // value for 'updateGreWordId'
- *      greWordTagName: // value for 'greWordTagName'
+ *      greWordTags: // value for 'greWordTags'
  *      status: // value for 'status'
  *   },
  * });

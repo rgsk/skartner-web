@@ -7,25 +7,32 @@ mutation createGreWord(
   $promptInput: String!
   $promptResponse: String!
   $userId: String!
-  $greWordTagId: String
+  $greWordTags: [GreWordTagWhereUniqueInput]
 ) {
   createGreWord(
     spelling: $spelling
     promptInput: $promptInput
     promptResponse: $promptResponse
     userId: $userId
-    greWordTagId: $greWordTagId
+    greWordTags: $greWordTags
   ) {
     id
     spelling
-    greWordTagId
+    status
     gptPrompts {
       id
       input
       response
+      editedResponse
+      greWordId
+    }
+    greWordTags {
+      id
+      name
     }
   }
 }
+# TODO: move above fields in fragment
 
 query GreConfiguration {
   greConfiguration {

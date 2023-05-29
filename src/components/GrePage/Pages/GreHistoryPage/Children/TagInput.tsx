@@ -3,11 +3,11 @@ import { Delete } from '@mui/icons-material';
 import {
   Autocomplete,
   Box,
+  Chip,
   IconButton,
   TextField,
   Typography,
 } from '@mui/material';
-import { noneTag } from 'components/GrePage/GrePage';
 import { useGlobalContext } from 'context/GlobalContext';
 import {
   useCreateGreWordTagMutation,
@@ -17,17 +17,17 @@ import {
 import { useState } from 'react';
 
 interface ITagInputProps {
-  selectedTag: string | null;
-  setSelectedTag: (tag: string | null) => void;
+  selectedTags: string[];
+  setSelectedTags: (tags: string[]) => void;
 }
 const TagInput: React.FC<ITagInputProps> = ({
-  selectedTag,
-  setSelectedTag,
+  selectedTags,
+  setSelectedTags,
 }) => {
   const { user } = useGlobalContext();
-
   const [createGreWordTag] = useCreateGreWordTagMutation();
   const [deleteGreWordTag] = useDeleteGreWordTagMutation();
+
   const greWordTagsQueryResult = useGreWordTagsQuery({
     variables: {
       where: {
@@ -41,9 +41,12 @@ const TagInput: React.FC<ITagInputProps> = ({
   const [tagSearchInput, setTagSearchInput] = useState('');
 
   const tagNames = [
-    noneTag,
     ...(greWordTagsQueryResult.data?.greWordTags.map((tag) => tag.name) ?? []),
   ];
+  const handleDeleteTag = (tag: string) => {
+    const updatedTags = selectedTags.filter((t) => t !== tag);
+    setSelectedTags(updatedTags);
+  };
 
   const filteredOptions =
     tagNames?.filter((tagName) =>
@@ -51,38 +54,52 @@ const TagInput: React.FC<ITagInputProps> = ({
     ) ?? [];
 
   return (
-    <Autocomplete
-      fullWidth
-      sx={{ minWidth: '300px' }}
-      value={selectedTag}
-      options={filteredOptions}
-      onChange={(event, value) => {
-        setSelectedTag(value);
-      }}
-      onInputChange={(event, value) => {
-        setTagSearchInput(value);
-      }}
-      renderInput={(params) => {
-        return <TextField {...params} label="Tag" variant="outlined" />;
-      }}
-      renderOption={(props, tagName) => {
-        return (
-          <Box
-            key={tagName}
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography
-              sx={{
-                fontStyle: tagName === noneTag ? 'italic' : 'normal',
-                flex: 1,
-              }}
-              {...props}
+    <Box>
+      <Box
+        sx={{
+          mb: 2,
+          display: 'flex',
+          gap: 1,
+        }}
+      >
+        {selectedTags.map((tag) => (
+          <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
+        ))}
+      </Box>
+      <Autocomplete
+        fullWidth
+        sx={{ minWidth: '300px' }}
+        options={filteredOptions}
+        value=""
+        onChange={(event, value) => {
+          if (value) {
+            if (!selectedTags.includes(value)) {
+              setSelectedTags([...selectedTags, value]);
+            }
+          }
+        }}
+        onInputChange={(event, value) => {
+          setTagSearchInput(value);
+        }}
+        renderInput={(params) => {
+          return <TextField {...params} label="Tag" variant="outlined" />;
+        }}
+        renderOption={(props, tagName) => {
+          return (
+            <Box
+              key={tagName}
+              sx={{ display: 'flex', justifyContent: 'space-between' }}
             >
-              {tagName}
-            </Typography>
-            <IconButton
-              onClick={() => {
-                if (tagName !== noneTag) {
+              <Typography
+                sx={{
+                  flex: 1,
+                }}
+                {...props}
+              >
+                {tagName}
+              </Typography>
+              <IconButton
+                onClick={() => {
                   deleteGreWordTag({
                     variables: {
                       name: tagName,
@@ -102,57 +119,54 @@ const TagInput: React.FC<ITagInputProps> = ({
                       }
                     },
                   });
-                }
-              }}
-            >
-              <Delete />
-            </IconButton>
-          </Box>
-        );
-      }}
-      clearOnBlur
-      clearOnEscape
-      autoHighlight
-      selectOnFocus
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          if (tagSearchInput) {
-            if (
-              tagSearchInput === noneTag ||
-              tagNames.includes(tagSearchInput)
-            ) {
-              setSelectedTag(tagSearchInput);
-            } else {
-              createGreWordTag({
-                variables: {
-                  name: tagSearchInput,
-                  userId: user!.id,
-                },
-                update: (cache, { data }) => {
-                  cache.modify({
-                    fields: {
-                      greWordTags(existingTags = []) {
-                        const newTagRef = cache.writeFragment({
-                          data: data?.createGreWordTag,
-                          fragment: gql`
-                            fragment NewTag on GreWordTag {
-                              id
-                              name
-                            }
-                          `,
-                        });
+                }}
+              >
+                <Delete />
+              </IconButton>
+            </Box>
+          );
+        }}
+        clearOnBlur
+        clearOnEscape
+        autoHighlight
+        selectOnFocus
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            if (tagSearchInput) {
+              if (tagNames.includes(tagSearchInput)) {
+                setSelectedTags([...selectedTags, tagSearchInput]);
+              } else {
+                createGreWordTag({
+                  variables: {
+                    name: tagSearchInput,
+                    userId: user!.id,
+                  },
+                  update: (cache, { data }) => {
+                    cache.modify({
+                      fields: {
+                        greWordTags(existingTags = []) {
+                          const newTagRef = cache.writeFragment({
+                            data: data?.createGreWordTag,
+                            fragment: gql`
+                              fragment NewTag on GreWordTag {
+                                id
+                                name
+                              }
+                            `,
+                          });
 
-                        return [...existingTags, newTagRef];
+                          return [...existingTags, newTagRef];
+                        },
                       },
-                    },
-                  });
-                },
-              });
+                    });
+                  },
+                });
+              }
             }
           }
-        }
-      }}
-    />
+        }}
+      />
+    </Box>
   );
 };
 export default TagInput;
