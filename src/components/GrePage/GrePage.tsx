@@ -81,6 +81,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const validTagNames = greWordTagsQueryResult.data?.greWordTags.map(
     (t) => t.name
   );
+
   const [lastSubmittedWord, setLastSubmittedWord] = useState(wordInput);
 
   const queryTrackerInput = useMemo(() => {
