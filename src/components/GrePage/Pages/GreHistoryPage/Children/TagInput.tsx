@@ -14,6 +14,7 @@ import {
   useDeleteGreWordTagMutation,
   useGreWordTagsQuery,
 } from 'gql/graphql';
+import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
 import { useState } from 'react';
 
 interface ITagInputProps {
@@ -37,6 +38,7 @@ const TagInput: React.FC<ITagInputProps> = ({
       },
     },
   });
+  useRunOnWindowFocus(greWordTagsQueryResult.refetch);
 
   const [tagSearchInput, setTagSearchInput] = useState('');
 

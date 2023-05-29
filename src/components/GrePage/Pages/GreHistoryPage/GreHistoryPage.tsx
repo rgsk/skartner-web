@@ -104,7 +104,11 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     variables: { userId: user!.id, selectedTags: selectedTags },
   });
 
-  useRunOnWindowFocus(greWordsQueryResult.refetch);
+  useRunOnWindowFocus(() => {
+    greWordsQueryResult.refetch();
+    statusWiseGreWordCountResult.refetch();
+    greWordTagsQueryResult.refetch();
+  });
 
   const totalPages = useMemo(
     () =>
