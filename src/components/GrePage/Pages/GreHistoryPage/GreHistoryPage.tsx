@@ -88,13 +88,16 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
         status: {
           in: selectedStatuses,
         },
-        greWordTags: {
-          some: {
-            name: {
-              in: selectedTags,
-            },
-          },
-        },
+        greWordTags:
+          selectedTags.length > 0
+            ? {
+                some: {
+                  name: {
+                    in: selectedTags,
+                  },
+                },
+              }
+            : undefined,
       },
       skip: (currentPage - 1) * itemsPerPage,
       take: itemsPerPage,
