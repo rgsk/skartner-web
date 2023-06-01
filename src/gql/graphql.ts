@@ -435,7 +435,7 @@ export type GreWordsQuery = { __typename?: 'Query', greWordsCount: number, greWo
 
 export type StatusWiseGreWordCountQueryVariables = Exact<{
   userId: Scalars['String'];
-  selectedTags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  greWordTags?: InputMaybe<GreWordTagListRelationFilter>;
 }>;
 
 
@@ -935,24 +935,24 @@ export type GreWordsQueryHookResult = ReturnType<typeof useGreWordsQuery>;
 export type GreWordsLazyQueryHookResult = ReturnType<typeof useGreWordsLazyQuery>;
 export type GreWordsQueryResult = Apollo.QueryResult<GreWordsQuery, GreWordsQueryVariables>;
 export const StatusWiseGreWordCountDocument = gql`
-    query StatusWiseGreWordCount($userId: String!, $selectedTags: [String!]) {
+    query StatusWiseGreWordCount($userId: String!, $greWordTags: GreWordTagListRelationFilter) {
   STARTED_LEARNING: greWordsCount(
-    where: {status: {equals: STARTED_LEARNING}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
+    where: {status: {equals: STARTED_LEARNING}, userId: {equals: $userId}, greWordTags: $greWordTags}
   )
   STILL_LEARNING: greWordsCount(
-    where: {status: {equals: STILL_LEARNING}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
+    where: {status: {equals: STILL_LEARNING}, userId: {equals: $userId}, greWordTags: $greWordTags}
   )
   ALMOST_LEARNT: greWordsCount(
-    where: {status: {equals: ALMOST_LEARNT}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
+    where: {status: {equals: ALMOST_LEARNT}, userId: {equals: $userId}, greWordTags: $greWordTags}
   )
   FINISHED_LEARNING: greWordsCount(
-    where: {status: {equals: FINISHED_LEARNING}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
+    where: {status: {equals: FINISHED_LEARNING}, userId: {equals: $userId}, greWordTags: $greWordTags}
   )
   MEMORY_MODE: greWordsCount(
-    where: {status: {equals: MEMORY_MODE}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
+    where: {status: {equals: MEMORY_MODE}, userId: {equals: $userId}, greWordTags: $greWordTags}
   )
   MASTERED: greWordsCount(
-    where: {status: {equals: MASTERED}, userId: {equals: $userId}, greWordTags: {some: {name: {in: $selectedTags}}}}
+    where: {status: {equals: MASTERED}, userId: {equals: $userId}, greWordTags: $greWordTags}
   )
 }
     `;
@@ -970,7 +970,7 @@ export const StatusWiseGreWordCountDocument = gql`
  * const { data, loading, error } = useStatusWiseGreWordCountQuery({
  *   variables: {
  *      userId: // value for 'userId'
- *      selectedTags: // value for 'selectedTags'
+ *      greWordTags: // value for 'greWordTags'
  *   },
  * });
  */

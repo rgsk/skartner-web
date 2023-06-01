@@ -104,7 +104,19 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     },
   });
   const statusWiseGreWordCountResult = useStatusWiseGreWordCountQuery({
-    variables: { userId: user!.id, selectedTags: selectedTags },
+    variables: {
+      userId: user!.id,
+      greWordTags:
+        selectedTags.length > 0
+          ? {
+              some: {
+                name: {
+                  in: selectedTags,
+                },
+              },
+            }
+          : undefined,
+    },
   });
 
   useRunOnWindowFocus(() => {
