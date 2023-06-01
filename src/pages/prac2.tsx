@@ -1,13 +1,10 @@
-import { useWindowFocus } from 'hooks/utils/useWindowFocus';
-import { useEffect } from 'react';
+import SampleQueryParamToggler from 'components/Sample/SampleQueryParamToggler';
 
 const Page = () => {
-  const { isWindowFocused } = useWindowFocus();
-  useEffect(() => {
-    console.log({ isWindowFocused });
-  }, [isWindowFocused]);
-  return <div>Page</div>;
+  return (
+    <div>
+      <SampleQueryParamToggler />
+    </div>
+  );
 };
 export default Page;
-
-// http://localhost:3001/prac2

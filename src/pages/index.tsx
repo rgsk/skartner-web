@@ -20,6 +20,9 @@ export default function Home() {
         <Link href="/gre/history" color="secondary">
           Gre History Page
         </Link>
+        <Link href="/prac2" color="secondary">
+          prac2
+        </Link>
       </Box>
     </Container>
   );
