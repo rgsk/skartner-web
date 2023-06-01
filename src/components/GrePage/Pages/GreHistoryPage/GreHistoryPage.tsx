@@ -21,6 +21,7 @@ import {
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
+import useStateRef from 'hooks/utils/useStateRef';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
 import { useEffect, useMemo, useState } from 'react';
 import { GreWord } from './Children/GreWord';
@@ -48,6 +49,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const { user } = useGlobalContext();
   const [queryInput, setQueryInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const currentPageRef = useStateRef(currentPage);
   const [selectedStatuses, setSelectedStatuses] = useState<GreWordStatus[]>(
     sortedGreWordStatuses
   );
@@ -130,10 +132,21 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       Math.ceil((greWordsQueryResult.data?.greWordsCount ?? 0) / itemsPerPage),
     [greWordsQueryResult.data?.greWordsCount]
   );
-
+  const refetchGreWords = greWordsQueryResult.refetch;
   useEffect(() => {
-    setCurrentPage(1);
-  }, [queryInput]);
+    const [] = [queryInput, selectedTags, selectedStatuses];
+    if (currentPageRef.current !== 1) {
+      setCurrentPage(1);
+      // TODO: check if there is a better way to do this
+      refetchGreWords({ skip: 0 });
+    }
+  }, [
+    currentPageRef,
+    queryInput,
+    refetchGreWords,
+    selectedStatuses,
+    selectedTags,
+  ]);
 
   const queryTrackerInput = useMemo(() => {
     const result: any = {};
