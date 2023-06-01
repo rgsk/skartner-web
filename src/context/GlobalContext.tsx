@@ -3,12 +3,32 @@
 import { LocalStorageKeys } from 'constants/globalConstants';
 import { UsersForLoginPageQuery, useMetaFieldsQuery } from 'gql/graphql';
 import useLocalStorageState from 'hooks/utils/useLocalStorageState';
-import { createContext, useContext, useMemo } from 'react';
+import globalProps from 'lib/globalProps';
+import { useRouter } from 'next/router';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+
+const usePathHistoryTracker = () => {
+  const router = useRouter();
+
+  const [pathHistory, setPathHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    setPathHistory((prev) => [...prev, router.asPath]);
+  }, [router.asPath]);
+
+  useEffect(() => {
+    globalProps.pathHistory = pathHistory;
+  }, [pathHistory]);
+
+  return { pathHistory };
+};
 
 const useGlobalContextValue = () => {
   const [user, setUser, userStatePopulated] = useLocalStorageState<
     UsersForLoginPageQuery['users'][number]
   >(LocalStorageKeys.user, null);
+
+  const { pathHistory } = usePathHistoryTracker();
 
   const { data: { metaFields } = {} } = useMetaFieldsQuery();
 
@@ -37,6 +57,7 @@ const useGlobalContextValue = () => {
     setUser,
     metaFields,
     userStatePopulated,
+    pathHistory,
   };
 };
 
