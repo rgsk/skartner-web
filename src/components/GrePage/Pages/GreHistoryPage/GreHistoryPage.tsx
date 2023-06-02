@@ -301,8 +301,9 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
             <GreWord
               key={greWord.id}
               greWord={greWord}
-              refetchStatusWiseGreWordCountResult={() => {
+              refetchQueries={() => {
                 statusWiseGreWordCountResult.refetch();
+                greWordsQueryResult.refetch();
               }}
             />
           );

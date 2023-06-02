@@ -23,11 +23,11 @@ import TagInput from './TagInput';
 
 interface IGreWordProps {
   greWord: GreWordsQuery['greWords'][number];
-  refetchStatusWiseGreWordCountResult?: () => void;
+  refetchQueries?: () => void;
 }
 export const GreWord: React.FC<IGreWordProps> = ({
   greWord,
-  refetchStatusWiseGreWordCountResult,
+  refetchQueries,
 }) => {
   const [deleteGreWord, deleteGreWordResult] = useDeleteGreWordMutation();
   const [selectedTags, setSelectedTags] = useState(
@@ -89,7 +89,7 @@ export const GreWord: React.FC<IGreWordProps> = ({
                   greWordTags: tags.map((t) => ({ name: t })),
                 },
               }).then(() => {
-                refetchStatusWiseGreWordCountResult?.();
+                refetchQueries?.();
               });
             }}
           />
@@ -106,7 +106,7 @@ export const GreWord: React.FC<IGreWordProps> = ({
                   status: newWordStatus,
                 },
               }).then(() => {
-                refetchStatusWiseGreWordCountResult?.();
+                refetchQueries?.();
               });
             }}
           >
