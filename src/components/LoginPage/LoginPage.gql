@@ -2,7 +2,10 @@ mutation createUser($email: String!) {
   createUser(email: $email) {
     id
     email
-    meta
+    meta {
+      defaultGreWordSearchPromptInput
+      showDefaultGreWordSearchPromptInputs
+    }
   }
 }
 
@@ -10,6 +13,9 @@ query usersForLoginPage($where: UserWhereInput) {
   users(where: $where) {
     id
     email
-    meta
+    meta {
+      defaultGreWordSearchPromptInput
+      showDefaultGreWordSearchPromptInputs
+    }
   }
 }

@@ -120,17 +120,6 @@ export type GreWordWhereInput = {
   userId?: InputMaybe<StringFilter>;
 };
 
-export type MetaFields = {
-  __typename?: 'MetaFields';
-  user: MetaFields_User;
-};
-
-export type MetaFields_User = {
-  __typename?: 'MetaFields_User';
-  defaultGreWordSearchPromptInput: Scalars['String'];
-  showDefaultGreWordSearchPromptInputs: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createDraft?: Maybe<Post>;
@@ -179,7 +168,7 @@ export type MutationCreateGreWordTagArgs = {
 
 export type MutationCreateUserArgs = {
   email: Scalars['String'];
-  meta?: InputMaybe<Scalars['Json']>;
+  meta?: InputMaybe<UserMetaParsedJsonValueInput>;
 };
 
 
@@ -230,7 +219,7 @@ export type MutationUpdateGreWordSearchPromptInputArgs = {
 export type MutationUpdateUserArgs = {
   email?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['String']>;
-  meta?: InputMaybe<Scalars['Json']>;
+  meta?: InputMaybe<UserMetaParsedJsonValueInput>;
 };
 
 export type Post = {
@@ -254,7 +243,6 @@ export type Query = {
   greWords: Array<GreWord>;
   greWordsCount: Scalars['Int'];
   hello: HelloWorld;
-  metaFields: MetaFields;
   posts?: Maybe<Array<Maybe<Post>>>;
   sendSinglePrompt?: Maybe<Scalars['String']>;
   users: Array<User>;
@@ -333,8 +321,19 @@ export type User = {
   greWordTags: Array<GreWordTag>;
   greWords: Array<GreWord>;
   id: Scalars['String'];
-  meta: Scalars['Json'];
+  meta: UserMetaParsedJsonValue;
   updatedAt: Scalars['String'];
+};
+
+export type UserMetaParsedJsonValue = {
+  __typename?: 'UserMetaParsedJsonValue';
+  defaultGreWordSearchPromptInput?: Maybe<Scalars['String']>;
+  showDefaultGreWordSearchPromptInputs?: Maybe<Scalars['Boolean']>;
+};
+
+export type UserMetaParsedJsonValueInput = {
+  defaultGreWordSearchPromptInput?: InputMaybe<Scalars['String']>;
+  showDefaultGreWordSearchPromptInputs?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UserWhereInput = {
@@ -380,11 +379,11 @@ export type DeleteGreWordSearchPromptInputMutation = { __typename?: 'Mutation', 
 export type UpdateMetaForUserMutationVariables = Exact<{
   id?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
-  meta?: InputMaybe<Scalars['Json']>;
+  meta?: InputMaybe<UserMetaParsedJsonValueInput>;
 }>;
 
 
-export type UpdateMetaForUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'User', id: string, email: string, meta: any } | null };
+export type UpdateMetaForUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'User', id: string, email: string, meta: { __typename?: 'UserMetaParsedJsonValue', defaultGreWordSearchPromptInput?: string | null, showDefaultGreWordSearchPromptInputs?: boolean | null } } | null };
 
 export type SendSinglePromptQueryVariables = Exact<{
   input: Scalars['String'];
@@ -484,14 +483,14 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, email: string, meta: any } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, email: string, meta: { __typename?: 'UserMetaParsedJsonValue', defaultGreWordSearchPromptInput?: string | null, showDefaultGreWordSearchPromptInputs?: boolean | null } } | null };
 
 export type UsersForLoginPageQueryVariables = Exact<{
   where?: InputMaybe<UserWhereInput>;
 }>;
 
 
-export type UsersForLoginPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, meta: any }> };
+export type UsersForLoginPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, meta: { __typename?: 'UserMetaParsedJsonValue', defaultGreWordSearchPromptInput?: string | null, showDefaultGreWordSearchPromptInputs?: boolean | null } }> };
 
 export type DraftsForPracticeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -505,11 +504,6 @@ export type CreateDraftMutationVariables = Exact<{
 
 
 export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __typename?: 'Post', id: string, title?: string | null, body?: string | null } | null };
-
-export type MetaFieldsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MetaFieldsQuery = { __typename?: 'Query', metaFields: { __typename?: 'MetaFields', user: { __typename?: 'MetaFields_User', showDefaultGreWordSearchPromptInputs: string, defaultGreWordSearchPromptInput: string } } };
 
 
 export const GreWordSearchPromptInputsDocument = gql`
@@ -655,11 +649,14 @@ export type DeleteGreWordSearchPromptInputMutationHookResult = ReturnType<typeof
 export type DeleteGreWordSearchPromptInputMutationResult = Apollo.MutationResult<DeleteGreWordSearchPromptInputMutation>;
 export type DeleteGreWordSearchPromptInputMutationOptions = Apollo.BaseMutationOptions<DeleteGreWordSearchPromptInputMutation, DeleteGreWordSearchPromptInputMutationVariables>;
 export const UpdateMetaForUserDocument = gql`
-    mutation updateMetaForUser($id: String, $email: String, $meta: Json) {
+    mutation updateMetaForUser($id: String, $email: String, $meta: UserMetaParsedJsonValueInput) {
   updateUser(id: $id, email: $email, meta: $meta) {
     id
     email
-    meta
+    meta {
+      defaultGreWordSearchPromptInput
+      showDefaultGreWordSearchPromptInputs
+    }
   }
 }
     `;
@@ -1162,7 +1159,10 @@ export const CreateUserDocument = gql`
   createUser(email: $email) {
     id
     email
-    meta
+    meta {
+      defaultGreWordSearchPromptInput
+      showDefaultGreWordSearchPromptInputs
+    }
   }
 }
     `;
@@ -1197,7 +1197,10 @@ export const UsersForLoginPageDocument = gql`
   users(where: $where) {
     id
     email
-    meta
+    meta {
+      defaultGreWordSearchPromptInput
+      showDefaultGreWordSearchPromptInputs
+    }
   }
 }
     `;
@@ -1302,40 +1305,3 @@ export function useCreateDraftMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateDraftMutationHookResult = ReturnType<typeof useCreateDraftMutation>;
 export type CreateDraftMutationResult = Apollo.MutationResult<CreateDraftMutation>;
 export type CreateDraftMutationOptions = Apollo.BaseMutationOptions<CreateDraftMutation, CreateDraftMutationVariables>;
-export const MetaFieldsDocument = gql`
-    query metaFields {
-  metaFields {
-    user {
-      showDefaultGreWordSearchPromptInputs
-      defaultGreWordSearchPromptInput
-    }
-  }
-}
-    `;
-
-/**
- * __useMetaFieldsQuery__
- *
- * To run a query within a React component, call `useMetaFieldsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMetaFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMetaFieldsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMetaFieldsQuery(baseOptions?: Apollo.QueryHookOptions<MetaFieldsQuery, MetaFieldsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MetaFieldsQuery, MetaFieldsQueryVariables>(MetaFieldsDocument, options);
-      }
-export function useMetaFieldsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MetaFieldsQuery, MetaFieldsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MetaFieldsQuery, MetaFieldsQueryVariables>(MetaFieldsDocument, options);
-        }
-export type MetaFieldsQueryHookResult = ReturnType<typeof useMetaFieldsQuery>;
-export type MetaFieldsLazyQueryHookResult = ReturnType<typeof useMetaFieldsLazyQuery>;
-export type MetaFieldsQueryResult = Apollo.QueryResult<MetaFieldsQuery, MetaFieldsQueryVariables>;

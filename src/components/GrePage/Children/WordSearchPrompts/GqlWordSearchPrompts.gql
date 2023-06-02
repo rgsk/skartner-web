@@ -29,10 +29,17 @@ mutation deleteGreWordSearchPromptInput($id: String!) {
 }
 
 # TODO: id, email, meta fields can be listed using Fragment
-mutation updateMetaForUser($id: String, $email: String, $meta: Json) {
+mutation updateMetaForUser(
+  $id: String
+  $email: String
+  $meta: UserMetaParsedJsonValueInput
+) {
   updateUser(id: $id, email: $email, meta: $meta) {
     id
     email
-    meta
+    meta {
+      defaultGreWordSearchPromptInput
+      showDefaultGreWordSearchPromptInputs
+    }
   }
 }

@@ -40,7 +40,7 @@ enum QueryParams {
 interface IGrePageProps {}
 const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [wordInput, setWordInput] = useState('');
-  const { user, userParsedMeta, metaFields, setUser } = useGlobalContext();
+  const { user, setUser } = useGlobalContext();
   const { greConfiguration } = useGreContext();
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -146,15 +146,15 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   ]);
 
   const handleDefaultPromptInputTextChange = (newPromptInputText: string) => {
-    if (user && metaFields) {
+    if (user) {
+      const { __typename, ...metaFields } = user.meta;
       updateMetaForUser({
         variables: {
           id: user.id,
-          meta: JSON.stringify({
-            ...userParsedMeta,
-            [metaFields.user.defaultGreWordSearchPromptInput]:
-              newPromptInputText,
-          }),
+          meta: {
+            ...metaFields,
+            defaultGreWordSearchPromptInput: newPromptInputText,
+          },
         },
       }).then(({ data }) => {
         const updatedUser = data?.updateUser;
@@ -168,7 +168,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const handleWordSearch = () => {
     if (greConfiguration) {
       submitWord(
-        userParsedMeta?.defaultGreWordSearchPromptInput ??
+        user?.meta?.defaultGreWordSearchPromptInput ??
           greConfiguration.defaultGreWordSearchPromptInputs[0]
       );
     }
@@ -275,9 +275,9 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
               alignItems: 'start',
             }}
           >
-            {userParsedMeta?.showDefaultGreWordSearchPromptInputs ||
+            {user?.meta?.showDefaultGreWordSearchPromptInputs ||
             greConfiguration?.defaultGreWordSearchPromptInputs.includes(
-              userParsedMeta?.defaultGreWordSearchPromptInput!
+              user?.meta?.defaultGreWordSearchPromptInput!
             )
               ? greConfiguration?.defaultGreWordSearchPromptInputs.map(
                   (input, i) => {
@@ -285,9 +285,9 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                       <Box key={i}>
                         <Checkbox
                           checked={
-                            userParsedMeta?.defaultGreWordSearchPromptInput ===
+                            user?.meta?.defaultGreWordSearchPromptInput ===
                               input ||
-                            (!userParsedMeta?.defaultGreWordSearchPromptInput &&
+                            (!user?.meta?.defaultGreWordSearchPromptInput &&
                               i == 0)
                           }
                           onChange={(
@@ -319,7 +319,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
                   <Box key={i}>
                     <Checkbox
                       checked={
-                        userParsedMeta?.defaultGreWordSearchPromptInput ===
+                        user?.meta?.defaultGreWordSearchPromptInput ===
                         promptInput.text
                       }
                       onChange={(

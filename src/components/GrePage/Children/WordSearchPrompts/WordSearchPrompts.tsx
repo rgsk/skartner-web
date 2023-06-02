@@ -25,7 +25,7 @@ import CreateWordSearchPromptForm from './Children/CreateWordSearchPromptForm';
 import EditWordSearchPromptForm from './Children/EditWordSearchPromptForm';
 
 const WordSearchPrompts: React.FC = () => {
-  const { user, setUser, metaFields, userParsedMeta } = useGlobalContext();
+  const { user, setUser } = useGlobalContext();
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const { greConfiguration } = useGreContext();
 
@@ -64,20 +64,21 @@ const WordSearchPrompts: React.FC = () => {
   });
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
   const [checked, setChecked] = useState(
-    !!userParsedMeta?.showDefaultGreWordSearchPromptInputs
+    !!user?.meta?.showDefaultGreWordSearchPromptInputs
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (user && metaFields) {
+    if (user) {
       const newValue = event.target.checked;
       setChecked(newValue);
+      const { __typename, ...metaFields } = user.meta;
       updateMetaForUser({
         variables: {
           id: user.id,
-          meta: JSON.stringify({
-            ...userParsedMeta,
-            [metaFields.user.showDefaultGreWordSearchPromptInputs]: newValue,
-          }),
+          meta: {
+            ...metaFields,
+            showDefaultGreWordSearchPromptInputs: newValue,
+          },
         },
       }).then(({ data }) => {
         const updatedUser = data?.updateUser;
@@ -91,7 +92,7 @@ const WordSearchPrompts: React.FC = () => {
   return (
     <Box>
       {!greConfiguration?.defaultGreWordSearchPromptInputs.includes(
-        userParsedMeta?.defaultGreWordSearchPromptInput!
+        user?.meta?.defaultGreWordSearchPromptInput!
       ) && (
         <FormControlLabel
           control={<Checkbox checked={checked} onChange={handleChange} />}

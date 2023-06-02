@@ -1,11 +1,11 @@
 // context/GlobalContext.tsx
 
 import { LocalStorageKeys } from 'constants/globalConstants';
-import { UsersForLoginPageQuery, useMetaFieldsQuery } from 'gql/graphql';
+import { UsersForLoginPageQuery } from 'gql/graphql';
 import useLocalStorageState from 'hooks/utils/useLocalStorageState';
 import globalProps from 'lib/globalProps';
 import { useRouter } from 'next/router';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const usePathsVisitedTracker = () => {
   const router = useRouter();
@@ -30,32 +30,9 @@ const useGlobalContextValue = () => {
 
   const { pathsVisited } = usePathsVisitedTracker();
 
-  const { data: { metaFields } = {} } = useMetaFieldsQuery();
-
-  const userParsedMeta = useMemo(() => {
-    if (user && metaFields) {
-      const jsonParsedMeta = JSON.parse(user.meta);
-      return {
-        [metaFields.user
-          .showDefaultGreWordSearchPromptInputs as 'showDefaultGreWordSearchPromptInputs']:
-          jsonParsedMeta[
-            metaFields.user.showDefaultGreWordSearchPromptInputs
-          ] as undefined | null | boolean,
-        [metaFields.user
-          .defaultGreWordSearchPromptInput as 'defaultGreWordSearchPromptInput']:
-          jsonParsedMeta[metaFields.user.defaultGreWordSearchPromptInput] as
-            | undefined
-            | null
-            | string,
-      };
-    }
-  }, [metaFields, user]);
-
   return {
     user,
-    userParsedMeta,
     setUser,
-    metaFields,
     userStatePopulated,
     pathsVisited,
   };
