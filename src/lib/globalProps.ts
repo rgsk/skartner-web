@@ -1,6 +1,6 @@
 const globalProps: {
-  pathHistory: string[];
+  pathsVisited: string[];
 } = {
-  pathHistory: [],
+  pathsVisited: [],
 };
 export default globalProps;

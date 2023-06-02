@@ -7,20 +7,20 @@ import globalProps from 'lib/globalProps';
 import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-const usePathHistoryTracker = () => {
+const usePathsVisitedTracker = () => {
   const router = useRouter();
 
-  const [pathHistory, setPathHistory] = useState<string[]>([]);
+  const [pathsVisited, setPathsVisited] = useState<string[]>([]);
 
   useEffect(() => {
-    setPathHistory((prev) => [...prev, router.asPath]);
+    setPathsVisited((prev) => [...prev, router.asPath]);
   }, [router.asPath]);
 
   useEffect(() => {
-    globalProps.pathHistory = pathHistory;
-  }, [pathHistory]);
+    globalProps.pathsVisited = pathsVisited;
+  }, [pathsVisited]);
 
-  return { pathHistory };
+  return { pathsVisited };
 };
 
 const useGlobalContextValue = () => {
@@ -28,7 +28,7 @@ const useGlobalContextValue = () => {
     UsersForLoginPageQuery['users'][number]
   >(LocalStorageKeys.user, null);
 
-  const { pathHistory } = usePathHistoryTracker();
+  const { pathsVisited } = usePathsVisitedTracker();
 
   const { data: { metaFields } = {} } = useMetaFieldsQuery();
 
@@ -57,7 +57,7 @@ const useGlobalContextValue = () => {
     setUser,
     metaFields,
     userStatePopulated,
-    pathHistory,
+    pathsVisited,
   };
 };
 

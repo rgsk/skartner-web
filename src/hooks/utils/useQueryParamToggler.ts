@@ -9,7 +9,7 @@ const useQueryParamToggler = (
   queryParam: string,
   { enabled = true }: { enabled?: boolean } = { enabled: true }
 ) => {
-  const { pathHistory } = useGlobalContext();
+  const { pathsVisited } = useGlobalContext();
   const router = useRouter();
 
   const queryParamAttached = useMemo(
@@ -34,13 +34,13 @@ const useQueryParamToggler = (
       const withoutParamPath = removeParamsFromPath(Router.asPath, [
         queryParam,
       ]);
-      if (pathHistory[pathHistory.length - 2] === withoutParamPath) {
+      if (pathsVisited[pathsVisited.length - 2] === withoutParamPath) {
         Router.back();
       } else {
         Router.replace(withoutParamPath);
       }
     }
-  }, [pathHistory, queryParam, queryParamAttached]);
+  }, [pathsVisited, queryParam, queryParamAttached]);
 
   useEffect(() => {
     if (!enabled) {
