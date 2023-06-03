@@ -126,6 +126,7 @@ export type Mutation = {
   createGreWord: GreWord;
   createGreWordSearchPromptInput: GreWordSearchPromptInput;
   createGreWordTag: GreWordTag;
+  createNotification: Notification;
   createUser?: Maybe<User>;
   deleteGptPrompt?: Maybe<GptPrompt>;
   deleteGreWord?: Maybe<GreWord>;
@@ -162,6 +163,12 @@ export type MutationCreateGreWordSearchPromptInputArgs = {
 
 export type MutationCreateGreWordTagArgs = {
   name: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+
+export type MutationCreateNotificationArgs = {
+  message: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -220,6 +227,12 @@ export type MutationUpdateUserArgs = {
   email?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['String']>;
   meta?: InputMaybe<UserMetaParsedJsonValueInput>;
+};
+
+export type Notification = {
+  __typename?: 'Notification';
+  message: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type Post = {
@@ -310,6 +323,23 @@ export type StringFilter = {
   not?: InputMaybe<Scalars['String']>;
   notIn?: InputMaybe<Array<Scalars['String']>>;
   startsWith?: InputMaybe<Scalars['String']>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  greWordCreated?: Maybe<GreWord>;
+  notificationReceived?: Maybe<Notification>;
+  truths?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type SubscriptionGreWordCreatedArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type SubscriptionNotificationReceivedArgs = {
+  userId: Scalars['String'];
 };
 
 export type User = {
@@ -508,6 +538,13 @@ export type CreateDraftMutationVariables = Exact<{
 
 
 export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __typename?: 'Post', id: string, title?: string | null, body?: string | null } | null };
+
+export type NotificationReceivedSubscriptionVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type NotificationReceivedSubscription = { __typename?: 'Subscription', notificationReceived?: { __typename?: 'Notification', message: string, userId: string } | null };
 
 export const GreWordFieldsFragmentDoc = gql`
     fragment GreWordFields on GreWord {
@@ -1295,3 +1332,34 @@ export function useCreateDraftMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateDraftMutationHookResult = ReturnType<typeof useCreateDraftMutation>;
 export type CreateDraftMutationResult = Apollo.MutationResult<CreateDraftMutation>;
 export type CreateDraftMutationOptions = Apollo.BaseMutationOptions<CreateDraftMutation, CreateDraftMutationVariables>;
+export const NotificationReceivedDocument = gql`
+    subscription NotificationReceived($userId: String!) {
+  notificationReceived(userId: $userId) {
+    message
+    userId
+  }
+}
+    `;
+
+/**
+ * __useNotificationReceivedSubscription__
+ *
+ * To run a query within a React component, call `useNotificationReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationReceivedSubscription({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useNotificationReceivedSubscription(baseOptions: Apollo.SubscriptionHookOptions<NotificationReceivedSubscription, NotificationReceivedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<NotificationReceivedSubscription, NotificationReceivedSubscriptionVariables>(NotificationReceivedDocument, options);
+      }
+export type NotificationReceivedSubscriptionHookResult = ReturnType<typeof useNotificationReceivedSubscription>;
+export type NotificationReceivedSubscriptionResult = Apollo.SubscriptionResult<NotificationReceivedSubscription>;

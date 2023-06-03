@@ -1,0 +1,6 @@
+subscription NotificationReceived($userId: String!) {
+  notificationReceived(userId: $userId) {
+    message
+    userId
+  }
+}
