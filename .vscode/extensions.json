@@ -3,6 +3,7 @@
     "esbenp.prettier-vscode",
     "csstools.postcss",
     "bradlc.vscode-tailwindcss",
-    "ms-vscode.vscode-typescript-next"
+    "ms-vscode.vscode-typescript-next",
+    "GraphQL.vscode-graphql"
   ]
 }
