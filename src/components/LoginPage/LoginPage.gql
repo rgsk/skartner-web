@@ -1,21 +1,19 @@
+fragment UserFields on User {
+  id
+  email
+  meta {
+    defaultGreWordSearchPromptInput
+    showDefaultGreWordSearchPromptInputs
+  }
+}
 mutation createUser($email: String!) {
   createUser(email: $email) {
-    id
-    email
-    meta {
-      defaultGreWordSearchPromptInput
-      showDefaultGreWordSearchPromptInputs
-    }
+    ...UserFields
   }
 }
 
 query usersForLoginPage($where: UserWhereInput) {
   users(where: $where) {
-    id
-    email
-    meta {
-      defaultGreWordSearchPromptInput
-      showDefaultGreWordSearchPromptInputs
-    }
+    ...UserFields
   }
 }

@@ -480,6 +480,8 @@ export type UpdateGreWordMutationVariables = Exact<{
 
 export type UpdateGreWordMutation = { __typename?: 'Mutation', updateGreWord?: { __typename?: 'GreWord', id: string } | null };
 
+export type UserFieldsFragment = { __typename?: 'User', id: string, email: string, meta: { __typename?: 'UserMetaParsedJsonValue', defaultGreWordSearchPromptInput?: string | null, showDefaultGreWordSearchPromptInputs?: boolean | null } };
+
 export type CreateUserMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -522,6 +524,16 @@ export const GreWordFieldsFragmentDoc = gql`
   greWordTags {
     id
     name
+  }
+}
+    `;
+export const UserFieldsFragmentDoc = gql`
+    fragment UserFields on User {
+  id
+  email
+  meta {
+    defaultGreWordSearchPromptInput
+    showDefaultGreWordSearchPromptInputs
   }
 }
     `;
@@ -670,15 +682,10 @@ export type DeleteGreWordSearchPromptInputMutationOptions = Apollo.BaseMutationO
 export const UpdateMetaForUserDocument = gql`
     mutation updateMetaForUser($id: String, $email: String, $meta: UserMetaParsedJsonValueInput) {
   updateUser(id: $id, email: $email, meta: $meta) {
-    id
-    email
-    meta {
-      defaultGreWordSearchPromptInput
-      showDefaultGreWordSearchPromptInputs
-    }
+    ...UserFields
   }
 }
-    `;
+    ${UserFieldsFragmentDoc}`;
 export type UpdateMetaForUserMutationFn = Apollo.MutationFunction<UpdateMetaForUserMutation, UpdateMetaForUserMutationVariables>;
 
 /**
@@ -1150,15 +1157,10 @@ export type UpdateGreWordMutationOptions = Apollo.BaseMutationOptions<UpdateGreW
 export const CreateUserDocument = gql`
     mutation createUser($email: String!) {
   createUser(email: $email) {
-    id
-    email
-    meta {
-      defaultGreWordSearchPromptInput
-      showDefaultGreWordSearchPromptInputs
-    }
+    ...UserFields
   }
 }
-    `;
+    ${UserFieldsFragmentDoc}`;
 export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
 
 /**
@@ -1188,15 +1190,10 @@ export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMut
 export const UsersForLoginPageDocument = gql`
     query usersForLoginPage($where: UserWhereInput) {
   users(where: $where) {
-    id
-    email
-    meta {
-      defaultGreWordSearchPromptInput
-      showDefaultGreWordSearchPromptInputs
-    }
+    ...UserFields
   }
 }
-    `;
+    ${UserFieldsFragmentDoc}`;
 
 /**
  * __useUsersForLoginPageQuery__
