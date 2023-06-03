@@ -63,14 +63,10 @@ const WordSearchPrompts: React.FC = () => {
     },
   });
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
-  const [checked, setChecked] = useState(
-    !!user?.meta?.showDefaultGreWordSearchPromptInputs
-  );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (user) {
       const newValue = event.target.checked;
-      setChecked(newValue);
       const { __typename, ...metaFields } = user.meta;
       updateMetaForUser({
         variables: {
@@ -95,7 +91,12 @@ const WordSearchPrompts: React.FC = () => {
         user?.meta?.defaultGreWordSearchPromptInput!
       ) && (
         <FormControlLabel
-          control={<Checkbox checked={checked} onChange={handleChange} />}
+          control={
+            <Checkbox
+              checked={!!user?.meta?.showDefaultGreWordSearchPromptInputs}
+              onChange={handleChange}
+            />
+          }
           label="Show Predefined GreWordSearchPromptInputs"
         />
       )}
