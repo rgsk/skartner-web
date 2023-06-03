@@ -282,33 +282,24 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
               ? greConfiguration?.defaultGreWordSearchPromptInputs.map(
                   (input, i) => {
                     return (
-                      <Box key={i}>
-                        <Checkbox
-                          checked={
-                            user?.meta?.defaultGreWordSearchPromptInput ===
-                              input ||
-                            (!user?.meta?.defaultGreWordSearchPromptInput &&
-                              i == 0)
+                      <PromptSelector
+                        key={i + input}
+                        checked={
+                          user?.meta?.defaultGreWordSearchPromptInput ===
+                            input ||
+                          (!user?.meta?.defaultGreWordSearchPromptInput &&
+                            i == 0)
+                        }
+                        promptInputText={input}
+                        onCheckboxChange={(checked) => {
+                          if (checked) {
+                            handleDefaultPromptInputTextChange(input);
                           }
-                          onChange={(
-                            event: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            const newValue = event.target.checked;
-                            // we can only select something as default
-                            if (newValue) {
-                              handleDefaultPromptInputTextChange(input);
-                            }
-                          }}
-                        />
-                        <Button
-                          variant="text"
-                          onClick={() => {
-                            submitWord(input);
-                          }}
-                        >
-                          {input}
-                        </Button>
-                      </Box>
+                        }}
+                        onPromptInputClick={() => {
+                          submitWord(input);
+                        }}
+                      />
                     );
                   }
                 )
@@ -316,31 +307,22 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             {greWordSearchPromptInputsQueryResult.data?.greWordSearchPromptInputs.map(
               (promptInput, i) => {
                 return (
-                  <Box key={i}>
-                    <Checkbox
-                      checked={
-                        user?.meta?.defaultGreWordSearchPromptInput ===
-                        promptInput.text
+                  <PromptSelector
+                    key={promptInput.id}
+                    checked={
+                      user?.meta?.defaultGreWordSearchPromptInput ===
+                      promptInput.text
+                    }
+                    promptInputText={promptInput.text}
+                    onCheckboxChange={(checked) => {
+                      if (checked) {
+                        handleDefaultPromptInputTextChange(promptInput.text);
                       }
-                      onChange={(
-                        event: React.ChangeEvent<HTMLInputElement>
-                      ) => {
-                        const newValue = event.target.checked;
-                        if (newValue) {
-                          handleDefaultPromptInputTextChange(promptInput.text);
-                        }
-                      }}
-                    />
-                    <Button
-                      variant="text"
-                      key={promptInput.id}
-                      onClick={() => {
-                        submitWord(promptInput.text);
-                      }}
-                    >
-                      {promptInput.text}
-                    </Button>
-                  </Box>
+                    }}
+                    onPromptInputClick={() => {
+                      submitWord(promptInput.text);
+                    }}
+                  />
                 );
               }
             )}
@@ -411,3 +393,32 @@ function CollapsibleComponent({ head, children }: ICollapsibleComponentProps) {
     </Accordion>
   );
 }
+
+interface IPromptSelectorProps {
+  checked: boolean;
+  onCheckboxChange: (checked: boolean) => void;
+  promptInputText: string;
+  onPromptInputClick: () => void;
+}
+const PromptSelector: React.FC<IPromptSelectorProps> = ({
+  checked,
+  onCheckboxChange,
+  promptInputText,
+  onPromptInputClick,
+}) => {
+  return (
+    <Box>
+      <Checkbox
+        checked={checked}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const newValue = event.target.checked;
+          // we can only select something as default
+          onCheckboxChange(newValue);
+        }}
+      />
+      <Button variant="text" onClick={onPromptInputClick}>
+        {promptInputText}
+      </Button>
+    </Box>
+  );
+};
