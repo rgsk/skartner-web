@@ -16,20 +16,7 @@ mutation createGreWord(
     userId: $userId
     greWordTags: $greWordTags
   ) {
-    id
-    spelling
-    status
-    gptPrompts {
-      id
-      input
-      response
-      editedResponse
-      greWordId
-    }
-    greWordTags {
-      id
-      name
-    }
+    ...GreWordFields
   }
 }
 # TODO: move above fields in fragment

@@ -1,19 +1,22 @@
+fragment GreWordFields on GreWord {
+  id
+  spelling
+  status
+  gptPrompts {
+    id
+    input
+    response
+    editedResponse
+    greWordId
+  }
+  greWordTags {
+    id
+    name
+  }
+}
 query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
   greWords(where: $where, skip: $skip, take: $take) {
-    id
-    spelling
-    status
-    gptPrompts {
-      id
-      input
-      response
-      editedResponse
-      greWordId
-    }
-    greWordTags {
-      id
-      name
-    }
+    ...GreWordFields
   }
   greWordsCount(where: $where)
 }

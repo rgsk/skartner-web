@@ -423,6 +423,8 @@ export type DeleteGreWordTagMutationVariables = Exact<{
 
 export type DeleteGreWordTagMutation = { __typename?: 'Mutation', deleteGreWordTag: { __typename?: 'GreWordTag', id: string, name: string } };
 
+export type GreWordFieldsFragment = { __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }>, greWordTags?: Array<{ __typename?: 'GreWordTag', id: string, name: string }> | null };
+
 export type GreWordsQueryVariables = Exact<{
   where?: InputMaybe<GreWordWhereInput>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -505,7 +507,24 @@ export type CreateDraftMutationVariables = Exact<{
 
 export type CreateDraftMutation = { __typename?: 'Mutation', createDraft?: { __typename?: 'Post', id: string, title?: string | null, body?: string | null } | null };
 
-
+export const GreWordFieldsFragmentDoc = gql`
+    fragment GreWordFields on GreWord {
+  id
+  spelling
+  status
+  gptPrompts {
+    id
+    input
+    response
+    editedResponse
+    greWordId
+  }
+  greWordTags {
+    id
+    name
+  }
+}
+    `;
 export const GreWordSearchPromptInputsDocument = gql`
     query greWordSearchPromptInputs($where: GreWordSearchPromptInputWhereInput) {
   greWordSearchPromptInputs(where: $where) {
@@ -730,23 +749,10 @@ export const CreateGreWordDocument = gql`
     userId: $userId
     greWordTags: $greWordTags
   ) {
-    id
-    spelling
-    status
-    gptPrompts {
-      id
-      input
-      response
-      editedResponse
-      greWordId
-    }
-    greWordTags {
-      id
-      name
-    }
+    ...GreWordFields
   }
 }
-    `;
+    ${GreWordFieldsFragmentDoc}`;
 export type CreateGreWordMutationFn = Apollo.MutationFunction<CreateGreWordMutation, CreateGreWordMutationVariables>;
 
 /**
@@ -883,24 +889,11 @@ export type DeleteGreWordTagMutationOptions = Apollo.BaseMutationOptions<DeleteG
 export const GreWordsDocument = gql`
     query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
   greWords(where: $where, skip: $skip, take: $take) {
-    id
-    spelling
-    status
-    gptPrompts {
-      id
-      input
-      response
-      editedResponse
-      greWordId
-    }
-    greWordTags {
-      id
-      name
-    }
+    ...GreWordFields
   }
   greWordsCount(where: $where)
 }
-    `;
+    ${GreWordFieldsFragmentDoc}`;
 
 /**
  * __useGreWordsQuery__
