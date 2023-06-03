@@ -10,7 +10,7 @@ require('dotenv').config();
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.NEXT_PUBLIC_SKARTNER_SERVER,
+  schema: `${process.env.NEXT_PUBLIC_SKARTNER_SERVER}/graphql`,
   documents: 'src/**/*.{graphql,gql}',
   generates: {
     'src/gql/graphql.ts': {
