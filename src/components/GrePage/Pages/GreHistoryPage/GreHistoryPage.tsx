@@ -19,6 +19,7 @@ import {
   useGreWordsQuery,
   useStatusWiseGreWordCountQuery,
 } from 'gql/graphql';
+import useDebounce from 'hooks/utils/useDebounce';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
 import useStateRef from 'hooks/utils/useStateRef';
@@ -48,6 +49,7 @@ interface IGreHistoryPageProps {}
 const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const { user } = useGlobalContext();
   const [queryInput, setQueryInput] = useState('');
+  const debouncedQueryInput = useDebounce(queryInput);
   const [currentPage, setCurrentPage] = useState(1);
   const currentPageRef = useStateRef(currentPage);
   const [selectedStatuses, setSelectedStatuses] = useState<GreWordStatus[]>(
@@ -85,7 +87,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
   const greWordsQueryResult = useGreWordsQuery({
     variables: {
       where: {
-        spelling: { startsWith: queryInput },
+        spelling: { startsWith: debouncedQueryInput },
         userId: { equals: user!.id },
         status: {
           in: selectedStatuses,

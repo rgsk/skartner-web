@@ -1,9 +1,9 @@
-import SampleQueryParamToggler from 'components/Sample/SampleQueryParamToggler';
+import SampleDebounce from 'components/Sample/SampleDebounce';
 
 const Page = () => {
   return (
     <div>
-      <SampleQueryParamToggler />
+      <SampleDebounce />
     </div>
   );
 };
