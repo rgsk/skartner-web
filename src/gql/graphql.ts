@@ -507,7 +507,7 @@ export type CreateGptPromptMutationVariables = Exact<{
 }>;
 
 
-export type CreateGptPromptMutation = { __typename?: 'Mutation', createGptPrompt: { __typename?: 'GptPrompt', id: string } };
+export type CreateGptPromptMutation = { __typename?: 'Mutation', createGptPrompt: { __typename?: 'GptPrompt', id: string, response: string } };
 
 export type GreWordFieldsFragment = { __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }>, greWordTags?: Array<{ __typename?: 'GreWordTag', id: string, name: string }> | null };
 
@@ -991,6 +991,7 @@ export const CreateGptPromptDocument = gql`
     mutation createGptPrompt($input: String!, $response: String!, $greWordId: String!) {
   createGptPrompt(input: $input, response: $response, greWordId: $greWordId) {
     id
+    response
   }
 }
     `;

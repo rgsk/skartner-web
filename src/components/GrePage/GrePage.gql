@@ -47,5 +47,6 @@ mutation createGptPrompt(
 ) {
   createGptPrompt(input: $input, response: $response, greWordId: $greWordId) {
     id
+    response
   }
 }

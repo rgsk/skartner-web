@@ -46,7 +46,8 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [getGreWords, getGreWordsResult] = useGreWordsLazyQuery();
-  const [createGptPrompt] = useCreateGptPromptMutation();
+  const [createGptPrompt, createGptPromptMutationResult] =
+    useCreateGptPromptMutation();
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
   const greWordSearchPromptInputsQueryResult =
@@ -139,11 +140,16 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   };
 
   const tryingToSavePreviousResponseAgain = useMemo(() => {
-    return !!createGreWordMutationResult.data?.createGreWord.gptPrompts.some(
-      (p) => p.response === sendSinglePromptQueryResult.data?.sendSinglePrompt
+    return (
+      !!createGreWordMutationResult.data?.createGreWord.gptPrompts.some(
+        (p) => p.response === sendSinglePromptQueryResult.data?.sendSinglePrompt
+      ) ||
+      createGptPromptMutationResult.data?.createGptPrompt.response ===
+        sendSinglePromptQueryResult.data?.sendSinglePrompt
     );
   }, [
-    createGreWordMutationResult.data?.createGreWord,
+    createGptPromptMutationResult.data?.createGptPrompt.response,
+    createGreWordMutationResult.data?.createGreWord.gptPrompts,
     sendSinglePromptQueryResult.data?.sendSinglePrompt,
   ]);
 
@@ -214,7 +220,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             } else {
               createGreWord({
                 variables: {
-                  spelling: wordInput.toLowerCase(),
+                  spelling: wordInput,
                   promptInput: sendSinglePromptQueryResult.variables.input,
                   promptResponse:
                     sendSinglePromptQueryResult.data.sendSinglePrompt,
@@ -250,7 +256,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           variant="outlined"
           value={wordInput}
           onChange={(e) => {
-            setWordInput(e.target.value);
+            setWordInput(e.target.value.toLowerCase());
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
