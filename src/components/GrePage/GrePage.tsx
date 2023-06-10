@@ -14,6 +14,7 @@ import {
 import { useGlobalContext } from 'context/GlobalContext';
 import { useGreContext } from 'context/GreContext';
 import {
+  useCreateGptPromptMutation,
   useCreateGreWordMutation,
   useGreWordSearchPromptInputsQuery,
   useGreWordTagsQuery,
@@ -45,6 +46,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [getGreWords, getGreWordsResult] = useGreWordsLazyQuery();
+  const [createGptPrompt] = useCreateGptPromptMutation();
   const [modifyingWordSearchPrompts, setModifyingWordSearchPrompts] =
     useState(false);
   const greWordSearchPromptInputsQueryResult =
@@ -184,31 +186,47 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           sendSinglePromptQueryResult.loading ||
           !wordInput ||
           wordInput !== lastSubmittedWord ||
-          tryingToSavePreviousResponseAgain
+          tryingToSavePreviousResponseAgain ||
+          getGreWordsResult.loading
         }
         startIcon={
           createGreWordMutationResult.loading ? (
             <CircularProgress size={24} />
           ) : null
         }
-        onClick={() => {
+        onClick={async () => {
           if (
             wordInput &&
             sendSinglePromptQueryResult.variables?.input &&
-            sendSinglePromptQueryResult.data?.sendSinglePrompt
+            sendSinglePromptQueryResult.data?.sendSinglePrompt &&
+            !getGreWordsResult.loading
           ) {
-            createGreWord({
-              variables: {
-                spelling: wordInput.toLowerCase(),
-                promptInput: sendSinglePromptQueryResult.variables?.input,
-                promptResponse:
-                  sendSinglePromptQueryResult.data?.sendSinglePrompt,
-                userId: user!.id,
-                greWordTags: selectedTags.map((tagName) => ({ name: tagName })),
-              },
-            }).then(() => {
-              refreshSavedGreWord();
-            });
+            if (savedGreWord) {
+              createGptPrompt({
+                variables: {
+                  greWordId: savedGreWord.id,
+                  input: sendSinglePromptQueryResult.variables.input,
+                  response: sendSinglePromptQueryResult.data.sendSinglePrompt,
+                },
+              }).then(() => {
+                refreshSavedGreWord();
+              });
+            } else {
+              createGreWord({
+                variables: {
+                  spelling: wordInput.toLowerCase(),
+                  promptInput: sendSinglePromptQueryResult.variables.input,
+                  promptResponse:
+                    sendSinglePromptQueryResult.data.sendSinglePrompt,
+                  userId: user!.id,
+                  greWordTags: selectedTags.map((tagName) => ({
+                    name: tagName,
+                  })),
+                },
+              }).then(() => {
+                refreshSavedGreWord();
+              });
+            }
           }
         }}
       >

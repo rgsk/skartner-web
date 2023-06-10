@@ -103,7 +103,7 @@ query greWordTags($where: GreWordTagWhereInput) {
 mutation updateGreWord(
   $updateGreWordId: String!
   $greWordTags: [GreWordTagWhereUniqueInput]
-  $status: String
+  $status: GreWordStatus
 ) {
   updateGreWord(
     id: $updateGreWordId

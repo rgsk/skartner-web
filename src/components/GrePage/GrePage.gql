@@ -19,7 +19,6 @@ mutation createGreWord(
     ...GreWordFields
   }
 }
-# TODO: move above fields in fragment
 
 query GreConfiguration {
   greConfiguration {
@@ -38,5 +37,15 @@ mutation DeleteGreWordTag($name: String!) {
   deleteGreWordTag(name: $name) {
     id
     name
+  }
+}
+
+mutation createGptPrompt(
+  $input: String!
+  $response: String!
+  $greWordId: String!
+) {
+  createGptPrompt(input: $input, response: $response, greWordId: $greWordId) {
+    id
   }
 }

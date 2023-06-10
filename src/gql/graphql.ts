@@ -81,6 +81,11 @@ export type GreWordSearchPromptInputWhereInput = {
   userId?: InputMaybe<StringFilter>;
 };
 
+export type GreWordSpellingUserIdCompoundUniqueInput = {
+  spelling: Scalars['String'];
+  userId: Scalars['String'];
+};
+
 export enum GreWordStatus {
   AlmostLearnt = 'ALMOST_LEARNT',
   FinishedLearning = 'FINISHED_LEARNING',
@@ -130,11 +135,13 @@ export type GreWordWhereInput = {
 
 export type GreWordWhereUniqueInput = {
   id?: InputMaybe<Scalars['String']>;
+  spelling_userId?: InputMaybe<GreWordSpellingUserIdCompoundUniqueInput>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createDraft?: Maybe<Post>;
+  createGptPrompt: GptPrompt;
   createGreWord: GreWord;
   createGreWordSearchPromptInput: GreWordSearchPromptInput;
   createGreWordTag: GreWordTag;
@@ -158,11 +165,19 @@ export type MutationCreateDraftArgs = {
 };
 
 
+export type MutationCreateGptPromptArgs = {
+  greWordId: Scalars['String'];
+  input: Scalars['String'];
+  response: Scalars['String'];
+};
+
+
 export type MutationCreateGreWordArgs = {
   greWordTags?: InputMaybe<Array<InputMaybe<GreWordTagWhereUniqueInput>>>;
   promptInput: Scalars['String'];
   promptResponse: Scalars['String'];
   spelling: Scalars['String'];
+  status?: InputMaybe<GreWordStatus>;
   userId: Scalars['String'];
 };
 
@@ -225,7 +240,7 @@ export type MutationUpdateGptPromptArgs = {
 export type MutationUpdateGreWordArgs = {
   greWordTags?: InputMaybe<Array<InputMaybe<GreWordTagWhereUniqueInput>>>;
   id: Scalars['String'];
-  status?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<GreWordStatus>;
 };
 
 
@@ -358,14 +373,8 @@ export type StringFilter = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  greWordCreated?: Maybe<GreWord>;
   notificationReceived?: Maybe<Notification>;
   truths?: Maybe<Scalars['Boolean']>;
-};
-
-
-export type SubscriptionGreWordCreatedArgs = {
-  userId: Scalars['String'];
 };
 
 
@@ -491,6 +500,15 @@ export type DeleteGreWordTagMutationVariables = Exact<{
 
 export type DeleteGreWordTagMutation = { __typename?: 'Mutation', deleteGreWordTag: { __typename?: 'GreWordTag', id: string, name: string } };
 
+export type CreateGptPromptMutationVariables = Exact<{
+  input: Scalars['String'];
+  response: Scalars['String'];
+  greWordId: Scalars['String'];
+}>;
+
+
+export type CreateGptPromptMutation = { __typename?: 'Mutation', createGptPrompt: { __typename?: 'GptPrompt', id: string } };
+
 export type GreWordFieldsFragment = { __typename?: 'GreWord', id: string, spelling: string, status: GreWordStatus, gptPrompts: Array<{ __typename?: 'GptPrompt', id: string, input: string, response: string, editedResponse?: string | null, greWordId?: string | null }>, greWordTags?: Array<{ __typename?: 'GreWordTag', id: string, name: string }> | null };
 
 export type GreWordsQueryVariables = Exact<{
@@ -543,7 +561,7 @@ export type GreWordTagsQuery = { __typename?: 'Query', greWordTags: Array<{ __ty
 export type UpdateGreWordMutationVariables = Exact<{
   updateGreWordId: Scalars['String'];
   greWordTags?: InputMaybe<Array<InputMaybe<GreWordTagWhereUniqueInput>> | InputMaybe<GreWordTagWhereUniqueInput>>;
-  status?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<GreWordStatus>;
 }>;
 
 
@@ -969,6 +987,41 @@ export function useDeleteGreWordTagMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteGreWordTagMutationHookResult = ReturnType<typeof useDeleteGreWordTagMutation>;
 export type DeleteGreWordTagMutationResult = Apollo.MutationResult<DeleteGreWordTagMutation>;
 export type DeleteGreWordTagMutationOptions = Apollo.BaseMutationOptions<DeleteGreWordTagMutation, DeleteGreWordTagMutationVariables>;
+export const CreateGptPromptDocument = gql`
+    mutation createGptPrompt($input: String!, $response: String!, $greWordId: String!) {
+  createGptPrompt(input: $input, response: $response, greWordId: $greWordId) {
+    id
+  }
+}
+    `;
+export type CreateGptPromptMutationFn = Apollo.MutationFunction<CreateGptPromptMutation, CreateGptPromptMutationVariables>;
+
+/**
+ * __useCreateGptPromptMutation__
+ *
+ * To run a mutation, you first call `useCreateGptPromptMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGptPromptMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGptPromptMutation, { data, loading, error }] = useCreateGptPromptMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      response: // value for 'response'
+ *      greWordId: // value for 'greWordId'
+ *   },
+ * });
+ */
+export function useCreateGptPromptMutation(baseOptions?: Apollo.MutationHookOptions<CreateGptPromptMutation, CreateGptPromptMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGptPromptMutation, CreateGptPromptMutationVariables>(CreateGptPromptDocument, options);
+      }
+export type CreateGptPromptMutationHookResult = ReturnType<typeof useCreateGptPromptMutation>;
+export type CreateGptPromptMutationResult = Apollo.MutationResult<CreateGptPromptMutation>;
+export type CreateGptPromptMutationOptions = Apollo.BaseMutationOptions<CreateGptPromptMutation, CreateGptPromptMutationVariables>;
 export const GreWordsDocument = gql`
     query greWords($where: GreWordWhereInput, $skip: Int, $take: Int, $orderBy: [GreWordOrderByWithRelationInput]) {
   greWords(where: $where, skip: $skip, take: $take, orderBy: $orderBy) {
@@ -1197,7 +1250,7 @@ export type GreWordTagsQueryHookResult = ReturnType<typeof useGreWordTagsQuery>;
 export type GreWordTagsLazyQueryHookResult = ReturnType<typeof useGreWordTagsLazyQuery>;
 export type GreWordTagsQueryResult = Apollo.QueryResult<GreWordTagsQuery, GreWordTagsQueryVariables>;
 export const UpdateGreWordDocument = gql`
-    mutation updateGreWord($updateGreWordId: String!, $greWordTags: [GreWordTagWhereUniqueInput], $status: String) {
+    mutation updateGreWord($updateGreWordId: String!, $greWordTags: [GreWordTagWhereUniqueInput], $status: GreWordStatus) {
   updateGreWord(id: $updateGreWordId, greWordTags: $greWordTags, status: $status) {
     id
   }
