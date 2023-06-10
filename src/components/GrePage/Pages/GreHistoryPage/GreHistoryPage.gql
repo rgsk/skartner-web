@@ -14,8 +14,13 @@ fragment GreWordFields on GreWord {
     name
   }
 }
-query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
-  greWords(where: $where, skip: $skip, take: $take) {
+query greWords(
+  $where: GreWordWhereInput
+  $skip: Int
+  $take: Int
+  $orderBy: [GreWordOrderByWithRelationInput]
+) {
+  greWords(where: $where, skip: $skip, take: $take, orderBy: $orderBy) {
     ...GreWordFields
   }
   greWordsCount(where: $where)

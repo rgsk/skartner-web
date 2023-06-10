@@ -57,6 +57,13 @@ export type GreWord = {
   userId?: Maybe<Scalars['String']>;
 };
 
+export type GreWordOrderByWithRelationInput = {
+  createdAt?: InputMaybe<SortOrder>;
+  id?: InputMaybe<SortOrder>;
+  spelling?: InputMaybe<SortOrder>;
+  updatedAt?: InputMaybe<SortOrder>;
+};
+
 export type GreWordSearchPromptInput = {
   __typename?: 'GreWordSearchPromptInput';
   createdAt: Scalars['String'];
@@ -117,7 +124,12 @@ export type GreWordWhereInput = {
   id?: InputMaybe<StringFilter>;
   spelling?: InputMaybe<StringFilter>;
   status?: InputMaybe<EnumGreWordStatusFilter>;
+  user?: InputMaybe<UserWhereInput>;
   userId?: InputMaybe<StringFilter>;
+};
+
+export type GreWordWhereUniqueInput = {
+  id?: InputMaybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -251,6 +263,7 @@ export type Query = {
   drafts?: Maybe<Array<Maybe<Post>>>;
   gptPrompts?: Maybe<Array<Maybe<GptPrompt>>>;
   greConfiguration: GreConfiguration;
+  greWord?: Maybe<GreWord>;
   greWordSearchPromptInputs: Array<GreWordSearchPromptInput>;
   greWordTags: Array<GreWordTag>;
   greWords: Array<GreWord>;
@@ -259,6 +272,7 @@ export type Query = {
   posts?: Maybe<Array<Maybe<Post>>>;
   sendSinglePrompt?: Maybe<Scalars['String']>;
   users: Array<User>;
+  usersCount: Scalars['Int'];
 };
 
 
@@ -271,6 +285,11 @@ export type QueryAllPostsArgs = {
 export type QueryGptPromptsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryGreWordArgs = {
+  where?: InputMaybe<GreWordWhereUniqueInput>;
 };
 
 
@@ -289,6 +308,7 @@ export type QueryGreWordTagsArgs = {
 
 
 export type QueryGreWordsArgs = {
+  orderBy?: InputMaybe<Array<InputMaybe<GreWordOrderByWithRelationInput>>>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<GreWordWhereInput>;
@@ -306,10 +326,21 @@ export type QuerySendSinglePromptArgs = {
 
 
 export type QueryUsersArgs = {
+  orderBy?: InputMaybe<Array<InputMaybe<UserOrderByWithRelationInput>>>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<UserWhereInput>;
 };
+
+
+export type QueryUsersCountArgs = {
+  where?: InputMaybe<UserWhereInput>;
+};
+
+export enum SortOrder {
+  Asc = 'asc',
+  Desc = 'desc'
+}
 
 export type StringFilter = {
   contains?: InputMaybe<Scalars['String']>;
@@ -364,6 +395,13 @@ export type UserMetaParsedJsonValue = {
 export type UserMetaParsedJsonValueInput = {
   defaultGreWordSearchPromptInput?: InputMaybe<Scalars['String']>;
   showDefaultGreWordSearchPromptInputs?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type UserOrderByWithRelationInput = {
+  createdAt?: InputMaybe<SortOrder>;
+  email?: InputMaybe<SortOrder>;
+  id?: InputMaybe<SortOrder>;
+  updatedAt?: InputMaybe<SortOrder>;
 };
 
 export type UserWhereInput = {
@@ -459,6 +497,7 @@ export type GreWordsQueryVariables = Exact<{
   where?: InputMaybe<GreWordWhereInput>;
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<InputMaybe<GreWordOrderByWithRelationInput>> | InputMaybe<GreWordOrderByWithRelationInput>>;
 }>;
 
 
@@ -931,8 +970,8 @@ export type DeleteGreWordTagMutationHookResult = ReturnType<typeof useDeleteGreW
 export type DeleteGreWordTagMutationResult = Apollo.MutationResult<DeleteGreWordTagMutation>;
 export type DeleteGreWordTagMutationOptions = Apollo.BaseMutationOptions<DeleteGreWordTagMutation, DeleteGreWordTagMutationVariables>;
 export const GreWordsDocument = gql`
-    query greWords($where: GreWordWhereInput, $skip: Int, $take: Int) {
-  greWords(where: $where, skip: $skip, take: $take) {
+    query greWords($where: GreWordWhereInput, $skip: Int, $take: Int, $orderBy: [GreWordOrderByWithRelationInput]) {
+  greWords(where: $where, skip: $skip, take: $take, orderBy: $orderBy) {
     ...GreWordFields
   }
   greWordsCount(where: $where)
@@ -954,6 +993,7 @@ export const GreWordsDocument = gql`
  *      where: // value for 'where'
  *      skip: // value for 'skip'
  *      take: // value for 'take'
+ *      orderBy: // value for 'orderBy'
  *   },
  * });
  */

@@ -14,6 +14,7 @@ import {
 import { useGlobalContext } from 'context/GlobalContext';
 import {
   GreWordStatus,
+  SortOrder,
   useDeleteGreWordTagMutation,
   useGreWordTagsQuery,
   useGreWordsQuery,
@@ -105,6 +106,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       },
       skip: (currentPage - 1) * itemsPerPage,
       take: itemsPerPage,
+      orderBy: [{ updatedAt: SortOrder.Desc }],
     },
   });
   const statusWiseGreWordCountResult = useStatusWiseGreWordCountQuery({
