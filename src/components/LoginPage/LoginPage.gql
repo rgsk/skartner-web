@@ -12,8 +12,8 @@ mutation createUser($email: String!) {
   }
 }
 
-query usersForLoginPage($where: UserWhereInput) {
-  users(where: $where) {
+query User($where: UserWhereUniqueInput!) {
+  user(where: $where) {
     ...UserFields
   }
 }

@@ -1,9 +1,6 @@
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
-import {
-  useCreateUserMutation,
-  useUsersForLoginPageLazyQuery,
-} from 'gql/graphql';
+import { useCreateUserMutation, useUserLazyQuery } from 'gql/graphql';
 import { RedirectUrlQueryParam } from 'hooks/auth/useUserRequired';
 import { useRouter } from 'next/router';
 import { FormEventHandler, useState } from 'react';
@@ -13,8 +10,7 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
   const router = useRouter();
   const { [RedirectUrlQueryParam]: redirectUrl } = router.query;
   const [emailInput, setEmailInput] = useState('');
-  const [getUsersForLoginPage, usersForLoginPageQueryResult] =
-    useUsersForLoginPageLazyQuery();
+  const [getUser, userQueryResult] = useUserLazyQuery();
   const { setUser } = useGlobalContext();
 
   const [createUser, createUserMutationResult] = useCreateUserMutation();
@@ -32,14 +28,13 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
 
   const handleEmailSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    const { data } = await getUsersForLoginPage({
+    const { data } = await getUser({
       variables: {
-        where: { email: { equals: emailInput } },
+        where: { email: emailInput },
       },
     });
-    const users = data?.users;
-    if (users && users.length > 0) {
-      const user = users[0];
+    const user = data?.user;
+    if (user) {
       setUser(user);
       redirectUser();
     } else {
@@ -84,11 +79,9 @@ const LoginPage: React.FC<ILoginPageProps> = ({}) => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={usersForLoginPageQueryResult.loading}
+              disabled={userQueryResult.loading}
               startIcon={
-                usersForLoginPageQueryResult.loading ? (
-                  <CircularProgress size={24} />
-                ) : null
+                userQueryResult.loading ? <CircularProgress size={24} /> : null
               }
             >
               Submit

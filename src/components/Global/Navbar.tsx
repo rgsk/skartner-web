@@ -17,18 +17,26 @@ const Navbar: React.FC<INavbarProps> = ({}) => {
     setUser(null);
   };
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        p: 2,
-      }}
-    >
+    <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          p: 2,
+        }}
+      >
+        {user ? <Link href="/">{user?.email}</Link> : <Box />}
+        {user ? (
+          <Button variant="contained" onClick={handleLogout}>
+            Logout
+          </Button>
+        ) : (
+          <Link href="/login">
+            <Button variant="contained">Login</Button>
+          </Link>
+        )}
+      </Box>
       <Notification />
-      <Link href="/">{user?.email}</Link>
-      <Button variant="contained" onClick={handleLogout}>
-        Logout
-      </Button>
     </Box>
   );
 };

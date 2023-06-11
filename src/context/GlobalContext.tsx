@@ -1,7 +1,7 @@
 // context/GlobalContext.tsx
 
 import { LocalStorageKeys } from 'constants/globalConstants';
-import { UsersForLoginPageQuery, useUsersForLoginPageQuery } from 'gql/graphql';
+import { UserQuery, useUserQuery } from 'gql/graphql';
 import useLocalStorageState from 'hooks/utils/useLocalStorageState';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
 import globalProps from 'lib/globalProps';
@@ -26,22 +26,26 @@ const usePathsVisitedTracker = () => {
 
 const useGlobalContextValue = () => {
   const [user, setUser, userStatePopulated] = useLocalStorageState<
-    UsersForLoginPageQuery['users'][number]
+    UserQuery['user']
   >(LocalStorageKeys.user, null);
 
-  const usersForLoginPageQueryResult = useUsersForLoginPageQuery({
+  const userQueryResult = useUserQuery({
     variables: {
-      where: { email: { equals: user?.email } },
+      where: { email: user?.email },
     },
     skip: !user?.email,
-    onCompleted: ({ users }) => {
-      if (users && users.length > 0) {
-        setUser(users[0]);
+    onCompleted: ({ user }) => {
+      if (user) {
+        setUser(user);
       }
     },
   });
 
-  useRunOnWindowFocus(usersForLoginPageQueryResult.refetch);
+  useRunOnWindowFocus(() => {
+    if (user?.email) {
+      userQueryResult.refetch();
+    }
+  });
 
   const { pathsVisited } = usePathsVisitedTracker();
 

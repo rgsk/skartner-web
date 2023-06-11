@@ -286,6 +286,7 @@ export type Query = {
   hello: HelloWorld;
   posts?: Maybe<Array<Maybe<Post>>>;
   sendSinglePrompt?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
   users: Array<User>;
   usersCount: Scalars['Int'];
 };
@@ -337,6 +338,11 @@ export type QueryGreWordsCountArgs = {
 
 export type QuerySendSinglePromptArgs = {
   input: Scalars['String'];
+};
+
+
+export type QueryUserArgs = {
+  where: UserWhereUniqueInput;
 };
 
 
@@ -416,6 +422,11 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereInput = {
   email?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
+};
+
+export type UserWhereUniqueInput = {
+  email?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
 };
 
 export type HelloWorld = {
@@ -576,12 +587,12 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', id: string, email: string, meta: { __typename?: 'UserMetaParsedJsonValue', defaultGreWordSearchPromptInput?: string | null, showDefaultGreWordSearchPromptInputs?: boolean | null } } | null };
 
-export type UsersForLoginPageQueryVariables = Exact<{
-  where?: InputMaybe<UserWhereInput>;
+export type UserQueryVariables = Exact<{
+  where: UserWhereUniqueInput;
 }>;
 
 
-export type UsersForLoginPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, meta: { __typename?: 'UserMetaParsedJsonValue', defaultGreWordSearchPromptInput?: string | null, showDefaultGreWordSearchPromptInputs?: boolean | null } }> };
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, email: string, meta: { __typename?: 'UserMetaParsedJsonValue', defaultGreWordSearchPromptInput?: string | null, showDefaultGreWordSearchPromptInputs?: boolean | null } } | null };
 
 export type DraftsForPracticeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1318,41 +1329,41 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
-export const UsersForLoginPageDocument = gql`
-    query usersForLoginPage($where: UserWhereInput) {
-  users(where: $where) {
+export const UserDocument = gql`
+    query User($where: UserWhereUniqueInput!) {
+  user(where: $where) {
     ...UserFields
   }
 }
     ${UserFieldsFragmentDoc}`;
 
 /**
- * __useUsersForLoginPageQuery__
+ * __useUserQuery__
  *
- * To run a query within a React component, call `useUsersForLoginPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersForLoginPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUsersForLoginPageQuery({
+ * const { data, loading, error } = useUserQuery({
  *   variables: {
  *      where: // value for 'where'
  *   },
  * });
  */
-export function useUsersForLoginPageQuery(baseOptions?: Apollo.QueryHookOptions<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>) {
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>(UsersForLoginPageDocument, options);
+        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
       }
-export function useUsersForLoginPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>) {
+export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>(UsersForLoginPageDocument, options);
+          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
         }
-export type UsersForLoginPageQueryHookResult = ReturnType<typeof useUsersForLoginPageQuery>;
-export type UsersForLoginPageLazyQueryHookResult = ReturnType<typeof useUsersForLoginPageLazyQuery>;
-export type UsersForLoginPageQueryResult = Apollo.QueryResult<UsersForLoginPageQuery, UsersForLoginPageQueryVariables>;
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const DraftsForPracticeDocument = gql`
     query draftsForPractice {
   drafts {
