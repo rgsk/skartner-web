@@ -1,12 +1,18 @@
-import { Autocomplete, Box, Button, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import apiService, { PostOffice } from 'api/apiService';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 interface FormInputs {
   pincode: string;
-  postOffice: PostOffice;
+  postOffice: PostOffice | null;
   state: string;
   city: string;
   district: string;
@@ -34,22 +40,31 @@ const usePostOffices = ({ pincode }: { pincode: string }) => {
     () => getPostOfficesQueryResult.data?.[0].PostOffice,
     [getPostOfficesQueryResult.data]
   );
-  return postOffices;
+  return {
+    postOffices,
+    loading: getPostOfficesQueryResult.isFetching && !postOffices,
+  };
 };
 
 interface IAddressFormProps {}
 const AddressForm: React.FC<IAddressFormProps> = ({}) => {
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors },
-    reset,
     watch,
-  } = useForm<FormInputs>();
+    setValue,
+  } = useForm<FormInputs>({ defaultValues: { pincode: '', postOffice: null } });
+
   const pincode = watch('pincode');
-  const postOffice = watch('postOffice');
-  const postOffices = usePostOffices({ pincode });
+  const { postOffices, loading: postOfficesLoading } = usePostOffices({
+    pincode,
+  });
+
+  useEffect(() => {
+    const [] = [pincode];
+    setValue('postOffice', null);
+  }, [pincode, setValue]);
 
   const handleFormSubmit = async (formData: FormInputs) => {
     console.log(formData);
@@ -71,9 +86,9 @@ const AddressForm: React.FC<IAddressFormProps> = ({}) => {
             render={({ field }) => (
               <TextField
                 label="Pincode"
-                {...field}
                 error={!!errors.pincode}
                 helperText={errors.pincode?.message}
+                {...field}
               />
             )}
           />
@@ -85,22 +100,35 @@ const AddressForm: React.FC<IAddressFormProps> = ({}) => {
             rules={{
               required: 'Please select the Post Office',
             }}
-            render={({ field: { onChange } }) => {
+            render={({ field }) => {
               return (
                 <Autocomplete
                   options={postOffices ?? []}
                   getOptionLabel={(option) => option.Name}
-                  onChange={(event, item) => {
-                    onChange(item);
-                  }}
+                  disabled={!postOffices}
                   renderInput={(params) => (
                     <TextField
-                      {...params}
                       label="Post Office"
                       error={!!errors.postOffice}
                       helperText={errors.postOffice?.message}
+                      {...params}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <>
+                            {postOfficesLoading && (
+                              <CircularProgress size={20} />
+                            )}
+                            {params.InputProps.endAdornment}
+                          </>
+                        ),
+                      }}
                     />
                   )}
+                  {...field}
+                  onChange={(event, item) => {
+                    field.onChange(item);
+                  }}
                 />
               );
             }}
