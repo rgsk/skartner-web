@@ -13,6 +13,10 @@ import { GreContextProvider } from 'context/GreContext';
 import apolloClient from 'lib/apolloClient';
 import 'styles/globals.css';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -31,13 +35,15 @@ export default function MyApp(props: MyAppProps) {
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <GlobalContextProvider>
-            <GreContextProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </GreContextProvider>
-          </GlobalContextProvider>
+          <QueryClientProvider client={queryClient}>
+            <GlobalContextProvider>
+              <GreContextProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </GreContextProvider>
+            </GlobalContextProvider>
+          </QueryClientProvider>
         </ThemeProvider>
       </CacheProvider>
     </ApolloProvider>
