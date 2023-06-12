@@ -6,6 +6,24 @@ export const removeParamsFromQuery = (query: string, params: string[]) => {
   return urlSearchParams.toString();
 };
 
+export const buildQuery = (
+  obj: Record<string, string | string[] | undefined>
+) => {
+  const urlSearchParams = new URLSearchParams();
+  for (let [param, value] of Object.entries(obj)) {
+    if (Array.isArray(value)) {
+      for (let v of value) {
+        urlSearchParams.append(param, v);
+      }
+    } else {
+      if (value !== undefined) {
+        urlSearchParams.append(param, value);
+      }
+    }
+  }
+  return urlSearchParams.toString();
+};
+
 export const addParamsToQuery = (
   query: string,
   obj: Record<string, string | string[]>
@@ -22,6 +40,7 @@ export const addParamsToQuery = (
   }
   return urlSearchParams.toString();
 };
+
 export const removeParamsFromPath = (
   pathWithQuery: string,
   params: string[]

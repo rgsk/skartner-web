@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import apiService, { PostOffice } from 'api/apiService';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 interface FormInputs {
@@ -16,6 +16,8 @@ interface FormInputs {
   postOffice: PostOffice | null;
   state: string;
   district: string;
+  line1: string;
+  line2: string;
 }
 
 const defaultValues: FormInputs = {
@@ -23,13 +25,38 @@ const defaultValues: FormInputs = {
   postOffice: null,
   state: '',
   district: '',
+  line1: '',
+  line2: '',
 };
 
 const pincodeRegex = /^[1-9][0-9]{5}$/;
 
-const isValidPincode = (pincode: string) => {
-  return pincodeRegex.test(pincode);
+const isValidPincode = (pincode?: string) => {
+  return !!pincode && pincodeRegex.test(pincode);
 };
+
+function getLatitudeLongitude() {
+  return new Promise<{
+    latitude: number;
+    longitude: number;
+  }>((resolve, reject) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const result = { latitude, longitude };
+          resolve(result);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    } else {
+      reject(new Error('Geolocation is not supported by this browser'));
+    }
+  });
+}
 
 const usePostOffices = ({ pincode }: { pincode: string }) => {
   const getPostOfficesQuery = useMemo(() => {
@@ -53,6 +80,38 @@ const usePostOffices = ({ pincode }: { pincode: string }) => {
   };
 };
 
+const usePlaceSuggestions = ({
+  input,
+  location,
+  pincode,
+}: {
+  input: string;
+  location?: string;
+  pincode?: string;
+}) => {
+  const enabled =
+    !!input && ((pincode && isValidPincode(pincode)) || !!location);
+
+  const getPlaceSuggestionsQuery = useMemo(() => {
+    return apiService.getPlaceSuggestions({
+      input,
+      location,
+      pincode,
+    });
+  }, [input, location, pincode]);
+
+  const getPlaceSuggestionsQueryResult = useQuery({
+    queryKey: getPlaceSuggestionsQuery.key,
+    queryFn: getPlaceSuggestionsQuery.fn,
+    enabled: enabled,
+  });
+  const predictions = getPlaceSuggestionsQueryResult.data?.predictions;
+  return {
+    predictions,
+    loading: getPlaceSuggestionsQueryResult.isFetching && !predictions,
+  };
+};
+
 interface IAddressFormProps {}
 const AddressForm: React.FC<IAddressFormProps> = ({}) => {
   const {
@@ -67,9 +126,30 @@ const AddressForm: React.FC<IAddressFormProps> = ({}) => {
 
   const pincode = watch('pincode');
   const postOffice = watch('postOffice');
+  const line2 = watch('line2');
+  const [location, setLocation] = useState<string>();
   const { postOffices, loading: postOfficesLoading } = usePostOffices({
     pincode,
   });
+
+  const { predictions, loading: predictionsLoading } = usePlaceSuggestions({
+    input: line2,
+    pincode: pincode,
+    location,
+  });
+
+  const suggestions = predictions?.map(
+    (pred) => pred.structured_formatting.main_text
+  );
+
+  const getUserLocation = useCallback(async () => {
+    const { latitude, longitude } = await getLatitudeLongitude();
+    setLocation(`${latitude},${longitude}`);
+  }, []);
+
+  useEffect(() => {
+    getUserLocation();
+  }, [getUserLocation]);
 
   useEffect(() => {
     const [] = [pincode];
@@ -114,6 +194,54 @@ const AddressForm: React.FC<IAddressFormProps> = ({}) => {
               )}
             />
           </Grid>
+
+          <Grid item xs={12}>
+            <Controller
+              control={control}
+              name="line2"
+              rules={{
+                required: '',
+              }}
+              render={({ field }) => {
+                return (
+                  <Autocomplete
+                    options={suggestions ?? []}
+                    getOptionLabel={(option) => option}
+                    filterOptions={(options, state) => {
+                      return options;
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        label="Area, Street, Sector, Village"
+                        error={!!errors.line2}
+                        helperText={errors.line2?.message}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                        }}
+                        {...params}
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {predictionsLoading && (
+                                <CircularProgress size={20} />
+                              )}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
+                    {...field}
+                    onChange={(event, item) => {
+                      field.onChange(item);
+                    }}
+                  />
+                );
+              }}
+            />
+          </Grid>
+
           <Grid item xs={12}>
             <Controller
               control={control}
