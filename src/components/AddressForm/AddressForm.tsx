@@ -11,6 +11,8 @@ import apiService, { PostOffice } from 'api/apiService';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
+const USE_CURRENT_LOCATION = false;
+
 interface FormInputs {
   pincode: string;
   postOffice: PostOffice | null;
@@ -135,7 +137,7 @@ const AddressForm: React.FC<IAddressFormProps> = ({}) => {
   const { predictions, loading: predictionsLoading } = usePlaceSuggestions({
     input: line2,
     pincode: pincode,
-    location,
+    location: USE_CURRENT_LOCATION ? location : undefined,
   });
 
   const suggestions = predictions?.map(

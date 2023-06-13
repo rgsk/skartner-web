@@ -287,6 +287,9 @@ export type Query = {
   posts?: Maybe<Array<Maybe<Post>>>;
   sendSinglePrompt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
+  userSession?: Maybe<UserSession>;
+  userSessions: Array<UserSession>;
+  userSessionsCount: Scalars['Int'];
   users: Array<User>;
   usersCount: Scalars['Int'];
 };
@@ -343,6 +346,24 @@ export type QuerySendSinglePromptArgs = {
 
 export type QueryUserArgs = {
   where: UserWhereUniqueInput;
+};
+
+
+export type QueryUserSessionArgs = {
+  where: UserSessionWhereUniqueInput;
+};
+
+
+export type QueryUserSessionsArgs = {
+  orderBy?: InputMaybe<Array<InputMaybe<UserSessionOrderByWithRelationInput>>>;
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<UserSessionWhereInput>;
+};
+
+
+export type QueryUserSessionsCountArgs = {
+  where?: InputMaybe<UserSessionWhereInput>;
 };
 
 
@@ -417,6 +438,45 @@ export type UserOrderByWithRelationInput = {
   email?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
+};
+
+export type UserSession = {
+  __typename?: 'UserSession';
+  duration?: Maybe<Scalars['Int']>;
+  endedAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  meta: UserSessionMetaParsedJsonValue;
+  startedAt: Scalars['String'];
+  user: User;
+  userId: Scalars['String'];
+};
+
+export type UserSessionMetaParsedJsonValue = {
+  __typename?: 'UserSessionMetaParsedJsonValue';
+  none?: Maybe<Scalars['String']>;
+};
+
+export type UserSessionMetaParsedJsonValueInput = {
+  none?: InputMaybe<Scalars['String']>;
+};
+
+export type UserSessionOrderByWithRelationInput = {
+  duration?: InputMaybe<SortOrder>;
+  endedAt?: InputMaybe<SortOrder>;
+  id?: InputMaybe<SortOrder>;
+  startedAt?: InputMaybe<SortOrder>;
+  user?: InputMaybe<UserOrderByWithRelationInput>;
+  userId?: InputMaybe<SortOrder>;
+};
+
+export type UserSessionWhereInput = {
+  id?: InputMaybe<StringFilter>;
+  user?: InputMaybe<UserWhereInput>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type UserSessionWhereUniqueInput = {
+  id?: InputMaybe<Scalars['String']>;
 };
 
 export type UserWhereInput = {
