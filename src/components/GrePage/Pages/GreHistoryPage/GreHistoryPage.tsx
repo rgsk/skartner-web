@@ -25,7 +25,7 @@ import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
 import useStateRef from 'hooks/utils/useStateRef';
 import { ValueToDeleteQueryKey } from 'lib/queryParamsUtils';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { GreWord } from './Children/GreWord';
 
 enum QueryParams {
@@ -137,7 +137,10 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     [greWordsQueryResult.data?.greWordsCount]
   );
   const refetchGreWords = greWordsQueryResult.refetch;
+  const resetPageLockRef = useRef(false);
+
   useEffect(() => {
+    if (resetPageLockRef.current) return;
     const [] = [queryInput, selectedTags, selectedStatuses];
     if (currentPageRef.current !== 1) {
       setCurrentPage(1);
@@ -176,6 +179,10 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       [QueryParams.status]: statusParam,
       [QueryParams.tag]: tagParam,
     } = params;
+    resetPageLockRef.current = true;
+    setTimeout(() => {
+      resetPageLockRef.current = false;
+    }, 100);
     if (typeof pageParam === 'string') {
       setCurrentPage(+pageParam);
     }
