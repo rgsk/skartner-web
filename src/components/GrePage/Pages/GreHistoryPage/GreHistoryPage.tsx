@@ -169,7 +169,7 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     return result;
   }, [currentPage, queryInput, selectedStatuses, selectedTags]);
 
-  useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
+  useQueryTracker(queryTrackerInput, ({ params }) => {
     const {
       [QueryParams.page]: pageParam,
       [QueryParams.query]: queryParam,
@@ -188,6 +188,8 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       } else {
         setSelectedStatuses(statusParam as GreWordStatus[]);
       }
+    } else {
+      setSelectedStatuses(sortedGreWordStatuses);
     }
     if (tagParam) {
       if (typeof tagParam === 'string') {
@@ -195,9 +197,9 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
       } else {
         setSelectedTags(tagParam as GreWordStatus[]);
       }
+    } else {
+      setSelectedTags([]);
     }
-
-    onParamsAssignedToState();
   });
 
   const renderPagination = () => {

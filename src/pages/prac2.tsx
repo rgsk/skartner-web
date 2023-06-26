@@ -1,9 +1,9 @@
-import SampleDebounce from 'components/Sample/SampleDebounce';
+import SampleQueryTracker from 'components/Sample/SampleQueryTracker';
 
 const Page = () => {
   return (
     <div>
-      <SampleDebounce />
+      <SampleQueryTracker />
     </div>
   );
 };

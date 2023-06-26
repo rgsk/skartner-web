@@ -93,7 +93,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     return result;
   }, [selectedTags]);
 
-  useQueryTracker(queryTrackerInput, ({ params, onParamsAssignedToState }) => {
+  useQueryTracker(queryTrackerInput, ({ params }) => {
     const { [QueryParams.tag]: tagParam } = params;
     if (tagParam) {
       if (typeof tagParam === 'string') {
@@ -103,8 +103,9 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       } else {
         setSelectedTags(tagParam.filter((v) => !!validTagNames?.includes(v)));
       }
+    } else {
+      setSelectedTags([]);
     }
-    onParamsAssignedToState(true);
   });
 
   const savedGreWord = getGreWordsResult.data?.greWords[0];
