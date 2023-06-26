@@ -2,6 +2,7 @@ import { updateParamsForPath } from 'lib/queryParamsUtils';
 import Router, { useRouter } from 'next/router';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import useDebounce from './useDebounce';
 const useQueryTracker = (
   input: Record<string, any>,
   cb: (args: { params: Record<string, string | string[] | undefined> }) => void,
@@ -21,6 +22,7 @@ const useQueryTracker = (
   const stringifiedInput = useMemo(() => {
     return JSON.stringify(input);
   }, [input]);
+  const debouncedStringifiedInput = useDebounce(stringifiedInput, 100);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -34,7 +36,7 @@ const useQueryTracker = (
   }, [enabled, router.isReady, router.query]);
 
   useEffect(() => {
-    const [] = [stringifiedInput];
+    const [] = [debouncedStringifiedInput];
 
     if (trackState) {
       if (firstTrackRef.current) {
@@ -51,7 +53,7 @@ const useQueryTracker = (
         trackQueryRef.current = true;
       });
     }
-  }, [trackState, stringifiedInput]);
+  }, [trackState, debouncedStringifiedInput]);
 
   return null;
 };
