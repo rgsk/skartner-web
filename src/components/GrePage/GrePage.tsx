@@ -387,6 +387,8 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
         </Box>
       )}
 
+      <Box sx={{ border: '1px solid gray', mt: 5 }}></Box>
+
       <Box sx={{ mt: 5 }}>
         <Typography variant="h6">Search Result :</Typography>
         <Typography fontSize={18}>

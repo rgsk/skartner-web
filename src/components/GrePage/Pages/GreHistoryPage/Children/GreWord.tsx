@@ -58,7 +58,7 @@ export const GreWord: React.FC<IGreWordProps> = ({
   };
 
   return (
-    <Box key={greWord.id} sx={{ borderTop: '2px solid red', mt: 2, pt: 2 }}>
+    <Box key={greWord.id} sx={{ borderTop: '2px solid gray', mt: 2, pt: 2 }}>
       <Box
         sx={{
           display: 'flex',
