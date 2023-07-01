@@ -188,6 +188,8 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
     }
     if (typeof queryParam === 'string') {
       setQueryInput(queryParam);
+    } else {
+      setQueryInput('');
     }
     if (statusParam) {
       if (typeof statusParam === 'string') {

@@ -1,8 +1,8 @@
 import { updateParamsForPath } from 'lib/queryParamsUtils';
 import Router, { useRouter } from 'next/router';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import useDebounce from './useDebounce';
+import { useEffect, useRef, useState } from 'react';
+import useToggle from './useToggle';
 const useQueryTracker = (
   input: Record<string, any>,
   cb: (args: { params: Record<string, string | string[] | undefined> }) => void,
@@ -13,47 +13,44 @@ const useQueryTracker = (
   const router = useRouter();
   const [trackState, setTrackState] = useState(false);
   const firstTrackRef = useRef(true);
+  const [toggleDep, toggle] = useToggle();
   const cbRef = useRef(cb);
-  const trackQueryRef = useRef(true);
   cbRef.current = cb;
-  const inputRef = useRef(input);
-  inputRef.current = input;
-
-  const stringifiedInput = useMemo(() => {
-    return JSON.stringify(input);
-  }, [input]);
-  const debouncedStringifiedInput = useDebounce(stringifiedInput, 100);
 
   useEffect(() => {
     if (!router.isReady) return;
     if (!enabled) return;
-    if (trackQueryRef.current) {
-      cbRef.current({
-        params: router.query,
-      });
-      setTrackState(true);
-    }
-  }, [enabled, router.isReady, router.query]);
+    cbRef.current({
+      params: Router.query,
+    });
+    setTrackState(true);
+  }, [enabled, toggleDep, router.isReady]);
 
   useEffect(() => {
-    const [] = [debouncedStringifiedInput];
+    const handleBackButton = () => {
+      // Code to handle back button press
+      toggle();
+    };
 
+    window.addEventListener('popstate', handleBackButton);
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+    };
+  }, [toggle]);
+
+  useEffect(() => {
     if (trackState) {
       if (firstTrackRef.current) {
         firstTrackRef.current = false;
         // here Router is used instead of Router,
         // because we didn't wanted to provide router
         // as a useEffect depedency and run on every router.query change
-        Router.replace(updateParamsForPath(Router.asPath, inputRef.current));
+        Router.replace(updateParamsForPath(Router.asPath, input));
       } else {
-        Router.push(updateParamsForPath(Router.asPath, inputRef.current));
+        Router.push(updateParamsForPath(Router.asPath, input));
       }
-      trackQueryRef.current = false;
-      setTimeout(() => {
-        trackQueryRef.current = true;
-      });
     }
-  }, [trackState, debouncedStringifiedInput]);
+  }, [input, trackState]);
 
   return null;
 };
