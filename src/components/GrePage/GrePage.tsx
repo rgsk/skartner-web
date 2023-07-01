@@ -20,11 +20,12 @@ import {
   useGreWordTagsQuery,
   useGreWordsLazyQuery,
   useSendSinglePromptLazyQuery,
+  useUpdateGreWordMutation,
   useUpdateMetaForUserMutation,
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 import { GreWord } from './Pages/GreHistoryPage/Children/GreWord';
@@ -70,6 +71,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       },
     }
   );
+  const [updateGreWord] = useUpdateGreWordMutation();
 
   const greWordTagsQueryResult = useGreWordTagsQuery({
     variables: {
@@ -109,7 +111,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   });
 
   const savedGreWord = getGreWordsResult.data?.greWords[0];
-  const refreshSavedGreWord = () => {
+  const refreshSavedGreWord = useCallback(() => {
     getGreWords({
       variables: {
         where: {
@@ -120,7 +122,25 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       },
       fetchPolicy: 'network-only',
     });
-  };
+  }, [getGreWords, wordInput]);
+
+  useEffect(() => {
+    if (savedGreWord) {
+      updateGreWord({
+        variables: {
+          updateGreWordId: savedGreWord.id,
+          greWordTags: [
+            ...selectedTags.map((t) => ({ name: t })),
+            ...(savedGreWord.greWordTags?.map((t) => {
+              return { name: t.name };
+            }) ?? []),
+          ],
+        },
+      }).then(() => {
+        refreshSavedGreWord();
+      });
+    }
+  }, [refreshSavedGreWord, savedGreWord, selectedTags, updateGreWord]);
 
   useRunOnWindowFocus(() => {
     refreshSavedGreWord();

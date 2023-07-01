@@ -17,7 +17,7 @@ import {
   useUpdateGptPromptMutation,
   useUpdateGreWordMutation,
 } from 'gql/graphql';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { sortedGreWordStatuses } from '../GreHistoryPage';
 import TagInput from './TagInput';
 
@@ -33,6 +33,11 @@ export const GreWord: React.FC<IGreWordProps> = ({
   const [selectedTags, setSelectedTags] = useState(
     greWord.greWordTags?.map((t) => t.name) ?? []
   );
+
+  useEffect(() => {
+    setSelectedTags(greWord.greWordTags?.map((t) => t.name) ?? []);
+  }, [greWord.greWordTags]);
+
   const [selectedStatus, setSelectedStatus] = useState(greWord.status);
   const [updateGreWord] = useUpdateGreWordMutation();
 
