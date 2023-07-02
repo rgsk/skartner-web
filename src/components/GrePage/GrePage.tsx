@@ -125,6 +125,9 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   }, [getGreWords, wordInput]);
   const automaticallyTagsAssignedRef = useRef(false);
   useEffect(() => {
+    automaticallyTagsAssignedRef.current = false;
+  }, [wordInput]);
+  useEffect(() => {
     if (savedGreWord && !automaticallyTagsAssignedRef.current) {
       automaticallyTagsAssignedRef.current = true;
       updateGreWord({
