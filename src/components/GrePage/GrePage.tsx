@@ -25,7 +25,7 @@ import {
 } from 'gql/graphql';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CustomPromptInput from './Children/CustomPromptInput';
 import WordSearchPrompts from './Children/WordSearchPrompts/WordSearchPrompts';
 import { GreWord } from './Pages/GreHistoryPage/Children/GreWord';
@@ -123,9 +123,10 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       fetchPolicy: 'network-only',
     });
   }, [getGreWords, wordInput]);
-
+  const automaticallyTagsAssignedRef = useRef(false);
   useEffect(() => {
-    if (savedGreWord) {
+    if (savedGreWord && !automaticallyTagsAssignedRef.current) {
+      automaticallyTagsAssignedRef.current = true;
       updateGreWord({
         variables: {
           updateGreWordId: savedGreWord.id,
