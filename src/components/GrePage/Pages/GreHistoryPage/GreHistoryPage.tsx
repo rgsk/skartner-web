@@ -260,46 +260,49 @@ const GreHistoryPage: React.FC<IGreHistoryPageProps> = ({}) => {
           />
         ))}
       </Box>
-      <Box>
+      <Box sx={{ mb: 2 }}>
         <FormGroup>
-          {greWordTags.map((greWordTag) => (
-            <Box key={greWordTag.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={selectedTags.includes(greWordTag.name)}
-                    onChange={() => handleTagsToggle(greWordTag.name)}
-                  />
-                }
-                label={greWordTag.name}
-              />
-              <IconButton
-                onClick={() => {
-                  deleteGreWordTag({
-                    variables: {
-                      name: greWordTag.name,
-                    },
-                    update: (cache, { data }) => {
-                      if (data?.deleteGreWordTag) {
-                        cache.modify({
-                          fields: {
-                            greWordTags(existingTags = [], { readField }) {
-                              return existingTags.filter(
-                                (tagRef: any) =>
-                                  greWordTag.name !== readField('name', tagRef)
-                              );
+          <div className="flex flex-wrap gap-x-4">
+            {greWordTags.map((greWordTag) => (
+              <Box key={greWordTag.id} sx={{}}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedTags.includes(greWordTag.name)}
+                      onChange={() => handleTagsToggle(greWordTag.name)}
+                    />
+                  }
+                  label={greWordTag.name}
+                />
+                <IconButton
+                  onClick={() => {
+                    deleteGreWordTag({
+                      variables: {
+                        name: greWordTag.name,
+                      },
+                      update: (cache, { data }) => {
+                        if (data?.deleteGreWordTag) {
+                          cache.modify({
+                            fields: {
+                              greWordTags(existingTags = [], { readField }) {
+                                return existingTags.filter(
+                                  (tagRef: any) =>
+                                    greWordTag.name !==
+                                    readField('name', tagRef)
+                                );
+                              },
                             },
-                          },
-                        });
-                      }
-                    },
-                  });
-                }}
-              >
-                <Delete />
-              </IconButton>
-            </Box>
-          ))}
+                          });
+                        }
+                      },
+                    });
+                  }}
+                >
+                  <Delete />
+                </IconButton>
+              </Box>
+            ))}
+          </div>
         </FormGroup>
       </Box>
       <Box>
