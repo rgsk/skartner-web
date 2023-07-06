@@ -285,7 +285,7 @@ export type Query = {
   greWordsCount: Scalars['Int'];
   hello: HelloWorld;
   posts?: Maybe<Array<Maybe<Post>>>;
-  sendSinglePrompt?: Maybe<Scalars['String']>;
+  sendSinglePrompt: SendSinglePromptResponse;
   user?: Maybe<User>;
   userSession?: Maybe<UserSession>;
   userSessions: Array<UserSession>;
@@ -340,7 +340,10 @@ export type QueryGreWordsCountArgs = {
 
 
 export type QuerySendSinglePromptArgs = {
+  indexesReturned?: InputMaybe<Array<Scalars['Int']>>;
   input: Scalars['String'];
+  resultIndexFromCache?: InputMaybe<Scalars['Int']>;
+  skipCache?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -377,6 +380,14 @@ export type QueryUsersArgs = {
 
 export type QueryUsersCountArgs = {
   where?: InputMaybe<UserWhereInput>;
+};
+
+export type SendSinglePromptResponse = {
+  __typename?: 'SendSinglePromptResponse';
+  error?: Maybe<Scalars['String']>;
+  result?: Maybe<Scalars['String']>;
+  resultIndex?: Maybe<Scalars['Int']>;
+  totalResultsInCache: Scalars['Int'];
 };
 
 export enum SortOrder {
@@ -535,10 +546,13 @@ export type UpdateMetaForUserMutation = { __typename?: 'Mutation', updateUser?: 
 
 export type SendSinglePromptQueryVariables = Exact<{
   input: Scalars['String'];
+  skipCache?: InputMaybe<Scalars['Boolean']>;
+  indexesReturned?: InputMaybe<Array<Scalars['Int']> | Scalars['Int']>;
+  resultIndexFromCache?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type SendSinglePromptQuery = { __typename?: 'Query', sendSinglePrompt?: string | null };
+export type SendSinglePromptQuery = { __typename?: 'Query', sendSinglePrompt: { __typename?: 'SendSinglePromptResponse', result?: string | null, resultIndex?: number | null, error?: string | null, totalResultsInCache: number } };
 
 export type CreateGreWordMutationVariables = Exact<{
   spelling: Scalars['String'];
@@ -880,8 +894,18 @@ export type UpdateMetaForUserMutationHookResult = ReturnType<typeof useUpdateMet
 export type UpdateMetaForUserMutationResult = Apollo.MutationResult<UpdateMetaForUserMutation>;
 export type UpdateMetaForUserMutationOptions = Apollo.BaseMutationOptions<UpdateMetaForUserMutation, UpdateMetaForUserMutationVariables>;
 export const SendSinglePromptDocument = gql`
-    query sendSinglePrompt($input: String!) {
-  sendSinglePrompt(input: $input)
+    query sendSinglePrompt($input: String!, $skipCache: Boolean, $indexesReturned: [Int!], $resultIndexFromCache: Int) {
+  sendSinglePrompt(
+    input: $input
+    skipCache: $skipCache
+    indexesReturned: $indexesReturned
+    resultIndexFromCache: $resultIndexFromCache
+  ) {
+    result
+    resultIndex
+    error
+    totalResultsInCache
+  }
 }
     `;
 
@@ -898,6 +922,9 @@ export const SendSinglePromptDocument = gql`
  * const { data, loading, error } = useSendSinglePromptQuery({
  *   variables: {
  *      input: // value for 'input'
+ *      skipCache: // value for 'skipCache'
+ *      indexesReturned: // value for 'indexesReturned'
+ *      resultIndexFromCache: // value for 'resultIndexFromCache'
  *   },
  * });
  */

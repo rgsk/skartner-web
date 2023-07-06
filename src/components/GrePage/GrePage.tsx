@@ -167,7 +167,9 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const tryingToSavePreviousResponseAgain = useMemo(() => {
     return (
       !!createGreWordMutationResult.data?.createGreWord.gptPrompts.some(
-        (p) => p.response === sendSinglePromptQueryResult.data?.sendSinglePrompt
+        (p) =>
+          p.response ===
+          sendSinglePromptQueryResult.data?.sendSinglePrompt.result
       ) ||
       createGptPromptMutationResult.data?.createGptPrompt.response ===
         sendSinglePromptQueryResult.data?.sendSinglePrompt
@@ -233,30 +235,35 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
             !getGreWordsResult.loading
           ) {
             if (savedGreWord) {
-              createGptPrompt({
-                variables: {
-                  greWordId: savedGreWord.id,
-                  input: sendSinglePromptQueryResult.variables.input,
-                  response: sendSinglePromptQueryResult.data.sendSinglePrompt,
-                },
-              }).then(() => {
-                refreshSavedGreWord();
-              });
+              if (sendSinglePromptQueryResult.data.sendSinglePrompt.result) {
+                createGptPrompt({
+                  variables: {
+                    greWordId: savedGreWord.id,
+                    input: sendSinglePromptQueryResult.variables.input,
+                    response:
+                      sendSinglePromptQueryResult.data.sendSinglePrompt.result,
+                  },
+                }).then(() => {
+                  refreshSavedGreWord();
+                });
+              }
             } else {
-              createGreWord({
-                variables: {
-                  spelling: wordInput,
-                  promptInput: sendSinglePromptQueryResult.variables.input,
-                  promptResponse:
-                    sendSinglePromptQueryResult.data.sendSinglePrompt,
-                  userId: user!.id,
-                  greWordTags: selectedTags.map((tagName) => ({
-                    name: tagName,
-                  })),
-                },
-              }).then(() => {
-                refreshSavedGreWord();
-              });
+              if (sendSinglePromptQueryResult.data.sendSinglePrompt.result) {
+                createGreWord({
+                  variables: {
+                    spelling: wordInput,
+                    promptInput: sendSinglePromptQueryResult.variables.input,
+                    promptResponse:
+                      sendSinglePromptQueryResult.data.sendSinglePrompt.result,
+                    userId: user!.id,
+                    greWordTags: selectedTags.map((tagName) => ({
+                      name: tagName,
+                    })),
+                  },
+                }).then(() => {
+                  refreshSavedGreWord();
+                });
+              }
             }
           }
         }}
@@ -420,7 +427,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
         </Typography>
         {sendSinglePromptQueryResult.loading && <CircularProgress />}
         <p className="whitespace-pre-line">
-          {sendSinglePromptQueryResult.data?.sendSinglePrompt}
+          {sendSinglePromptQueryResult.data?.sendSinglePrompt.result}
         </p>
         <Box sx={{ mt: 3 }}>{renderSave()}</Box>
       </Box>

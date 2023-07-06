@@ -1,5 +1,20 @@
-query sendSinglePrompt($input: String!) {
-  sendSinglePrompt(input: $input)
+query sendSinglePrompt(
+  $input: String!
+  $skipCache: Boolean
+  $indexesReturned: [Int!]
+  $resultIndexFromCache: Int
+) {
+  sendSinglePrompt(
+    input: $input
+    skipCache: $skipCache
+    indexesReturned: $indexesReturned
+    resultIndexFromCache: $resultIndexFromCache
+  ) {
+    result
+    resultIndex
+    error
+    totalResultsInCache
+  }
 }
 
 mutation createGreWord(
