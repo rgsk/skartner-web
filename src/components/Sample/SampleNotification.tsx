@@ -21,7 +21,12 @@ const SampleNotification: React.FC<ISampleNotificationProps> = ({}) => {
       </button>
       <button
         onClick={() => {
-          notify('some message', { type: 'success' });
+          notify('some message', {
+            type: 'success',
+            handleUndo: () => {
+              console.log('undo called');
+            },
+          });
         }}
       >
         success

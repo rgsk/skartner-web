@@ -20,7 +20,6 @@ export interface NotificationOptions {
   // If true, the notification shows the message in multiple lines
   multiLine?: boolean;
   // If true, the notification shows an Undo button
-  undoable?: boolean;
   type?: NotificationType;
   handleUndo?: () => void;
 }
@@ -50,7 +49,6 @@ const Notification: React.FC<INotificationProps> = ({}) => {
   const {
     autoHideDuration = 4000,
     multiLine = false,
-    undoable = false,
     type = 'info',
     message,
     handleUndo,
@@ -127,12 +125,12 @@ const Notification: React.FC<INotificationProps> = ({}) => {
           }
           action={
             <>
-              {undoable && (
+              {handleUndo && (
                 <IconButton
                   size="small"
                   color="inherit"
                   onClick={() => {
-                    handleUndo?.();
+                    handleUndo();
                     handleClose();
                   }}
                 >
