@@ -6,13 +6,7 @@ import {
   Undo,
   Warning as WarningIcon,
 } from '@mui/icons-material';
-import {
-  Box,
-  IconButton,
-  Snackbar,
-  SnackbarContent,
-  useTheme,
-} from '@mui/material';
+import { Box, IconButton, Snackbar, SnackbarContent } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
 import { useEffect, useState } from 'react';
 export type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -29,11 +23,23 @@ export interface NotificationOptions {
   type?: NotificationType;
   handleUndo?: () => void;
 }
+
+// TODO: to be moved to theme and picked from there
+/*
+  const theme = useTheme();
+  backgroundColor: theme.palette[type].main,
+*/
+const colors: Record<NotificationType, string> = {
+  error: '#D32F2F',
+  info: '#313132',
+  success: '#2F7C31',
+  warning: '#ED6C03',
+};
+
 interface INotificationProps {}
 
 const Notification: React.FC<INotificationProps> = ({}) => {
   const { notification } = useGlobalContext();
-  const theme = useTheme();
 
   const {
     autoHideDuration = 4000,
@@ -88,7 +94,7 @@ const Notification: React.FC<INotificationProps> = ({}) => {
       >
         <SnackbarContent
           sx={{
-            backgroundColor: theme.palette[type].main,
+            backgroundColor: colors[type],
           }}
           message={
             <Box
