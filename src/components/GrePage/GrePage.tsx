@@ -23,6 +23,7 @@ import {
   useUpdateGreWordMutation,
   useUpdateMetaForUserMutation,
 } from 'gql/graphql';
+import useNotify from 'hooks/app/useNotify';
 import useQueryTracker from 'hooks/utils/useQueryTracker';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -45,6 +46,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
   const { user, setUser } = useGlobalContext();
   const { greConfiguration } = useGreContext();
   const [updateMetaForUser] = useUpdateMetaForUserMutation();
+  const notify = useNotify();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [getGreWords, getGreWordsResult] = useGreWordsLazyQuery();
   const [createGptPrompt, createGptPromptMutationResult] =
@@ -180,11 +182,10 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           indexesReturned: indexesFetchedForWord,
           skipCache,
         },
-        fetchPolicy: skipCache ? 'network-only' : 'cache-first',
       }).then((data) => {
         const error = data.data?.sendSinglePrompt.error;
         if (error) {
-          console.log({ error });
+          notify(error, { type: 'error' });
         }
         setLastSubmittedWord(wordInput);
       });
@@ -233,7 +234,7 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
       submitWord(
         user?.meta?.defaultGreWordSearchPromptInput ??
           greConfiguration.defaultGreWordSearchPromptInputs[0],
-        false
+        true
       );
     }
   };
