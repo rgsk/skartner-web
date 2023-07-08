@@ -1,9 +1,9 @@
-import SampleQueryTracker from 'components/Sample/SampleQueryTracker';
+import SampleWindowOrientation from 'components/Sample/SampleWindowOrientation';
 
 const Page = () => {
   return (
     <div>
-      <SampleQueryTracker />
+      <SampleWindowOrientation />
     </div>
   );
 };
