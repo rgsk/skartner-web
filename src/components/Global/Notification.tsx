@@ -8,7 +8,8 @@ import {
 } from '@mui/icons-material';
 import { Box, IconButton, Snackbar, SnackbarContent } from '@mui/material';
 import { useGlobalContext } from 'context/GlobalContext';
-import { useEffect, useState } from 'react';
+import { sleep } from 'lib/generalUtils';
+import { useCallback, useEffect, useState } from 'react';
 export type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 export interface NotificationOptions {
@@ -36,10 +37,15 @@ const colors: Record<NotificationType, string> = {
   warning: '#ED6C03',
 };
 
+const SNACKBAR_ANIMATION_DURATION = 200;
+
 interface INotificationProps {}
 
 const Notification: React.FC<INotificationProps> = ({}) => {
-  const { notification } = useGlobalContext();
+  const { notification, setNotification } = useGlobalContext();
+
+  const [notificationDisplayed, setNotificationDisplayed] =
+    useState<typeof notification>(null);
 
   const {
     autoHideDuration = 4000,
@@ -49,22 +55,33 @@ const Notification: React.FC<INotificationProps> = ({}) => {
     message,
     handleUndo,
     messageArgs,
-  } = notification ?? {};
+  } = notificationDisplayed ?? {};
+
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+    setNotification(null);
+  }, [setNotification]);
 
   useEffect(() => {
     if (notification) {
-      handleOpen();
+      if (notificationDisplayed) {
+        handleClose();
+        sleep(SNACKBAR_ANIMATION_DURATION).then(() => {
+          setNotificationDisplayed(notification);
+          handleOpen();
+        });
+      } else {
+        setNotificationDisplayed(notification);
+        handleOpen();
+      }
     }
-  }, [notification]);
+  }, [handleClose, notification, notificationDisplayed]);
 
   const getMessageIcon = () => {
     switch (type) {
