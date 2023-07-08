@@ -1,5 +1,6 @@
 // context/GlobalContext.tsx
 
+import { NotificationOptions } from 'components/Global/Notification';
 import { LocalStorageKeys } from 'constants/globalConstants';
 import { UserQuery, useUserQuery } from 'gql/graphql';
 import useLocalStorageState from 'hooks/utils/useLocalStorageState';
@@ -28,6 +29,9 @@ const useGlobalContextValue = () => {
   const [user, setUser, userStatePopulated] = useLocalStorageState<
     UserQuery['user']
   >(LocalStorageKeys.user, null);
+  const [notification, setNotification] = useState<
+    (NotificationOptions & { message?: string }) | null
+  >(null);
 
   const userQueryResult = useUserQuery({
     variables: {
@@ -54,6 +58,8 @@ const useGlobalContextValue = () => {
     setUser,
     userStatePopulated,
     pathsVisited,
+    notification,
+    setNotification,
   };
 };
 

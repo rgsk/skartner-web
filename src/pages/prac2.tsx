@@ -1,9 +1,9 @@
-import SampleWindowOrientation from 'components/Sample/SampleWindowOrientation';
+import SampleNotification from 'components/Sample/SampleNotification';
 
 const Page = () => {
   return (
     <div>
-      <SampleWindowOrientation />
+      <SampleNotification />
     </div>
   );
 };
