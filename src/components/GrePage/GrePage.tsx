@@ -1,4 +1,4 @@
-import { Cancel, Edit, ExpandMore, Send } from '@mui/icons-material';
+import { Cancel, Edit, ExpandMore, Refresh, Send } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -151,13 +151,41 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     greWordTagsQueryResult.refetch();
   });
 
-  const submitWord = async (prompt: string) => {
+  const [indexesFetchedForWord, setIndexesFetchedForWord] = useState<number[]>(
+    []
+  );
+  useEffect(() => {
+    const [] = [wordInput];
+    setIndexesFetchedForWord([]);
+  }, [wordInput]);
+
+  useEffect(() => {
+    const idx = sendSinglePromptQueryResult.data?.sendSinglePrompt.resultIndex;
+    if (idx || idx === 0) {
+      setIndexesFetchedForWord((prev) => [...prev, idx]);
+    }
+  }, [sendSinglePromptQueryResult.data?.sendSinglePrompt.resultIndex]);
+  useEffect(() => {
+    console.log(indexesFetchedForWord);
+  }, [indexesFetchedForWord]);
+  const submitWord = async (prompt: string, refresh?: boolean) => {
     if (wordInput) {
+      const skipCache =
+        indexesFetchedForWord.length ===
+          sendSinglePromptQueryResult.data?.sendSinglePrompt
+            .totalResultsInCache && refresh;
       sendSinglePrompt({
         variables: {
           input: replaceWord(wordInput, prompt),
+          indexesReturned: indexesFetchedForWord,
+          skipCache,
         },
-      }).then(() => {
+        fetchPolicy: skipCache ? 'network-only' : 'cache-first',
+      }).then((data) => {
+        const error = data.data?.sendSinglePrompt.error;
+        if (error) {
+          console.log({ error });
+        }
         setLastSubmittedWord(wordInput);
       });
       refreshSavedGreWord();
@@ -200,11 +228,12 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
     }
   };
 
-  const handleWordSearch = () => {
+  const handleWordSearch = (refresh?: boolean) => {
     if (greConfiguration) {
       submitWord(
         user?.meta?.defaultGreWordSearchPromptInput ??
-          greConfiguration.defaultGreWordSearchPromptInputs[0]
+          greConfiguration.defaultGreWordSearchPromptInputs[0],
+        false
       );
     }
   };
@@ -426,6 +455,24 @@ const GrePage: React.FC<IGrePageProps> = ({}) => {
           {sendSinglePromptQueryResult.variables?.input}
         </Typography>
         {sendSinglePromptQueryResult.loading && <CircularProgress />}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'end',
+          }}
+        >
+          <IconButton
+            onClick={() => {
+              handleWordSearch(true);
+            }}
+          >
+            {sendSinglePromptQueryResult.loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              <Refresh fontSize={'large'} />
+            )}
+          </IconButton>
+        </Box>
         <p className="whitespace-pre-line">
           {sendSinglePromptQueryResult.data?.sendSinglePrompt.result}
         </p>
