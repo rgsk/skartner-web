@@ -29,6 +29,7 @@ const useGlobalContextValue = () => {
   const [user, setUser, userStatePopulated] = useLocalStorageState<
     UserQuery['user']
   >(LocalStorageKeys.user, null);
+
   const [notification, setNotification] = useState<
     (NotificationOptions & { message?: string }) | null
   >(null);

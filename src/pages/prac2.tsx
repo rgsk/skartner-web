@@ -1,10 +1,11 @@
-import SampleNotification from 'components/Sample/SampleNotification';
+import SampleLocalStorageWithExpiryWithoutHook from 'components/Sample/SampleLocalStorageWithExpiry/SampleLocalStorageWithExpiryWithoutHook';
 
 const Page = () => {
   return (
     <div>
-      <SampleNotification />
+      <SampleLocalStorageWithExpiryWithoutHook />
     </div>
   );
 };
 export default Page;
+///
