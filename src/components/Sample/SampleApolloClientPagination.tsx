@@ -7,7 +7,10 @@ interface ISampleApolloClientPaginationProps {}
 const SampleApolloClientPagination: React.FC<
   ISampleApolloClientPaginationProps
 > = ({}) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState({
+    [SortOrder.Asc]: 1,
+    [SortOrder.Desc]: 1,
+  });
   const [sortOrder, setSortOrder] = useState(SortOrder.Asc);
   const greWordsQueryResult = useGreWordsQuery({
     variables: {
@@ -18,23 +21,24 @@ const SampleApolloClientPagination: React.FC<
       orderBy: { spelling: sortOrder },
     },
   });
+
   const { greWords, greWordsCount } = greWordsQueryResult.data ?? {};
 
   const loadMore = () => {
     greWordsQueryResult.fetchMore({
       variables: {
-        skip: currentPage * itemsPerPage, // Increment the skip value to fetch the next page
+        skip: currentPage[sortOrder] * itemsPerPage, // Increment the skip value to fetch the next page
       },
       updateQuery: (prevResult, { fetchMoreResult }) => {
         console.log({ prevResult, fetchMoreResult });
         if (!fetchMoreResult) return prevResult;
         return {
-          ...greWordsQueryResult.data!,
-          greWords: [...(greWords ?? []), ...fetchMoreResult.greWords],
+          ...prevResult,
+          greWords: [...prevResult.greWords, ...fetchMoreResult.greWords],
         };
       },
     });
-    setCurrentPage((prev) => prev + 1);
+    setCurrentPage((prev) => ({ ...prev, [sortOrder]: prev[sortOrder] + 1 }));
   };
 
   return (
@@ -48,7 +52,8 @@ const SampleApolloClientPagination: React.FC<
         <button
           onClick={loadMore}
           disabled={
-            currentPage === Math.ceil((greWordsCount ?? 0) / itemsPerPage)
+            currentPage[sortOrder] ===
+            Math.ceil((greWordsCount ?? 0) / itemsPerPage)
           }
         >
           Load More
