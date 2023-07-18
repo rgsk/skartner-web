@@ -1,9 +1,9 @@
-import SampleLocalStorageWithExpiryWithoutHook from 'components/Sample/SampleLocalStorageWithExpiry/SampleLocalStorageWithExpiryWithoutHook';
+import SampleApolloClientPagination from 'components/Sample/SampleApolloClientPagination';
 
 const Page = () => {
   return (
     <div>
-      <SampleLocalStorageWithExpiryWithoutHook />
+      <SampleApolloClientPagination />
     </div>
   );
 };
