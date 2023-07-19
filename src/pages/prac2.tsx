@@ -1,9 +1,9 @@
-import SampleApolloClientPagination from 'components/Sample/SampleApolloClientPagination';
+import SampleRevealContent from 'components/Sample/SampleRevealContent';
 
 const Page = () => {
   return (
     <div>
-      <SampleApolloClientPagination />
+      <SampleRevealContent />
     </div>
   );
 };
