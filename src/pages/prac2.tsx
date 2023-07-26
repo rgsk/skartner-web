@@ -1,9 +1,9 @@
-import SampleRevealContent from 'components/Sample/SampleRevealContent';
+import SampleScrollTracker from 'components/Sample/SampleScrollTracker/SampleScrollTracker';
 
 const Page = () => {
   return (
     <div>
-      <SampleRevealContent />
+      <SampleScrollTracker />
     </div>
   );
 };
