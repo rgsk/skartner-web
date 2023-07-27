@@ -1,5 +1,7 @@
 import { RefObject, useEffect, useState } from 'react';
 
+// SAMPLE: SampleResizeObserver.tsx
+
 const useResizeObserver = <T extends HTMLElement = HTMLElement>(
   elementRef: RefObject<T>
 ) => {
