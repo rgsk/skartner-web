@@ -1,9 +1,9 @@
-import SampleScrollTracker from 'components/Sample/SampleScrollTracker/SampleScrollTracker';
+import SampleWindowSize from 'components/Sample/SampleWindowSize';
 
 const Page = () => {
   return (
     <div>
-      <SampleScrollTracker />
+      <SampleWindowSize />
     </div>
   );
 };
