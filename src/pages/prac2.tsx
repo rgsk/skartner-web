@@ -1,9 +1,9 @@
-import SampleUseHover from 'components/Sample/SampleUseHover';
+import SampleUseCopyToClipboard from 'components/Sample/SampleUseCopyToClipboard';
 
 const Page = () => {
   return (
     <div>
-      <SampleUseHover />
+      <SampleUseCopyToClipboard />
     </div>
   );
 };
