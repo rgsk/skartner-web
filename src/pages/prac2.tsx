@@ -1,9 +1,9 @@
-import SampleImageWithAspects from 'components/Sample/SampleImageWithAspects';
+import SampleDisableBodyScroll from 'components/Sample/SampleDisableBodyScroll/SampleDisableBodyScroll';
 
 const Page = () => {
   return (
     <div>
-      <SampleImageWithAspects />
+      <SampleDisableBodyScroll />
     </div>
   );
 };
