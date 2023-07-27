@@ -1,9 +1,9 @@
-import SampleWindowSize from 'components/Sample/SampleWindowSize';
+import SampleRevealContent from 'components/Sample/SampleRevealContent';
 
 const Page = () => {
   return (
     <div>
-      <SampleWindowSize />
+      <SampleRevealContent />
     </div>
   );
 };

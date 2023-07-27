@@ -1,43 +1,42 @@
-import { DependencyList, useEffect, useRef } from 'react';
+import useResizeObserver from 'hooks/utils/useResizeObserver';
+import { useEffect, useRef, useState } from 'react';
+
+// reference
+// https://www.w3schools.com/howto/howto_js_accordion.asp#:~:text=if%20(panel.style.maxHeight)%20%7B
+
 interface RevealContentProps {
   show: boolean;
   children: any;
-  delay?: number;
-  parentRef: React.RefObject<HTMLDivElement>;
-  deps?: DependencyList;
+  duration?: number;
 }
 const RevealContent = ({
   show,
   children,
-  delay = 200,
-  parentRef,
-  deps,
+  duration = 200,
 }: RevealContentProps) => {
-  const childRef = useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const childrenContainerRef = useRef<HTMLDivElement>(null);
+  const childContainerRect = useResizeObserver(childrenContainerRef);
+
+  const [scrollHeight, setScrollHeight] = useState(
+    parentRef.current?.scrollHeight
+  );
+
   useEffect(() => {
-    if (parentRef.current) {
-      parentRef.current.style.overflow = 'hidden';
-      parentRef.current.style.transition = `all ${delay}ms ease`;
-    }
-  }, [delay, parentRef]);
-  useEffect(() => {
-    if (parentRef.current && childRef.current) {
-      const parentHeight = parentRef.current.offsetHeight;
-      const childHeight = childRef.current.offsetHeight;
-      if (show) {
-        parentRef.current.style.maxHeight = parentHeight + childHeight + 'px';
-      } else {
-        // parentRef.current.style.transition = `all ${delay}ms ease`;
-        // we can set different cubic bizare for revealing and hiding
-        parentRef.current.style.maxHeight = parentHeight - childHeight + 'px';
-      }
-    }
-  }, [
-    parentRef,
-    show,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    ...(deps ?? []),
-  ]);
-  return <div ref={childRef}>{children}</div>;
+    setScrollHeight(parentRef.current?.scrollHeight);
+  }, [childContainerRect?.height]);
+
+  return (
+    <div
+      ref={parentRef}
+      style={{
+        overflow: 'hidden',
+        maxHeight: show ? scrollHeight : 0,
+        transition: `max-height ${duration}ms ease`,
+      }}
+    >
+      <div ref={childrenContainerRef}>{children}</div>
+    </div>
+  );
 };
 export default RevealContent;

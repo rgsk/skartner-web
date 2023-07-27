@@ -10,11 +10,7 @@ const SampleRevealContent: React.FC<ISampleRevealContentProps> = ({}) => {
     <div>
       <div ref={containerRef} className="p-0 m-0">
         <div>visible para</div>
-        <RevealContent
-          parentRef={containerRef}
-          show={show}
-          deps={[showSecondPara]}
-        >
+        <RevealContent show={show}>
           <div>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla
             cupiditate sed quis dolor ratione maiores voluptas sequi ducimus,
