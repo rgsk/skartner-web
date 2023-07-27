@@ -1,9 +1,9 @@
-import SampleRevealContent from 'components/Sample/SampleRevealContent';
+import SampleResizeObserver from 'components/Sample/SampleResizeObserver';
 
 const Page = () => {
   return (
     <div>
-      <SampleRevealContent />
+      <SampleResizeObserver />
     </div>
   );
 };
