@@ -1,9 +1,9 @@
-import SampleUseCopyToClipboard from 'components/Sample/SampleUseCopyToClipboard';
+import SampleImageWithAspects from 'components/Sample/SampleImageWithAspects';
 
 const Page = () => {
   return (
     <div>
-      <SampleUseCopyToClipboard />
+      <SampleImageWithAspects />
     </div>
   );
 };
