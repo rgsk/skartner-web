@@ -34,6 +34,8 @@ const useGlobalContextValue = () => {
     (NotificationOptions & { message?: string }) | null
   >(null);
 
+  const [navbarRect, setNavbarRect] = useState<DOMRect>();
+
   const userQueryResult = useUserQuery({
     variables: {
       where: { email: user?.email },
@@ -61,6 +63,8 @@ const useGlobalContextValue = () => {
     pathsVisited,
     notification,
     setNotification,
+    navbarRect,
+    setNavbarRect,
   };
 };
 

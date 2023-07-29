@@ -1,9 +1,9 @@
-import SampleDisableBodyScroll from 'components/Sample/SampleDisableBodyScroll/SampleDisableBodyScroll';
+import SampleImageZoom from 'components/Sample/SampleImageZoom';
 
 const Page = () => {
   return (
     <div>
-      <SampleDisableBodyScroll />
+      <SampleImageZoom />
     </div>
   );
 };

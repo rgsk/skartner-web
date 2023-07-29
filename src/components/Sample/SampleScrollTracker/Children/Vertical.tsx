@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
-const sampleImages = [
+export const sampleImages = [
   'https://plus.unsplash.com/premium_photo-1690297971162-5fe7ddf2c48d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=800&q=60',
   'https://images.unsplash.com/photo-1690286727405-ecdf6ab04bfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=800&q=60',
   'https://images.unsplash.com/photo-1687360441205-807780a8e5db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHw2fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=800&q=60',
@@ -143,7 +143,7 @@ interface IScrollableArrowProps {
   show: boolean;
   onClick: () => void;
 }
-const ScrollableArrow: React.FC<IScrollableArrowProps> = ({
+export const ScrollableArrow: React.FC<IScrollableArrowProps> = ({
   variant,
   show,
   onClick,

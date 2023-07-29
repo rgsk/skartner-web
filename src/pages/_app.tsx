@@ -11,7 +11,11 @@ import Layout from 'components/Global/Layout';
 import { GlobalContextProvider } from 'context/GlobalContext';
 import { GreContextProvider } from 'context/GreContext';
 import apolloClient from 'lib/apolloClient';
+
 import 'styles/globals.css';
+
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
