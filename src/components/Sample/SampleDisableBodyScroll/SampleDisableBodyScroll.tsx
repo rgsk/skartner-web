@@ -6,6 +6,30 @@ interface ISampleDisableBodyScrollProps {}
 const SampleDisableBodyScroll: React.FC<
   ISampleDisableBodyScrollProps
 > = ({}) => {
+  return <DisableCustomScroll />;
+};
+export default SampleDisableBodyScroll;
+
+interface IDisableCustomScrollProps {}
+const DisableCustomScroll: React.FC<IDisableCustomScrollProps> = ({}) => {
+  const [disableScroll, setDisableScroll] = useState(false);
+  useDisableBodyScroll({ enabled: disableScroll });
+  return (
+    <div>
+      <button
+        onClick={() => {
+          setDisableScroll((prev) => !prev);
+        }}
+      >
+        {disableScroll ? 'allow scroll' : 'freeze'}
+      </button>
+      <SampleRandomContent />
+    </div>
+  );
+};
+
+interface IModalExampleProps {}
+const ModalExample: React.FC<IModalExampleProps> = ({}) => {
   const [show, setShow] = useState(false);
   return (
     <div>
@@ -27,7 +51,6 @@ const SampleDisableBodyScroll: React.FC<
     </div>
   );
 };
-export default SampleDisableBodyScroll;
 
 interface ModalProps {
   onClose: () => void;
