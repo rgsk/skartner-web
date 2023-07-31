@@ -1,6 +1,7 @@
 import useDebounce from 'hooks/utils/useDebounce';
+import useDebouncedCallback from 'hooks/utils/useDebouncedCallback';
 import useDebouncedEffect from 'hooks/utils/useDebouncedEffect';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ISampleDebounceProps {}
 const SampleDebounce: React.FC<ISampleDebounceProps> = ({}) => {
@@ -31,6 +32,49 @@ const SampleDebouncedValue: React.FC<ISampleDebouncedValueProps> = ({}) => {
       <div>
         <p>Debounced Count: {debouncedCount}</p>
       </div>
+    </div>
+  );
+};
+
+interface ISampleDebouncedCallbackProps {}
+const SampleDebouncedCallback: React.FC<
+  ISampleDebouncedCallbackProps
+> = ({}) => {
+  const [count1, setCount1] = useState(0);
+  const [count2, setCount2] = useState(0);
+  const [sum, setSum] = useState(count1 + count2);
+
+  const debouncedChangeSum = useDebouncedCallback(() => {
+    setSum(count1 + count2);
+  });
+
+  useEffect(() => {
+    debouncedChangeSum();
+  }, [count1, count2, debouncedChangeSum]);
+
+  return (
+    <div>
+      <div>
+        <p>Count1: {count1}</p>
+        <button
+          onClick={() => {
+            setCount1((prev) => prev + 1);
+          }}
+        >
+          increment
+        </button>
+      </div>
+      <div>
+        <p>Count2: {count2}</p>
+        <button
+          onClick={() => {
+            setCount2((prev) => prev + 1);
+          }}
+        >
+          increment
+        </button>
+      </div>
+      <p>Sum: {sum}</p>
     </div>
   );
 };

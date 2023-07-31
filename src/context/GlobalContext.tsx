@@ -5,6 +5,7 @@ import { LocalStorageKeys } from 'constants/globalConstants';
 import { UserQuery, useUserQuery } from 'gql/graphql';
 import useLocalStorageState from 'hooks/utils/useLocalStorageState';
 import useRunOnWindowFocus from 'hooks/utils/useRunOnWindowFocus';
+import { useSetupWindowSize } from 'hooks/utils/useWindowSize';
 import globalProps from 'lib/globalProps';
 import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -29,6 +30,8 @@ const useGlobalContextValue = () => {
   const [user, setUser, userStatePopulated] = useLocalStorageState<
     UserQuery['user']
   >(LocalStorageKeys.user, null);
+
+  const { windowWidth, windowHeight } = useSetupWindowSize();
 
   const [notification, setNotification] = useState<
     (NotificationOptions & { message?: string }) | null
@@ -65,6 +68,8 @@ const useGlobalContextValue = () => {
     setNotification,
     navbarRect,
     setNavbarRect,
+    windowWidth,
+    windowHeight,
   };
 };
 

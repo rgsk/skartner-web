@@ -1,9 +1,9 @@
-import SampleImageZoom from 'components/Sample/SampleImageZoom';
+import SampleDebounce from 'components/Sample/SampleDebounce';
 
 const Page = () => {
   return (
     <div>
-      <SampleImageZoom />
+      <SampleDebounce />
     </div>
   );
 };
