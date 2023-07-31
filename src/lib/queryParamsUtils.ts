@@ -7,7 +7,7 @@ export const removeParamsFromQuery = (query: string, params: string[]) => {
 };
 
 export const buildQuery = (
-  obj: Record<string, string | string[] | undefined>
+  obj: Record<string, string | number | string[] | undefined>
 ) => {
   const urlSearchParams = new URLSearchParams();
   for (let [param, value] of Object.entries(obj)) {
@@ -17,7 +17,7 @@ export const buildQuery = (
       }
     } else {
       if (value !== undefined) {
-        urlSearchParams.append(param, value);
+        urlSearchParams.append(param, `${value}`);
       }
     }
   }
