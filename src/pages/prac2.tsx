@@ -1,9 +1,9 @@
-import SampleDebounce from 'components/Sample/SampleDebounce';
+import SampleImageWithAspects from 'components/Sample/SampleImageWithAspects';
 
 const Page = () => {
   return (
     <div>
-      <SampleDebounce />
+      <SampleImageWithAspects />
     </div>
   );
 };
