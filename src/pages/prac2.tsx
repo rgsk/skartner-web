@@ -1,9 +1,9 @@
-import SampleImageWithAspects from 'components/Sample/SampleImageWithAspects';
+import SampleTailwindMerge from 'components/Sample/SampleTailwindMerge';
 
 const Page = () => {
   return (
     <div>
-      <SampleImageWithAspects />
+      <SampleTailwindMerge />
     </div>
   );
 };

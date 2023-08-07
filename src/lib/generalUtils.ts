@@ -1,7 +1,11 @@
+import clsx, { ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 export const sleep = (millis: number) => {
   return new Promise((resolve) => {
     setTimeout(resolve, millis);
   });
 };
-import clsx from 'clsx';
-export const cn = clsx;
+
+export const cn: typeof clsx = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(...inputs));
+};
