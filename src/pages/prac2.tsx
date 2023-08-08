@@ -1,11 +1,10 @@
-import SampleFuzzySearch from 'components/Sample/SampleFuzzySearch';
+import SampleDynamicLoading from 'components/Sample/SampleDynamicLoading/SampleDynamicLoading';
 
 const Page = () => {
   return (
     <div>
-      <SampleFuzzySearch />
+      <SampleDynamicLoading />
     </div>
   );
 };
 export default Page;
-///
