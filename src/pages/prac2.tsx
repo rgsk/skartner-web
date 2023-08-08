@@ -1,9 +1,9 @@
-import SampleTailwindMerge from 'components/Sample/SampleTailwindMerge';
+import SampleFuzzySearch from 'components/Sample/SampleFuzzySearch';
 
 const Page = () => {
   return (
     <div>
-      <SampleTailwindMerge />
+      <SampleFuzzySearch />
     </div>
   );
 };
