@@ -1,9 +1,9 @@
-import SampleDynamicLoading from 'components/Sample/SampleDynamicLoading/SampleDynamicLoading';
+import SampleDeviceDetect from 'components/Sample/SampleDeviceDetect';
 
 const Page = () => {
   return (
     <div>
-      <SampleDynamicLoading />
+      <SampleDeviceDetect />
     </div>
   );
 };
