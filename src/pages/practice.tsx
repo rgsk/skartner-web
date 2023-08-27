@@ -1,19 +1,10 @@
-import PracticePage from 'components/PracticePage/PracticePage';
-import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
+import SampleUseCallRepeatedly from 'components/Sample/SampleUseCallRepeatedly';
 
-export async function getStaticProps({}: GetStaticPropsContext) {
-  return {
-    props: {},
-    revalidate: 10,
-  };
-}
-
-const Page = ({}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Page = () => {
   return (
     <div>
-      <PracticePage />
+      <SampleUseCallRepeatedly />
     </div>
   );
 };
 export default Page;
-// comment modified
