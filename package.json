@@ -3,11 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"yarn codegen:watch\" \"next dev -p 3001\"",
+    "dev": "next dev -p 3000",
     "build": "next build",
     "type-check": "tsc",
-    "prestart": "yarn codegen && yarn type-check",
-    "start": "next start -p 3001",
+    "start": "next start -p 3000",
     "lint": "next lint",
     "codegen": "graphql-codegen --config codegen.ts",
     "codegen:watch": "nodemon -w src -e graphql,gql --exec \"yarn codegen\"",

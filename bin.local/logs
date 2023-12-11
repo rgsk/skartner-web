@@ -1,3 +1,0 @@
-#!/bin/bash 
-
-docker logs skartner-services-skartner-web-1 --follow
