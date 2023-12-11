@@ -1,29 +1,9 @@
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Link from 'components/Sample/Link';
-
-export default function Home() {
+const Page = () => {
   return (
-    <Container maxWidth="lg">
-      <Box
-        sx={{
-          my: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Link href="/gre" color="secondary">
-          Gre Page
-        </Link>
-        <Link href="/gre/history" color="secondary">
-          Gre History Page
-        </Link>
-        <Link href="/prac2" color="secondary">
-          prac2
-        </Link>
-      </Box>
-    </Container>
+    <div>
+      <p>Welcome to Skartner - Your Learning Companion</p>
+      <a href="http://app.skartner.com">Learn Vocabulary</a>
+    </div>
   );
-}
+};
+export default Page;

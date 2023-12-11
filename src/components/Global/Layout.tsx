@@ -3,8 +3,6 @@ import { useNotificationReceivedSubscription } from 'gql/graphql';
 import useNotify from 'hooks/app/useNotify';
 import { useEffect } from 'react';
 import Footer from './Footer';
-import Navbar from './Navbar';
-import Notification from './Notification';
 
 interface ILayoutProps {
   children: any;
@@ -13,8 +11,8 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
   useSubscribeToNotificationsFromServer();
   return (
     <div>
-      <Navbar />
-      <Notification />
+      {/* <Navbar /> */}
+      {/* <Notification /> */}
       <div>{children}</div>
       <Footer />
     </div>
