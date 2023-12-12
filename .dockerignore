@@ -10,7 +10,8 @@
 
 # next.js
 /.next/
-/out/
+# out directory has to be exposed
+# /out/
 
 # production
 /build

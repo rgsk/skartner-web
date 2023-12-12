@@ -1,7 +1,10 @@
-docker build . \
---build-arg NEXT_PUBLIC_SKARTNER_SERVER=http://server.skartner.com \
---build-arg NEXT_PUBLIC_APP_ENV=staging \
--t rgskartner/skartner-web \
---platform linux/amd64
+cp .env ../envs/skartner-web/temp.env
+cp ../envs/skartner-web/staging.env .env
+
+yarn build
+
+cp ../envs/skartner-web/temp.env .env
+
+docker build . --platform linux/amd64 -t rgskartner/skartner-web
 
 docker push rgskartner/skartner-web
