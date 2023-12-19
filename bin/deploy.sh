@@ -7,4 +7,4 @@ cp ../envs/skartner-web/temp.env .env
 
 docker build . --platform linux/amd64 -t rgskartner/skartner-web
 
-docker push rgskartner/skartner-web
+# docker push rgskartner/skartner-web
