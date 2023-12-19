@@ -1,6 +1,7 @@
 cp .env ../envs/skartner-web/temp.env
 cp ../envs/skartner-web/staging.env .env
 
+yarn
 yarn build
 
 cp ../envs/skartner-web/temp.env .env
