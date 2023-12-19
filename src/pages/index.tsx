@@ -15,6 +15,7 @@ const Page = () => {
   return (
     <div>
       <p>Welcome to Skartner - Your Learning Companion</p>
+      <p>changed 123</p>
       <a href="http://app.skartner.com">Learn Vocabulary</a>
     </div>
   );
