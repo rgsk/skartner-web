@@ -48,21 +48,23 @@ const useLocalStorageState = <T>(
 
   const [statePopulated, setStatePopulated] = useState(false);
 
+  const initialValueRef = useStateRef(initialValue);
+
   const populateStateFromLocalStorage = useCallback(() => {
     // Get from local storage by key
     const value = localStorageWithExpiry.getItem<T>(key);
     if (value === null) {
       localStorageWithExpiry.setItem(
         key,
-        initialValue,
+        initialValueRef.current,
         localStorageWithExpiry.getExpirationTimestamp(expirationTime)
       );
-      setStoredValue(initialValue);
+      setStoredValue(initialValueRef.current);
     } else {
       setStoredValue(value);
     }
     setStatePopulated(true);
-  }, [expirationTime, initialValue, key]);
+  }, [expirationTime, initialValueRef, key]);
 
   useEffect(() => {
     populateStateFromLocalStorage();
@@ -100,7 +102,11 @@ const useLocalStorageState = <T>(
     },
     [expirationTime, key, storedValueRef]
   );
-  return [storedValue, setValue, statePopulated] as const;
+  return [
+    storedValue,
+    setValue,
+    { statePopulated, refresh: populateStateFromLocalStorage },
+  ] as const;
 };
 
 export default useLocalStorageState;
