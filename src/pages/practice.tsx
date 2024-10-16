@@ -1,9 +1,9 @@
-import SampleUseCallRepeatedly from 'components/Sample/SampleUseCallRepeatedly';
+import SampleUsePaste from 'components/Sample/SampleUsePaste';
 
 const Page = () => {
   return (
     <div>
-      <SampleUseCallRepeatedly />
+      <SampleUsePaste />
     </div>
   );
 };
